@@ -1,0 +1,3 @@
+Causality not too interesting: one set of inputs (independent with each other) vs outputs. Only represented univariate contribution to each output. Should be able to represent latent variables: neural network with hidden layer(s).
+
+Shapley values?
