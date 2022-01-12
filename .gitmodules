@@ -1,0 +1,6 @@
+[submodule "trieste"]
+	path = trieste
+	url = https://github.com/secondmind-labs/trieste
+[submodule "Bayesian-Optimization-with-pymc3"]
+	path = Bayesian-Optimization-with-pymc3
+	url = https://github.com/AM207-Study-Group/Bayesian-Optimization-with-pymc3

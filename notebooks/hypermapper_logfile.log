@@ -1,0 +1,163 @@
+{'application_name': '1d_branin', 'design_of_experiment': {'doe_type': 'random sampling', 'number_of_samples': 10}, 'optimization_objectives': ['Value'], 'optimization_iterations': 20, 'models': {'model': 'gaussian_process', 'number_of_trees': 10, 'max_features': 0.5, 'bootstrap': False, 'min_samples_split': 5}, 'input_parameters': {'x1': {'parameter_type': 'ordinal', 'values': [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'prior': [0.2, 0.3, 0.3, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}, 'x2': {'parameter_type': 'ordinal', 'values': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'prior': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.3, 0.2, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}}, 'log_file': 'hypermapper_logfile.log', 'verbose_logging': False, 'profiling': False, 'noise': True, 'profiling_file': 'profiles/profile.csv', 'append_profiles': False, 'number_of_cpus': 0, 'max_number_of_predictions': 1000000, 'time_budget': -1, 'number_of_repetitions': 1, 'hypermapper_mode': {'mode': 'default'}, 'output_image': {'output_image_pdf_file': 'output_pareto.pdf', 'image_xlog': False, 'image_ylog': False}, 'feasible_output': {'name': 'Valid', 'true_value': 'True', 'false_value': 'False', 'enable_feasible_predictor': False, 'enable_feasible_predictor_grid_search_on_recall_and_precision': False, 'feasible_predictor_grid_search_validation_file': '/home/lnardi/spatial-lang/results/apps_classification_test_set/BlackScholes.csv'}, 'timestamp': 'Timestamp', 'evaluations_per_optimization_iteration': 1, 'run_directory': '.', 'output_data_file': 'output_samples.csv', 'output_pareto_file': 'output_pareto.csv', 'acquisition_function': 'EI', 'scalarization_method': 'tchebyshev', 'weight_sampling': 'flat', 'bounding_box_limits': [0, 1], 'optimization_method': 'bayesian_optimization', 'local_search_starting_points': 10, 'local_search_random_points': 10000, 'local_search_evaluation_limit': -1, 'scalarization_key': 'scalarization', 'local_search_scalarization_weights': [1], 'print_parameter_importance': False, 'normalize_inputs': False, 'epsilon_greedy_threshold': 0.1, 'model_posterior_weight': 10, 'model_good_quantile': 0.05, 'prior_estimation_file': 'samples.csv', 'prior_estimation_quantile': 0.1, 'estimate_multivariate_priors': False, 'resume_optimization': False, 'resume_optimization_data': 'output_samples.csv', 'bandwidth_parameter': 0, 'bandwidth_n_factor': 100, 'prior_limit_estimation_points': 10000, 'posterior_computation_lower_limit': 1e-08, 'custom_gaussian_prior_means': [0], 'custom_gaussian_prior_stds': [-1], 'acquisition_function_optimizer': 'local_search', 'evolution_population_size': 50, 'evolution_generations': 150, 'mutation_rate': 1, 'evolution_crossover': False, 'regularize_evolution': False, 'batch_size': 2, 'print_best': 'auto', 'print_posterior_best': False, 'cma_es_sigma': 0.2, 'cma_es_starting_points': 1, 'cma_es_random_points': 10000}
+Design of experiment phase, number of new doe samples = 10 .......
+-5
+12
+-4
+13
+-3
+11
+-4
+11
+-2
+11
+-4
+10
+-3
+13
+-3
+10
+-2
+13
+-5
+11
+x1,x2,Value,Timestamp
+-5,12,39.632458814943874,11
+-4,13,5.777558874388475,66
+-3,11,1.3725284598926972,70
+-4,11,15.510158354306498,76
+-2,11,7.694535290476077,82
+-4,10,23.3764580942655,85
+-3,13,1.6232929596819492,91
+-3,10,4.247146209998071,96
+-2,13,16.895187696820756,101
+-5,11,51.00717858133244,107
+
+
+End of doe/resume phase, the number of evaluated configurations is: 10
+
+End of DoE - Time     0.1329 sec
+Starting optimization iteration 1
+{'application_name': '1d_branin', 'design_of_experiment': {'doe_type': 'random sampling', 'number_of_samples': 20}, 'optimization_objectives': ['Value'], 'optimization_iterations': 20, 'models': {'model': 'gaussian_process', 'number_of_trees': 10, 'max_features': 0.5, 'bootstrap': False, 'min_samples_split': 5}, 'input_parameters': {'x1': {'parameter_type': 'ordinal', 'values': [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'prior': [0.2, 0.3, 0.3, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}, 'x2': {'parameter_type': 'ordinal', 'values': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'prior': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.3, 0.2, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}}, 'log_file': 'hypermapper_logfile.log', 'verbose_logging': False, 'profiling': False, 'noise': True, 'profiling_file': 'profiles/profile.csv', 'append_profiles': False, 'number_of_cpus': 0, 'max_number_of_predictions': 1000000, 'time_budget': -1, 'number_of_repetitions': 1, 'hypermapper_mode': {'mode': 'default'}, 'output_image': {'output_image_pdf_file': 'output_pareto.pdf', 'image_xlog': False, 'image_ylog': False}, 'feasible_output': {'name': 'Valid', 'true_value': 'True', 'false_value': 'False', 'enable_feasible_predictor': False, 'enable_feasible_predictor_grid_search_on_recall_and_precision': False, 'feasible_predictor_grid_search_validation_file': '/home/lnardi/spatial-lang/results/apps_classification_test_set/BlackScholes.csv'}, 'timestamp': 'Timestamp', 'evaluations_per_optimization_iteration': 1, 'run_directory': '.', 'output_data_file': 'output_samples.csv', 'output_pareto_file': 'output_pareto.csv', 'acquisition_function': 'EI', 'scalarization_method': 'tchebyshev', 'weight_sampling': 'flat', 'bounding_box_limits': [0, 1], 'optimization_method': 'bayesian_optimization', 'local_search_starting_points': 10, 'local_search_random_points': 10000, 'local_search_evaluation_limit': -1, 'scalarization_key': 'scalarization', 'local_search_scalarization_weights': [1], 'print_parameter_importance': False, 'normalize_inputs': False, 'epsilon_greedy_threshold': 0.1, 'model_posterior_weight': 10, 'model_good_quantile': 0.05, 'prior_estimation_file': 'samples.csv', 'prior_estimation_quantile': 0.1, 'estimate_multivariate_priors': False, 'resume_optimization': False, 'resume_optimization_data': 'output_samples.csv', 'bandwidth_parameter': 0, 'bandwidth_n_factor': 100, 'prior_limit_estimation_points': 10000, 'posterior_computation_lower_limit': 1e-08, 'custom_gaussian_prior_means': [0], 'custom_gaussian_prior_stds': [-1], 'acquisition_function_optimizer': 'local_search', 'evolution_population_size': 50, 'evolution_generations': 150, 'mutation_rate': 1, 'evolution_crossover': False, 'regularize_evolution': False, 'batch_size': 2, 'print_best': 'auto', 'print_posterior_best': False, 'cma_es_sigma': 0.2, 'cma_es_starting_points': 1, 'cma_es_random_points': 10000}
+
+ ####
+ Warning: reached maximum number of Random sampling that have been already run. 
+The Random sampling configuration selection will stop now. Is the search space very small?
+
+Design of experiment phase, number of new doe samples = 16 .......
+-5
+10
+-3
+11
+-3
+10
+-4
+12
+-2
+10
+-3
+12
+-4
+11
+-4
+13
+-3
+13
+-2
+13
+-2
+11
+-5
+11
+-4
+10
+-5
+13
+-5
+12
+-2
+12
+x1,x2,Value,Timestamp
+-5,10,64.381898347721,153571
+-3,11,1.3725284598926972,153632
+-3,10,4.247146209998071,153635
+-4,12,9.643858614347486,153643
+-2,10,6.094209087303737,153647
+-3,12,0.4979107097873232,153653
+-4,11,15.510158354306498,153656
+-4,13,5.777558874388475,153661
+-3,13,1.6232929596819492,153665
+-2,13,16.895187696820756,153670
+-2,11,7.694535290476077,153676
+-5,11,51.00717858133244,153680
+-4,10,23.3764580942655,153684
+-5,13,30.257739048555305,153689
+-5,12,39.632458814943874,153696
+-2,12,11.294861493648417,153702
+
+
+End of doe/resume phase, the number of evaluated configurations is: 20
+
+End of DoE - Time   153.7263 sec
+Starting optimization iteration 1
+{'application_name': '1d_branin', 'design_of_experiment': {'doe_type': 'random sampling', 'number_of_samples': 20}, 'optimization_objectives': ['Value'], 'optimization_iterations': 20, 'models': {'model': 'gaussian_process', 'number_of_trees': 10, 'max_features': 0.5, 'bootstrap': False, 'min_samples_split': 5}, 'input_parameters': {'x1': {'parameter_type': 'ordinal', 'values': [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'prior': [0.2, 0.3, 0.3, 0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}, 'x2': {'parameter_type': 'ordinal', 'values': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 'prior': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.3, 0.2, 0, 0], 'custom_gaussian_prior_means': False, 'custom_gaussian_prior_stds': False}}, 'log_file': 'hypermapper_logfile.log', 'verbose_logging': False, 'profiling': False, 'noise': True, 'profiling_file': 'profiles/profile.csv', 'append_profiles': False, 'number_of_cpus': 0, 'max_number_of_predictions': 1000000, 'time_budget': -1, 'number_of_repetitions': 1, 'hypermapper_mode': {'mode': 'default'}, 'output_image': {'output_image_pdf_file': 'output_pareto.pdf', 'image_xlog': False, 'image_ylog': False}, 'feasible_output': {'name': 'Valid', 'true_value': 'True', 'false_value': 'False', 'enable_feasible_predictor': False, 'enable_feasible_predictor_grid_search_on_recall_and_precision': False, 'feasible_predictor_grid_search_validation_file': '/home/lnardi/spatial-lang/results/apps_classification_test_set/BlackScholes.csv'}, 'timestamp': 'Timestamp', 'evaluations_per_optimization_iteration': 1, 'run_directory': '.', 'output_data_file': 'output_samples.csv', 'output_pareto_file': 'output_pareto.csv', 'acquisition_function': 'EI', 'scalarization_method': 'tchebyshev', 'weight_sampling': 'flat', 'bounding_box_limits': [0, 1], 'optimization_method': 'bayesian_optimization', 'local_search_starting_points': 10, 'local_search_random_points': 10000, 'local_search_evaluation_limit': -1, 'scalarization_key': 'scalarization', 'local_search_scalarization_weights': [1], 'print_parameter_importance': False, 'normalize_inputs': False, 'epsilon_greedy_threshold': 0.1, 'model_posterior_weight': 10, 'model_good_quantile': 0.05, 'prior_estimation_file': 'samples.csv', 'prior_estimation_quantile': 0.1, 'estimate_multivariate_priors': False, 'resume_optimization': False, 'resume_optimization_data': 'output_samples.csv', 'bandwidth_parameter': 0, 'bandwidth_n_factor': 100, 'prior_limit_estimation_points': 10000, 'posterior_computation_lower_limit': 1e-08, 'custom_gaussian_prior_means': [0], 'custom_gaussian_prior_stds': [-1], 'acquisition_function_optimizer': 'local_search', 'evolution_population_size': 50, 'evolution_generations': 150, 'mutation_rate': 1, 'evolution_crossover': False, 'regularize_evolution': False, 'batch_size': 2, 'print_best': 'auto', 'print_posterior_best': False, 'cma_es_sigma': 0.2, 'cma_es_starting_points': 1, 'cma_es_random_points': 10000}
+
+ ####
+ Warning: reached maximum number of Random sampling that have been already run. 
+The Random sampling configuration selection will stop now. Is the search space very small?
+
+Design of experiment phase, number of new doe samples = 16 .......
+-3
+10
+-3
+12
+-4
+12
+-4
+10
+-5
+13
+-2
+10
+-5
+10
+-5
+11
+-5
+12
+-3
+13
+-2
+13
+-4
+11
+-2
+11
+-3
+11
+-2
+12
+-4
+13
+x1,x2,Value,Timestamp
+-3,10,4.247146209998071,186461
+-3,12,0.4979107097873232,186530
+-4,12,9.643858614347486,186535
+-4,10,23.3764580942655,186541
+-5,13,30.257739048555305,186546
+-2,10,6.094209087303737,186551
+-5,10,64.381898347721,186557
+-5,11,51.00717858133244,186562
+-5,12,39.632458814943874,186567
+-3,13,1.6232929596819492,186575
+-2,13,16.895187696820756,186580
+-4,11,15.510158354306498,186587
+-2,11,7.694535290476077,186592
+-3,11,1.3725284598926972,186597
+-2,12,11.294861493648417,186602
+-4,13,5.777558874388475,186607
+
+
+End of doe/resume phase, the number of evaluated configurations is: 20
+
+End of DoE - Time   186.6443 sec
+Starting optimization iteration 1
