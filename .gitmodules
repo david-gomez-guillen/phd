@@ -4,3 +4,9 @@
 [submodule "Bayesian-Optimization-with-pymc3"]
 	path = Bayesian-Optimization-with-pymc3
 	url = https://github.com/AM207-Study-Group/Bayesian-Optimization-with-pymc3
+[submodule "GPflow"]
+	path = GPflow
+	url = https://github.com/GPflow/GPflow
+[submodule "hypermapper"]
+	path = hypermapper
+	url = https://github.com/luinardi/hypermapper
