@@ -1,0 +1,226 @@
+version: 2.1
+
+commands:
+  setup_venv:
+    steps:
+      - checkout
+      - run:
+          name: Setup virtual environment
+          command: |
+            # Run in a fresh virtual environment, to avoid conflicts with preinstalled packages.
+            virtualenv -p python3.6 .venv
+            source .venv/bin/activate
+            pip install --progress-bar=off -U pip
+  install_gpflow:
+    steps:
+      - setup_venv
+      - run:
+          name: Install GPflow
+          command: |
+            source .venv/bin/activate
+            # Ensure consistency between tensorflow and tensorflow-probability
+            pip install --progress-bar=off tensorflow==2.6.* tensorflow-probability==0.14.*
+            pip install --progress-bar=off -e .
+  install_gpflow_tests:
+    steps:
+      - install_gpflow
+      - run:
+          name: Install GPflow tests
+          command: |
+            source .venv/bin/activate
+            pip install --progress-bar=off -r tests_requirements.txt
+  run_tests:
+    parameters:
+      pytest_filter:
+        type: string
+    steps:
+      - install_gpflow_tests
+      - run:
+          name: Run tests
+          command: |
+            source .venv/bin/activate
+            pytest -v -W ignore::UserWarning --durations=10 -m "<<parameters.pytest_filter>>" --cov=./gpflow ./tests
+      - run:
+          name: Upload coverage report
+          command: |
+            source .venv/bin/activate
+            bash <(curl -s https://codecov.io/bash) -t "${CODECOV_TOKEN}"
+
+jobs:
+  verify-install:
+    docker:
+      - image: cimg/python:3.6
+
+    steps:
+      - install_gpflow
+      - run:
+          name: Check installed dependencies are compatible
+          command: |
+            source .venv/bin/activate
+            pip check -vvv
+            python -c "import gpflow"
+
+  type-check:
+    docker:
+      - image: cimg/python:3.6
+
+    steps:
+      - setup_venv
+      - run:
+          name: Install type checker
+          command: |
+            source .venv/bin/activate
+            pip install --progress-bar=off mypy types-pkg_resources
+      - run:
+          name: Run type check
+          command: |
+            source .venv/bin/activate
+            mypy gpflow tests
+
+  format-check:
+    docker:
+      - image: cimg/python:3.6
+
+    steps:
+      - setup_venv
+      - run:
+          name: Install black and isort
+          command: |
+            source .venv/bin/activate
+            pip install --progress-bar=off black==20.8b1 isort
+      - run:
+          name: Run format check
+          command: |
+            source .venv/bin/activate
+            make format-check
+
+  unit-test:
+    docker:
+      - image: cimg/python:3.6
+
+    steps:
+      - run_tests:
+          pytest_filter: not notebooks
+
+  notebook-test:
+    docker:
+      - image: cimg/python:3.6
+
+    steps:
+      - run_tests:
+          pytest_filter: notebooks
+
+  trigger-docs-generation:
+    docker:
+      - image: cimg/python:3.6
+        environment:
+            ORGANIZATION: GPflow
+            PROJECT: docs
+            BRANCH: << pipeline.git.branch >>
+
+    steps:
+      - run:
+          name: Trigger the Build Job in Docs repo
+          # Compiled documentation for readthedocs are built and stored in the https://github.com/GPflow/docs/ repository
+          # For configuration of the doc build, see https://github.com/GPflow/docs/blob/develop/.circleci/config.yml
+          command: |
+            curl \
+              -u ${DOCS_TOKEN}: \
+              -d 'build_parameters[CIRCLE_JOB]=build' \
+              https://circleci.com/api/v1.1/project/github/GPflow/docs/tree/develop
+
+  deploy:
+    docker:
+      - image: cimg/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: Verify git tag vs. VERSION
+          command: |
+            VERSION="v$(cat VERSION | tr -d '\t\r\n ')"
+            if [ "$VERSION" != "$CIRCLE_TAG" ]; then
+              echo "The package version ($VERSION) and the latest tag version ($CIRCLE_TAG) are different"
+              exit 1
+            fi
+      - run:
+          name: Install twine
+          command: |
+            # Run in a fresh virtual environment, to avoid conflicts with preinstalled packages.
+            virtualenv -p python3.6 .venv
+            source .venv/bin/activate
+            pip install --progress-bar=off -U pip
+            pip install --progress-bar=off twine
+      - run:
+          name: Init .pypirc
+          command: |
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = artemav" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: Create pip package
+          command: |
+            source .venv/bin/activate
+            python setup.py bdist_wheel sdist
+      - run:
+          name: Upload to PyPI
+          command: |
+            source .venv/bin/activate
+            twine upload dist/*
+
+
+workflows:
+  version: 2.1
+  build_test_and_deploy:
+    jobs:
+      - verify-install:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+      - type-check:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+      - format-check:
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+      - unit-test:
+          requires:
+            - verify-install
+            - type-check
+            - format-check
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+      - notebook-test:
+          requires:
+            - verify-install
+            - type-check
+            - format-check
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+      - trigger-docs-generation:
+          requires:
+            - verify-install
+            - type-check
+            - format-check
+            - unit-test
+            - notebook-test
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+      - deploy:
+          requires:
+            - verify-install
+            - type-check
+            - format-check
+            - unit-test
+            - notebook-test
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+)*(-rc[0-9]+)?/
+            branches:
+              ignore: /.*/
