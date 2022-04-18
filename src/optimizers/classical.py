@@ -2,13 +2,7 @@ import json
 import rpy2.robjects as ro
 import numpy as np
 from scipy.optimize import minimize
-
-class Optimizer:
-  def __init__(self):
-      pass
-
-  def optimize(self, model, error_measure, **kwargs) -> list:
-    pass
+from .base import Optimizer
 
 class ScipyOptimizer(Optimizer):  
   def rpy_function_wrapper(self, func):

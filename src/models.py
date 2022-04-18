@@ -23,6 +23,7 @@ class RModel(Model):
       def _init_model():
         path = os.path.abspath(self.script_path)
         r = ro.r
+        print(path)
         r.setwd(os.path.dirname(path))
         r.source(os.path.basename(path))
         make_simulation_func = ro.globalenv[self.r_function]
