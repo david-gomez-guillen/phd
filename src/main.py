@@ -2,6 +2,7 @@ import os
 from models import RModel
 from error_measures import PMBIncidenceL2Error, PMBMortalityL2Error
 from optimizers.classical import NelderMeadOptimizer
+from optimizers.bayesian import BayesianOptimizer
 
 
 params = [('.p_cancer___bleeding', 'y{}_{}'.format(i, i+4)) for i in range(50, 85, 5)]
@@ -13,14 +14,30 @@ ec_model = RModel(script_path=os.path.abspath('models/endometrium/calibration_wr
                   
 error = PMBIncidenceL2Error()
 #error = PMBMortalityL2Error()
-optimizer = NelderMeadOptimizer()
 
-result = optimizer.optimize(ec_model, 
+nm_optimizer = NelderMeadOptimizer()
+
+result = nm_optimizer.optimize(ec_model, 
                             params, 
                             bounds, 
                             error, 
                             initial_guess=initial_guess)
 
+print('Nelder-Mead optimizer')
+print('Best solution: {}'.format(result['x']))
+print(' Error: {}'.format(result['error']))
+print(' Model evaluations: {}'.format(result['evaluations']))
+
+
+bo_optimizer = BayesianOptimizer()
+
+result = bo_optimizer.optimize(ec_model, 
+                            params, 
+                            bounds, 
+                            error, 
+                            initial_guess=initial_guess)
+
+print('Bayesian optimizer')
 print('Best solution: {}'.format(result['x']))
 print(' Error: {}'.format(result['error']))
 print(' Model evaluations: {}'.format(result['evaluations']))

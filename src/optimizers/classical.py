@@ -1,4 +1,5 @@
 import json
+import timeit
 import rpy2.robjects as ro
 import numpy as np
 from scipy.optimize import minimize
@@ -8,11 +9,12 @@ class ScipyOptimizer(Optimizer):
   def rpy_function_wrapper(self, func):
     def wrapper(X, **kwargs):
       X2 = ro.vectors.FloatVector(X)
-      result = func(X2, kwargs)
+      result = func(X2, **kwargs)
       return result
     return wrapper
 
   def _optimize(self, algorithm, model, params, bounds, error_measure, silence_model_output=True, **kwargs) -> list:
+    start_time = timeit.default_timer()
     initial_guess = kwargs['initial_guess']
     if kwargs.get('seed'):
       np.random.seed(kwargs['seed'])
@@ -23,10 +25,13 @@ class ScipyOptimizer(Optimizer):
       print('Error: {}'.format(error))
       return error
     result = minimize(model_evaluation_error, initial_guess, method=algorithm, bounds=bounds)
+
+    stop_time = timeit.default_timer()
     return {
       'x': result['x'],
       'error': result['fun'],
       'evaluations': result['nfev'],
+      'time': stop_time - start_time,
       'success': result['success'],
     }
 

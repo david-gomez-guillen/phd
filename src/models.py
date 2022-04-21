@@ -45,7 +45,7 @@ class RModel(Model):
       else:
         _init_model()
 
-    def evaluate(self, x, silence_model_output=True) -> list:
+    def evaluate(self, x, silence_model_output=False) -> list:
       if silence_model_output:
         # Silence model evaluation
         with contextlib.redirect_stdout(None):
