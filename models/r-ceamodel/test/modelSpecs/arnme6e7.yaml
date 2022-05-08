@@ -1,0 +1,15 @@
+cytology_arnme6e7:
+  description: Cytology + ARNm E6/E7 test
+  cost: c_cyto_arnm
+  probs: p_cyto_benign_ascus_lsil_arnm_neg,_
+  children:
+    # Cyto benign, ASCUS, LSIL and ARNm E6/E7 negative
+    - annual_followup:
+        in_transition: cyto benign, ASCUS or LSIL, ARNm negative
+        description: Annual followup after test
+        cost: c_followup
+        outcome: u_cyto_benign
+    # Otherwise
+    - hra:
+        in_transition: otherwise
+        include: '_hra_followup.yaml'

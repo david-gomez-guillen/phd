@@ -1,0 +1,17 @@
+hysteroscopy:
+  description: Hysteroscopy
+  cost: c_hysteroscopy_visit
+  sensitivity: .sensitivity_hysteroscopy___bleeding
+  specificity: .specificity_hysteroscopy___bleeding
+  probs: p_hysteroscopy_p, _
+  children:
+    - hysterectomy:
+        in_transition: positive
+        description: Hysterectomy
+        include: '_hysterectomy.yaml'
+        suffix: 'hysteroscopy_p'
+    - evaluation:
+        in_transition: negative
+        cost: c_phone_visit
+        include: '_evaluation.yaml'
+        suffix: 'hysteroscopy_n'

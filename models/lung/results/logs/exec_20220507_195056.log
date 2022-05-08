@@ -1,0 +1,30 @@
+Logfile "results/logs/exec_20220507_195056.log" initialized
+
+
+Warning messages:
+1: package ‘foreach’ was built under R version 4.1.3 
+2: package ‘doParallel’ was built under R version 4.1.3 
+3: package ‘iterators’ was built under R version 4.1.3 
+4: package ‘doRNG’ was built under R version 4.1.3 
+5: package ‘rngtools’ was built under R version 4.1.3 
+6: package ‘itertools’ was built under R version 4.1.3 
+7: package ‘cowplot’ was built under R version 4.1.3 
+8: In optim(par = conIni, fn = distgrup1, control = list(trace = 0,  :
+  unknown names in control: verbose
+Using seed: 1003559074
+
+***********************************
+*** RUNNING ON A 8-core CLUSTER ***
+***********************************
+
+Initializing cluster...
+Cluster initialized
+
+Loading matrix from file:Remarkable TP matrices/tp_dan20.xls
+Matriu carregada
+
+*******************
+*** CLEANING UP ***
+*******************
+Stopping cluster
+Done

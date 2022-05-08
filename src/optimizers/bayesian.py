@@ -11,6 +11,10 @@ from trieste.space import Box
 from .base import Optimizer
 
 class BayesianOptimizer(Optimizer):
+
+  DEFAULT_INITIAL_POINTS = 5
+  DEFAULT_NUM_EVALUATIONS = 20
+
   def rpy_function_wrapper(self, func):
     def wrapper(X, **kwargs):
       results = []
@@ -20,7 +24,7 @@ class BayesianOptimizer(Optimizer):
       return results
     return wrapper
 
-  def optimize(self, model, params, bounds, error_measure, silence_model_output=True, **kwargs) -> list:
+  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
     start_time = timeit.default_timer()
     self.model = model
     bounds = list(zip(*bounds))
@@ -31,14 +35,15 @@ class BayesianOptimizer(Optimizer):
       y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
       errors = []
       for y_i in y:
-        errors += [error_measure.calculate_error(json.loads(y_i))]
+        measure = measure_extractor.get_measure(json.loads(y_i))
+        errors += [error_measure.calculate_error(measure)]
       errors = tf.reshape(tf.convert_to_tensor(errors), shape=(len(errors),1))
       print('Errors: {}'.format(errors))
       return errors
 
     observer = trieste.objectives.utils.mk_observer(model_evaluation_error)
 
-    num_initial_points = 3
+    num_initial_points = kwargs.get('initial_points', self.DEFAULT_INITIAL_POINTS)
     initial_query_points = search_space.sample_sobol(num_initial_points)
     initial_data = observer(initial_query_points)
 
@@ -47,7 +52,7 @@ class BayesianOptimizer(Optimizer):
 
     bo = trieste.bayesian_optimizer.BayesianOptimizer(observer, search_space)
 
-    num_steps = 3
+    num_steps = kwargs.get('num_evaluations', self.DEFAULT_NUM_EVALUATIONS)
     result = bo.optimize(num_steps, initial_data, surrogate_model)
     dataset = result.try_get_final_dataset()
 

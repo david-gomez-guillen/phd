@@ -1,0 +1,69 @@
+molecular_test:
+  description: Molecular test
+  cost: c_molecular_test
+  probs: p_molecular_p, _
+  suffix: asymptomatic
+  children:
+    - tvu:
+        in_transition: positive
+        description: TVU
+        cost: c_tvu
+        probs: p_endo_thick, _
+        suffix: molecular_p
+        children:
+          - pipelle:
+              in_transition: thick endometrium
+              description: Pipelle
+              cost: c_pipelle
+              probs: p_pipelle_success, _
+              suffix: endo_thick
+              children:
+                - pipelle_result:
+                    in_transition: success
+                    description: Pipelle result
+                    probs: p_pipelle_p, _
+                    children:
+                      - hysterectomy:
+                          in_transition: positive
+                          description: Hysterectomy
+                          include: '_hysterectomy.yaml'
+                          suffix: pipelle_p
+                      - bmi:
+                          in_transition: negative
+                          description: BMI
+                          probs: p_bmi_high, _
+                          suffix: pipelle_n
+                          children:
+                            - hysteroscopy:
+                                in_transition: high
+                                description: Hysteroscopy
+                                include: '_hysteroscopy_evaluation.yaml'
+                                suffix: bmi_high
+                            - evaluation:
+                                in_transition: low
+                                include: '_evaluation.yaml'
+                                suffix: bmi_low
+                - hysteroscopy:
+                    in_transition: failure
+                    description: Hysteroscopy
+                    include: '_hysteroscopy_evaluation.yaml'
+                    suffix: pipelle_f
+          - bmi:
+              in_transition: thin endometrium
+              description: BMI
+              probs: p_bmi_high, _
+              suffix: endo_thin
+              children:
+                - hysteroscopy:
+                    in_transition: high
+                    description: Hysteroscopy
+                    include: '_hysteroscopy_discharge.yaml'
+                    suffix: bmi_high
+                - discharge:
+                    in_transition: low
+                    include: '_discharge.yaml'
+                    suffix: bmi_low
+    - discharge:
+        in_transition: negative
+        include: '_discharge.yaml'
+        suffix: molecular_n

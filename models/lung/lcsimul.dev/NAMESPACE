@@ -1,0 +1,3 @@
+useDynLib(lcsimul.dev)
+exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)

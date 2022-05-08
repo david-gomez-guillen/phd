@@ -1,0 +1,472 @@
+# Aquest fitxer viminfo ha estat generat pel Vim 8.0.
+# El podeu editar si aneu amb compte!
+
+# Viminfo version
+|1,4
+
+# Valor de 'encoding' en el moment d'escriure aquest fitxer
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~h
+# Historial d'ordres (de més a menys recent):
+:quit!
+|2,0,1507191798,,"quit!"
+:q
+|2,0,1504012574,,"q"
+:wq
+|2,0,1497264860,,"wq"
+:qa
+|2,0,1494593634,,"qa"
+:wqa
+|2,0,1494500601,,"wqa"
+:diffg RE
+|2,0,1494500596,,"diffg RE"
+:diff g RE
+|2,0,1494500441,,"diff g RE"
+:q!
+|2,0,1494499201,,"q!"
+:diffg LO
+|2,0,1493819618,,"diffg LO"
+
+# Historial de cadenes cercades (de més a menys recent):
+
+# Historial d'expressions (de més a menys recent):
+
+# Historial de línies d'entrada (de més a menys recent):
+
+# Historial Debug Line (de més a menys recent):
+
+# Registres:
+"1	LINE	0
+	
+|3,0,1,1,1,0,1493807748,""
+"2	LINE	0
+	
+|3,0,2,1,1,0,1493288909,""
+"3	LINE	0
+	# this is a test
+|3,0,3,1,1,0,1493288908,"# this is a test"
+"4	LINE	0
+	
+|3,0,4,1,1,0,1493288907,""
+"5	LINE	0
+	# this is another test (this one on branch master)
+|3,0,5,1,1,0,1493288907,"# this is another test (this one on branch master)"
+""-	CHAR	0
+	*
+|3,1,36,0,1,0,1497264852,"*"
+
+# Marques de fitxer:
+'0  2  0  ~/.git/COMMIT_EDITMSG
+|4,48,2,0,1507191798,"~/.git/COMMIT_EDITMSG"
+'1  17  0  ~/lcsimul_documentacio.docx
+|4,49,17,0,1504012574,"~/lcsimul_documentacio.docx"
+'2  1  0  ~/.git/COMMIT_EDITMSG
+|4,50,1,0,1498141032,"~/.git/COMMIT_EDITMSG"
+'3  1  0  ~/.git/COMMIT_EDITMSG
+|4,51,1,0,1498141032,"~/.git/COMMIT_EDITMSG"
+'4  6  1  ~/.git/info/exclude
+|4,52,6,1,1497264860,"~/.git/info/exclude"
+'5  8  1  ~/.git/info/exclude
+|4,53,8,1,1496153808,"~/.git/info/exclude"
+'6  8  1  ~/.git/info/exclude
+|4,54,8,1,1496153808,"~/.git/info/exclude"
+'7  54  0  ~/scriptUtils.R
+|4,55,54,0,1494593634,"~/scriptUtils.R"
+'8  10  0  ~/.git/info/exclude
+|4,56,10,0,1494509940,"~/.git/info/exclude"
+'9  9  0  ~/.git/info/exclude
+|4,57,9,0,1494509940,"~/.git/info/exclude"
+
+# Llista de salts (de més a menys recent):
+-'  2  0  ~/.git/COMMIT_EDITMSG
+|4,39,2,0,1507191798,"~/.git/COMMIT_EDITMSG"
+-'  1  0  ~/.git/COMMIT_EDITMSG
+|4,39,1,0,1507191779,"~/.git/COMMIT_EDITMSG"
+-'  17  0  ~/lcsimul_documentacio.docx
+|4,39,17,0,1504012574,"~/lcsimul_documentacio.docx"
+-'  17  0  ~/lcsimul_documentacio.docx
+|4,39,17,0,1504012574,"~/lcsimul_documentacio.docx"
+-'  1  0  ~/.git/COMMIT_EDITMSG
+|4,39,1,0,1498141032,"~/.git/COMMIT_EDITMSG"
+-'  1  0  ~/.git/COMMIT_EDITMSG
+|4,39,1,0,1498141032,"~/.git/COMMIT_EDITMSG"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  6  1  ~/.git/info/exclude
+|4,39,6,1,1497264860,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1497264840,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  8  1  ~/.git/info/exclude
+|4,39,8,1,1496153808,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  10  0  ~/.git/info/exclude
+|4,39,10,0,1496153787,"~/.git/info/exclude"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  54  0  ~/scriptUtils.R
+|4,39,54,0,1494593634,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+-'  78  0  ~/scriptUtils.R
+|4,39,78,0,1494593615,"~/scriptUtils.R"
+
+# Historial de marques en fitxers (de més a menys recent):
+
+> ~/.git/COMMIT_EDITMSG
+	*	1507191795	0
+	"	2	0
+
+> ~/lcsimul_documentacio.docx
+	*	1504012573	0
+	"	17	0
+	.	1	0
+	+	1	0
+
+> zipfile:/c/Users/45790702w/Documents/Model LC/git-lc/lcsimul_documentacio.docx::word/numbering.xml
+	*	1504012572	0
+	"	1	0
+
+> ~/.git/info/exclude
+	*	1497264858	0
+	"	6	1
+	^	6	2
+	.	6	1
+	+	7	2
+	+	9	7
+	+	10	0
+	+	8	2
+	+	6	1
+
+> ~/scriptUtils.R
+	*	1494593631	0
+	"	54	0
+	.	78	0
+	+	34	0
+	+	36	0
+	+	49	0
+	+	52	0
+	+	67	0
+	+	75	0
+	+	78	0
+
+> ~/scriptUtils.R.orig
+	*	1494593615	0
+	"	54	0
+
+> ~/.git/config
+	*	1494509916	0
+	"	1	0
+
+> ~/.gitconfig
+	*	1494509903	0
+	"	4	26
+	^	4	28
+	.	4	26
+	+	4	28
+	+	5	0
+	+	4	26
+
+> ~/scriptUtils_REMOTE_3292.R
+	*	1494500591	0
+	"	78	0
+
+> ~/scriptUtils_BASE_3292.R
+	*	1494500588	0
+	"	78	0
+
+> ~/scriptUtils_LOCAL_3292.R
+	*	1494500584	0
+	"	78	0
+
+> ~/scriptUtils_REMOTE_3792.R
+	*	1494499199	0
+	"	65	2
+
+> ~/scriptUtils_BASE_3792.R
+	*	1494499196	0
+	"	64	2
+
+> ~/scriptUtils_LOCAL_3792.R
+	*	1494499193	0
+	"	64	2
+
+> /s/GRUPS/MODELING/Albert/LC-tests/.git/COMMIT_EDITMSG
+	*	1494498234	0
+	"	1	144
+	^	1	145
+	.	1	144
+	+	1	51
+	+	1	52
+	+	1	144
+
+> /s/GRUPS/MODELING/Albert/LC-tests/.git/MERGE_MSG
+	*	1493892135	0
+	"	1	66
+	^	1	67
+	.	1	66
+	+	1	66
+
+> /s/GRUPS/MODELING/Albert/LC-tests/.git/info/exclude
+	*	1493892079	0
+	"	7	0
+	^	7	0
+	.	7	0
+	+	8	6
+	+	7	0
+
+> ~/script.R
+	*	1493819738	0
+	"	167	0
+	^	62	0
+	.	62	0
+	+	50	0
+	+	52	0
+	+	15	0
+	+	62	0
+
+> ~/script_REMOTE_1656.R
+	*	1493819243	0
+	"	224	0
+
+> ~/script_BASE_1656.R
+	*	1493819239	0
+	"	221	0
+
+> ~/script_LOCAL_1656.R
+	*	1493819235	0
+	"	164	0
+
+> ~/script_REMOTE_6020.R
+	*	1493819064	0
+	"	2	0
+
+> ~/script_BASE_6020.R
+	*	1493819063	0
+	"	2	0
+
+> ~/script_LOCAL_6020.R
+	*	1493819062	0
+	"	2	0
+
+> ~/.git/MERGE_MSG
+	*	1493807817	0
+	"	3	30
+	^	3	31
+	.	3	30
+	+	1	40
+	+	4	0
+	+	1	37
+	+	3	30
+
+> /s/GRUPS/MODELING/Albert/LC-tests/script_REMOTE_5704.R
+	*	1493729060	0
+	"	203	0
+
+> /s/GRUPS/MODELING/Albert/LC-tests/script_BASE_5704.R
+	*	1493729058	0
+	"	190	0
+
+> /s/GRUPS/MODELING/Albert/LC-tests/script_LOCAL_5704.R
+	*	1493729055	0
+	"	193	0
+
+> /s/GRUPS/MODELING/Albert/LC-tests/script.R
+	*	1493729053	0
+	"	206	0
+	^	77	1
+	.	80	0
+	+	63	11
+	+	78	1
+	+	82	1
+	+	83	1
+	+	84	1
+	+	85	1
+	+	86	1
+	+	87	1
+	+	88	1
+	+	78	50
+	+	80	0
+
+> /s/GRUPS/MODELING/Albert/LC-tests/constantDefinition.R
+	*	1493728127	0
+	"	1	0
+
+> ~/.git/rebase-merge/git-rebase-todo
+	*	1493220963	0
+	"	2	0
+	^	2	1
+	.	2	0
+	+	1	1
+	+	2	0

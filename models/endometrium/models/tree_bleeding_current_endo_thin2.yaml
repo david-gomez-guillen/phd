@@ -1,0 +1,84 @@
+bleeding:
+    description: Bleeding
+    cost: c_visit
+    sensitivity: .p_bleeding___cancer
+    specificity: .p_no_bleeding___no_cancer
+    probs: p_bleeding, _
+    suffix: bleeding_endo_thin_eval
+    children:
+        - tvu:
+            in_transition: 'yes'
+            description: TVU
+            cost: c_tvu
+            sensitivity: .sensitivity_tvu
+            specificity: .specificity_tvu
+            probs: p_endo_thick, _
+            suffix: bleeding
+            children:
+                - pipelle:
+                    in_transition: thick endometrium
+                    description: Pipelle
+                    cost: c_pipelle
+                    # By using sensitivity = p and specificity = 1 - p
+                    # we obtain a p_success = p and we preserve the original prevalence
+                    # in both the positive and negative branches
+                    sensitivity: .p_pipelle_insertion_tissue_success
+                    specificity: .p_pipelle_insertion_tissue_failure
+                    probs: p_pipelle_insertion_tissue_success, _
+                    suffix: endo_thick
+                    children:
+                    - pipelle_result:
+                        in_transition: success (insertion and tissue)
+                        description: Pipelle result
+                        sensitivity: .sensitivity_pipelle___bleeding
+                        specificity: .specificity_pipelle
+                        probs: p_pipelle_p, _
+                        children:
+                            - hysterectomy:
+                                in_transition: positive
+                                description: Hysterectomy
+                                include: '_hysterectomy.yaml'
+                                suffix: 'pipelle_p'
+                            - bleeding:
+                                in_transition: negative
+                                description: Bleeding
+                                cost: c_phone_visit
+                                sensitivity: .p_bleeding___cancer
+                                specificity: .p_no_bleeding___no_cancer
+                                probs: p_bleeding, _
+                                suffix: 'pipelle_n'
+                                children:
+                                - hysteroscopy:
+                                    in_transition: 'yes'
+                                    description: Hysteroscopy
+                                    include: '_bleeding_hysteroscopy_evaluation.yaml'
+                                - evaluation:
+                                    in_transition: 'no'
+                                    description: Evaluation in 12 months
+                                    include: '_evaluation.yaml'
+                                    suffix: 'stop_bleeding'
+                    - hysteroscopy:
+                        in_transition: failure
+                        description: Hysteroscopy
+                        include: '_bleeding_hysteroscopy_evaluation.yaml'
+                        suffix: 'pipelle_f'
+                - evaluation_bleeding:
+                    in_transition: thin endometrium
+                    description: Evaluation in 12 months*
+                    sensitivity: 1 # Last step is actual outcome, like we had a perfect test
+                    specificity: 1
+                    probs: p_cancer, _
+                    suffix: endo_thin
+                    children:
+                        - undetected_cancer_evaluation_bleeding_endo_thin:
+                            in_transition: cancer
+                            cost: c_treatment_delayed
+                            description: Undetected cancer
+                        - no_cancer_evaluation_bleeding_endo_thin:
+                            in_transition: no cancer
+                            description: No cancer
+        - discharge:
+            in_transition: 'no'
+            include: '_discharge.yaml'
+            cost: 0
+            suffix: 'stop_bleeding' # Not bleeding anymore

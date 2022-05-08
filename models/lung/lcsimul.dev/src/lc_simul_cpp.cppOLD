@@ -1,0 +1,158 @@
+/* */ // [[Rcpp::plugins(cpp11)]]
+
+#include <Rcpp.h>
+#include <vector>
+// #include <random>
+using namespace Rcpp;
+using namespace std;
+
+#define DATE __DATE__
+#define TIME __TIME__
+
+// [[Rcpp::export]]
+CharacterVector lcsimul_dev_comp_time() {
+  string d = DATE, t = TIME;
+  return d+" "+t ;
+}
+
+
+
+
+
+
+/*
+vector<NumericVector> extract_transition_vectors(const List& tps, int index) {
+  int N_states = 7; // TODO
+
+  NumericMatrix tp = as<NumericMatrix>(tps[index]);
+  vector<NumericVector> transitions(N_states);
+  for (int i = 0; i < N_states; ++i) {
+    // if a probability value of 1 is found for tp(i,X), transition vector for state i
+    // will have the form {-1, X}
+    int prob_one_found = -1;
+    transitions[i] = NumericVector(N_states);
+    for (int j = 0; j < N_states and prob_one_found < 0; ++j) {
+      transitions[i](j) = tp(i,j); // TODO OJO
+      if (tp(i,j) == 1) prob_one_found = j;
+    }
+    if (prob_one_found >= 0) {
+      transitions[i] = NumericVector(2);
+      transitions[i](0) = -1;
+      transitions[i](1) = prob_one_found;
+    }
+  }
+
+  return transitions;
+}
+*/
+
+/**
+ *
+ * tps ha de contenir les matrius de transició
+ * tp_limits ha de contenir l'edat d'inici de cada una de les matrius incloses a tps
+ */
+/*// // [[Rcpp::export]]
+List lc_simulate_cpp(List tps, NumericVector tp_limits,
+                     int start_age, int end_age, int periods_per_year,
+                     int N_states, int initial_healthy_population,
+                     IntegerVector incidence_from_states, List incidence_to_states) {
+
+  // Error check
+  if (tps.size() != tp_limits.size())
+    stop("Lengths of tps and tp_limits must match");
+
+  // Inicialització paràmetres calculables
+  int tp_index = 0;
+  while (tp_index+1 < tp_limits.size() and tp_limits(tp_index+1) <= start_age)
+    tp_index++;
+
+  int N_cycles=(end_age-start_age)*periods_per_year;
+
+  vector<vector<int> > inc_matrix = vector<vector<int> >(N_states, vector<int>(N_states,0));
+  for (int i = 0; i < incidence_from_states.size(); ++i) {
+    int from = incidence_from_states[i];
+    IntegerVector to_vector = as<IntegerVector>(incidence_to_states[from]);
+    for (int j = 0; j < to_vector.size(); ++j)
+      inc_matrix[from][to_vector[j]] = -1;
+  }
+
+  // Obtenció matriu de transicions actuals en funció de tp_index
+  vector<NumericVector> transitions = extract_transition_vectors(tps,tp_index);
+  // Debug
+  // for (unsigned int i = 0; i < transitions.size(); ++i) {
+  //   for (int j = 0; j < transitions[i].size(); ++j) {
+  //     cout << " " << setw(12) << transitions[i](j);
+  //   }
+  //   cout << endl;
+  // }
+  // cout << endl;
+
+  // Inicialització de matriu d'història natural a partir del valor de "initial_healthy_population"
+  IntegerMatrix nh(N_cycles+1,N_states);
+  for (int i = 0; i < N_cycles+1; ++i)
+    for (int j = 0; j < N_states; ++j)
+      nh(i,j) = 0;
+  nh(0,0) = initial_healthy_population;
+
+  // Inicialització vector d'incidències
+  IntegerVector inc(N_cycles,0);
+
+  // Simulació
+  for (int step=1; step <= N_cycles; ++step) {
+    for (int state = 0; state < N_states; ++state) {
+      // TODO aquest bucle es pot paral·lelitzar, PERÒ
+      // PERÒ amb molt d'ull perquè es crida la funció single-threaded "sample",
+      // i vés a saber si el pseudo-random ens la juga. Millor no ficar-s'hi de moment.
+      if (nh(step-1,state) > 0) {
+        // Microsimulació a través de la funció d'R "sample"
+        // S'obtenen "N.states" mostres, de mida "nh[stepanterior][state]", per a state=1:N.states
+        // distribuïda segons matriu de transicions de cada estat
+
+        if (transitions[state](0) < 0) {
+          // unitary transition vector; generally death states
+          nh(step,transitions[state](1)) += nh(step-1, state);
+          // Si cal tenir-lo en compte per a la incidència, es té
+          if (inc_matrix[state][transitions[state](1)] != 0)
+            inc[step-1] += nh(step-1, state);
+        }
+        else {
+          // DEBUG
+          // for (int i = 0; i < transitions[state].size(); ++i) cout << " " << setw(12) << transitions[state](i);
+          // cout << endl;
+          // end DEBUG
+          IntegerVector status = as<IntegerVector>(sample(N_states,nh(step-1,state),true,transitions[state]));
+          for(int k = 0; k < status.size(); ++k) {
+            nh(step,status(k)-1)++;
+            // Si cal tenir-lo en compte per a la incidència, es té
+            if (inc_matrix[state][status(k)-1] != 0)
+              inc[step-1]++;
+          }
+        }
+      }
+    }
+
+   // Canvi de matriu de transicions, si s'escau
+   if (tp_index+1 < tp_limits.size() and
+         start_age + step/periods_per_year >= tp_limits[tp_index+1]) {
+     tp_index++;
+     transitions = extract_transition_vectors(tps,tp_index);
+   }
+
+
+  }
+
+  return List::create(_("nh") = nh,
+                      _("incidence") = inc);
+}
+*/
+
+// You can include R code blocks in C++ files processed with sourceCpp
+// (useful for testing and development). The R code will be automatically
+// run after the compilation.
+//
+
+/*** R
+
+
+
+*/

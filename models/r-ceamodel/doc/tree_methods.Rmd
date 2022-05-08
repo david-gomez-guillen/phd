@@ -1,0 +1,157 @@
+# Decision tree methods
+
+Decision trees are implemented as R [reference classes](https://www.rdocumentation.org/packages/methods/versions/3.6.2/topics/ReferenceClasses). These trees are treated as R objects and different methods are defined to interact with them. Here follows a list of these methods along with examples:
+
+### calculate(context=list(), prevalence=NULL)
+
+Parameters: 
+
+- `context`: context (see context file specification).
+- `prevalence`: either a numeric value with the prevalence of the tree's desired outcome event (e.g. cancer) or a placeholder name that appears in the context with the actual value. If NULL, uses children probabilities and ignores sensitivity/specificity values.
+
+Returns: a dataframe with one row and three columns (see also `summarize`):
+
+- `strategy`: Name of the tree
+- `cost`: Weighted cost of the tree
+- `outcome`: Weighted outcome of the tree
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx', only.base.values = TRUE)
+
+# Load the decision tree
+tree <- loadDecisionTree('example_tree_1.yaml')
+tree2 <- loadDecisionTree('example_tree_2.yaml')
+
+# Calculate outcomes of the tree
+print(tree$calculate(strat.ctx$age_lt_50))
+```
+
+```{r}
+# Calculate outcomes of the tree using prevalence + sensitivity/specificity
+print(tree2$calculate(strat.ctx$age_lt_50, prevalence = 'p_cancer'))
+```
+
+```{r}
+print(tree2$calculate(strat.ctx$age_lt_50, prevalence = .1))
+```
+
+### getParameters()
+
+Returns: a list of the parameters used by the tree specification. When using other methods, all these parameters must be present in the context.
+
+```{r}
+library(CEAModel)
+# Load the decision tree
+tree <- loadDecisionTree('example_tree_1.yaml')
+
+# Get all the parameters used in the tree
+print(tree$getParameters())
+```
+
+### show(context=NULL, prevalence=NULL, showDescription=TRUE, showProbs=TRUE, nodeInfoFields=c(), showID=FALSE, probPrecision=8, direction='LR', levelSeparation=NULL, spacing=NULL, height=1000, highlight=NULL, wrapping=FALSE, seed=0)
+
+Parameters:
+
+- `context`: context (see context file specification).
+- `prevalence`: either a numeric value with the prevalence of the tree's desired positive outcome event (e.g. cancer) or a placeholder name that appears in the context with the actual value. If NULL, uses children probabilities and ignores sensitivity/specificity values.
+- `showDescription`: if TRUE the description is displayed in the nodes, otherwise the node ids are used.
+- `showProbs`: if TRUE the probabilities are displayed in the edges between nodes, otherwise only the `in_transition` label is displayed.
+- `nodeInfoFields`: names of the attributes to be displayed within each node (e.g. cost, other custom attributes, ...). Besides these, other special calculated attributes are available for displaying purposes:
+
+  - `disease.100k`: Number of people in each node with the positive outcome event (e.g. cancer) in an initial cohort of 100,000.
+  - `path.cost`: Accumulated cost of reaching that node from the root of the tree.
+  - `path.cost.weighted`: Same as `path.cost` but weighted over the probability of reaching that node; i.e. `path.cost` $\times$ `path.prob`.
+  - `path.prob`: Joint probability of reaching that node; i.e. the proportion of the initial cohort that will pass through that node.
+  - `path.prob.100k`: same as `path.prob` but over a cohort of 100,000.
+  - `prevalence`: calculated prevalence in each node.
+
+- `showID`: if TRUE (and `showDescription` is TRUE as well) the id will be shown alongside the description in each node.
+- `probPrecision`: number of decimals in the probability values.
+- `direction`: direction of the branches in the tree, as used by the `visNetwork` library: 'LR' (left-right) or 'TP' (top-bottom).
+- `levelSeparation`: distance between levels of the tree, as used by the `visNetwork` library. The default is 200 when `direction` is 'LR' and 100 when `direction` is 'TB'.
+- `spacing`: minimum distance between nodes, as used by the `visNetwork` library. The default is 100 when `direction` is 'LR' and 400 when `direction` is 'TP'.
+- `height`: height of the tree visualization in pixels, the default is 1000.
+- `highlight`: id(s) of the nodes that will be highlighted in yellow.
+- `wrapping`: if TRUE the node labels will be wrapped in several lines if they are too long.
+- `seed`: random seed to initialize the node placement algorithm.
+
+Returns: an interactive visualization of the tree using the `visNetwork` library.
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx', only.base.values = TRUE)
+
+# Load the decision trees
+tree <- loadDecisionTree('example_tree_1.yaml')
+tree2 <- loadDecisionTree('example_tree_2.yaml')
+
+# Visualize the trees (execute on console)
+print(tree$show(strat.ctx$age_lt_50, nodeInfoFields = c('cost', 'path.prob.100k'), highlight = 'discharge'))
+
+print(tree2$show(strat.ctx$age_lt_50, prevalence = 'p_cancer', nodeInfoFields = c('cost', 'path.prob.100k'), highlight = 'discharge'))
+
+print(tree2$show(strat.ctx$age_lt_50, prevalence = .1, nodeInfoFields = c('cost', 'path.prob.100k'), highlight = 'discharge'))
+```
+
+### singleRun(context=list(), prevalence=NULL)
+
+Parameters:
+
+- `context`: context (see context file specification).
+- `prevalence`: either a numeric value with the prevalence of the tree's desired positive outcome event (e.g. cancer) or a placeholder name that appears in the context with the actual value. If NULL, uses children probabilities and ignores sensitivity/specificity values.
+
+Returns: a list of nodes of a single random tree trace, along with their costs.
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx', only.base.values = TRUE)
+
+# Load the decision trees
+tree <- loadDecisionTree('example_tree_1.yaml')
+
+# Perform two random runs of the tree
+print(tree$singleRun(strat.ctx$age_lt_50, seed=1))
+```
+
+```{r}
+print(tree$singleRun(strat.ctx$age_lt_50, seed=20))
+```
+
+### summarize(context=list(), prevalence=NULL)
+
+Parameters: 
+
+- `context`: context (see context file specification).
+- `prevalence`: either a numeric value with the prevalence of the tree's desired outcome event (e.g. cancer) or a placeholder name that appears in the context with the actual value. If NULL, uses children probabilities and ignores sensitivity/specificity values.
+
+Returns: a dataframe with three columns with the following information for each type of leaf node, grouped by their id (see also `analyze`):
+
+- `strategy`: Name of the tree
+- `cost`: Weighted cost of the tree
+- `outcome`: Weighted outcome of the tree
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx', only.base.values = TRUE)
+
+# Load the decision tree
+tree <- loadDecisionTree('example_tree_1.yaml')
+tree2 <- loadDecisionTree('example_tree_2.yaml')
+
+# Calculate outcomes of the tree
+print(tree$summarize(strat.ctx$age_lt_50))
+```
+
+```{r}
+# Calculate outcomes of the tree using prevalence + sensitivity/specificity
+print(tree2$summarize(strat.ctx$age_lt_50, prevalence = 'p_cancer'))
+```
+
+```{r}
+print(tree2$summarize(strat.ctx$age_lt_50, prevalence = .1))
+```

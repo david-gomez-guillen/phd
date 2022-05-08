@@ -1,0 +1,34 @@
+test:
+  description: Medical test
+  probs: p_test_positive, _
+  children:
+    - outcome_positive:
+        in_transition: positive
+        description: Cancer
+        probs: p_cancer_test_p, _
+        children:
+          - detected_cancer:
+              in_transition: cancer
+              description: 'Detected cancer'
+              cost: c_treatment
+              outcome: ly_cancer
+          - false_positive:
+              in_transition: no cancer
+              description: 'False positive'
+              cost: c_treatment
+              outcome: ly_no_cancer
+    - outcome_negative:
+        in_transition: negative
+        description: No cancer
+        probs: p_no_cancer_test_p, _
+        children:
+          - undetected_cancer:
+              in_transition: cancer
+              description: 'Undetected cancer'
+              cost: c_late_treatment
+              outcome: ly_late_cancer
+          - no_intervention:
+              in_transition: no cancer
+              description: No intervention
+              cost: 0
+              outcome: ly_no_cancer

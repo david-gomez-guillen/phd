@@ -1,0 +1,12 @@
+no_intervention:
+    description: No intervention
+    probs: p_cancer, _
+    suffix: asymptomatic
+    children:
+        - cancer:
+            in_transition: cancer
+            cost: c_treatment_delayed
+            description: Endometrial cancer
+        - no_cancer:
+            in_transition: no cancer
+            description: No endometrial cancer

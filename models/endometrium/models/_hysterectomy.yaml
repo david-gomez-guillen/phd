@@ -1,0 +1,32 @@
+hysterectomy:
+  description: Hysterectomy
+  cost: c_hysterectomy
+  sensitivity: 1
+  specificity: 1
+  probs: p_hysterectomy_malignant, _
+  children:
+    - cancer:
+        in_transition: 'cancer'
+        description: Cancer
+        probs: p_cancer_stage_1, p_cancer_stage_2, p_cancer_stage_3, _
+        suffix: ''
+        children:
+        - cancer_s1:
+            in_transition: 'stage I'
+            description: Cancer stage I
+            cost: 0
+        - cancer_s2:
+            in_transition: 'stage II'
+            description: Cancer stage II
+            cost: c_treatment
+        - cancer_s3:
+            in_transition: 'stage III'
+            description: Cancer stage III
+            cost: c_treatment
+        - cancer_s4:
+            in_transition: 'stage IV'
+            description: Cancer stage IV
+            cost: c_treatment
+    - no_cancer_hysterectomy:
+        in_transition: 'no cancer'
+        description: No cancer

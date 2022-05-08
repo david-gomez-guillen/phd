@@ -1,0 +1,7 @@
+- Tests' probabilities (sensitivities, specificities) independent of previous tests.
+- Probabilities for a year independent of previous years results.
+- All remaining non-hysterectomy lynch undergo prophylactic surgery at exactly 40 years old (recommendation for lynch).
+- Lynch other death probabilities (and many others) equal to non-lynch.
+- Cancer death modeled with exponential distribution, hence conditional probability of survival is independent of years survived previously.
+- Bleeding and asymptomatic are separate populations, they never interact.
+- Bleeding current practice assumes evaluation in 12 months (not 6).

@@ -1,0 +1,15 @@
+cytology_hpv16la:
+  description: Cytology + HPV1618 (LA) test
+  cost: c_cyto_hpvla
+  probs: p_cyto_benign_hpv1618la_neg,_
+  children:
+    # Cyto benign and HPV1618 negative
+    - annual_followup:
+        in_transition: cyto benign, hpv1618 LA negative
+        description: Annual followup after test
+        cost: c_followup
+        outcome: u_cyto_benign
+    # Otherwise
+    - hra:
+        in_transition: otherwise
+        include: '_hra_followup.yaml'

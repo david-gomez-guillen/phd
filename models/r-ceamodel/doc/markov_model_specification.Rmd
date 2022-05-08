@@ -1,0 +1,67 @@
+The CEAModel package provides support for the parameterized specification of a markov model state diagram. In future versions this package will also provide methods to generalize the usual model logic (i.e. initialization, main loop, result gathering, ...) for a faster markov model development.
+
+A markov model state diagram is defined in an excel file (.xlsx). This file contains the information about the states (nodes), the transitions (edges) and the probability transitions. More than one probability transition matrix can be defined in a markov model if necessary. This might be useful when a step in the simulation can be more easily defined with multiple substeps, e.g. medical strategy (tests) followed by environment factors (deaths, disease progression, ...). When used in the model, the effect of these substeps are equivalent to the matrix product of all the transition probability matrices.
+
+The sections below describe the different worksheets the markov model specification must have:
+
+## Nodes
+
+The first worksheet must be named `nodes` and it contains the information for each health state. It must contain four columns:
+
+### **name**
+The identifier for the state. It will be used in the R code as the node identifiers.
+
+### **description**
+A description of the state. Only for internal information, not used in the code.
+
+### **cost**
+The associated cost of the state for each model iteration, if any (can be 0).
+
+### **outcome**
+The associated outcome of the state for each model iteration. Its value depends on the used outcome measure (e.g. utilities).
+
+
+## Edge description
+
+The second worksheet must be named `edge_description` and it contains a $n \times n$ matrix, where $n$ is the number of states defined in the first sheet. The first column and the first row must include the names of the states in the first sheet, in the same order, starting at the second row/column (the cell A1 must be empty).
+
+For each pair of parameters in the matrix, a description of the transition can be optionally defined here. If blank, no description will be used. The row states represent the source and the column states the destination of the edge.
+
+This matrix is only used for edge labeling when visualizing the graph in R.
+
+## Probability transition matrix/matrices
+
+The rest of the worksheets follow the same structure as the edge description matrix, but each value represents the transition probability between the states. These sheets can have any name, that will be used as the matrix identifiers in R.
+
+In this case all the pairs must be defined, by either constant values or strings that represent a parameter name defined in a context (see context specification).
+
+A `#` character represents the complement of the row probability, that is, 1 minus the sum of the rest of the row probabilities.
+
+
+# Usage in R
+
+## Loading and setting up context
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx')
+
+# Keep only the base values, ignoring the ranges
+strat.ctx <- lapply(strat.ctx, function(ctx) {
+  lapply(ctx, function(par) par[[1]])
+})
+
+# Load the markov model
+markov <- loadMarkovModels('example_markov.xlsx')
+markov$show(strat.ctx$age_lt_50, 1)
+```
+
+```{r}
+
+# Display the 'strategy' transition probability matrix
+print(markov$tpMatrix$strategy)
+0
+# Display the 'strategy' transition probability matrix after evaluating the parameters using the context and stratum 'age_lt_50'
+print(markov$evaluateTpMatrix(strat.ctx$age_lt_50)$strategy)
+```

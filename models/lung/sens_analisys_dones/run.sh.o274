@@ -1,0 +1,1029 @@
+	10 slaves are spawned successfully. 0 failed.
+Cluster initialized
+
+Loading matrix from file:Remarkable TP matrices/tp_dan20.xls
+Matriu carregada
+Start simulation 1: "1xBI @55 (18%) + survival-dx=37.14%"
+Using seed:  662247536
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2281.08 secs
+
+Start simulation 2: "2xBI @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1479644260
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2487.80 secs
+
+Start simulation 3: "3xBI @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1831151957
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2605.22 secs
+
+Start simulation 4: "3xBI @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  560801509
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2480.61 secs
+
+Start simulation 5: "1xBI @35 (18%) + survival-dx=37.14%"
+Using seed: 1301495935
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2428.87 secs
+
+Start simulation 6: "2xBI @35&40 (18%) + survival-dx=37.14%"
+Using seed:  402389655
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2442.44 secs
+
+Start simulation 7: "2xBI @35&55 (18%) + survival-dx=37.14%"
+Using seed: 1951914261
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2458.41 secs
+
+Start simulation 8: "3xBI @35&40&45 (18%) + survival-dx=37.14%"
+Using seed:  728176141
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2448.87 secs
+
+Start simulation 9: "1xII @55 (18%) + survival-dx=37.14%"
+Using seed:  201462750
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2448.16 secs
+
+Start simulation 10: "2xII @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1032693286
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2497.76 secs
+
+Start simulation 11: "3xII @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1572673003
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2476.30 secs
+
+Start simulation 12: "3xII @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:     351217
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2531.27 secs
+
+Start simulation 13: "1xII @35 (18%) + survival-dx=37.14%"
+Using seed:  321100488
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2481.49 secs
+
+Start simulation 14: "2xII @35&40 (18%) + survival-dx=37.14%"
+Using seed: 1024271906
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2547.31 secs
+
+Start simulation 15: "2xII @35&55 (18%) + survival-dx=37.14%"
+Using seed:  443007070
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2426.88 secs
+
+Start simulation 16: "3xII @35&40&45 (18%) + survival-dx=37.14%"
+Using seed: 1756393821
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2494.84 secs
+
+Start simulation 17: "1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  758353932
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2355.93 secs
+
+Start simulation 18: "2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  694076689
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2353.53 secs
+
+Start simulation 19: "3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:    7471617
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2336.26 secs
+
+Start simulation 20: "2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1412056055
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2380.32 secs
+
+Start simulation 21: "1xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1455773019
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2392.66 secs
+
+Start simulation 22: "1y-xSCR-HR @55-65 (18%) + survival-dx=37.14%"
+Using seed: 1732706069
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2430.28 secs
+
+Start simulation 23: "2y-xSCR-HR @55-65 (18%) + survival-dx=37.14%"
+Using seed:  338373009
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2408.05 secs
+
+Start simulation 24: "3y-xSCR-HR @55-65 (18%) + survival-dx=37.14%"
+Using seed:  786296140
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2326.08 secs
+
+Start simulation 25: "4y-xSCR-HR @55-65 (18%) + survival-dx=37.14%"
+Using seed: 1869718623
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2375.61 secs
+
+Start simulation 26: "1xBI @55 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  939410275
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2505.21 secs
+
+Start simulation 27: "2xBI @55&60 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  135667125
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2435.21 secs
+
+Start simulation 28: "3xBI @55&60&65 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1809110545
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2456.00 secs
+
+Start simulation 29: "3xBI @55&56&57 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  963082306
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2624.08 secs
+
+Start simulation 30: "1xBI @35 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2007381683
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2509.43 secs
+
+Start simulation 31: "2xBI @35&40 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  201392067
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2434.86 secs
+
+Start simulation 32: "2xBI @35&55 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  423712451
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2613.83 secs
+
+Start simulation 33: "3xBI @35&40&45 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1167711914
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2585.88 secs
+
+Start simulation 34: "1xII @55 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1375938305
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2528.33 secs
+
+Start simulation 35: "2xII @55&60 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:    5648086
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2434.25 secs
+
+Start simulation 36: "3xII @55&60&65 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  417717949
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2578.09 secs
+
+Start simulation 37: "3xII @55&56&57 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  122904545
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2552.36 secs
+
+Start simulation 38: "1xII @35 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  978487968
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2558.97 secs
+
+Start simulation 39: "2xII @35&40 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  641796532
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2497.43 secs
+
+Start simulation 40: "2xII @35&55 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  903345399
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2490.82 secs
+
+Start simulation 41: "3xII @35&40&45 (18%) + 1xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1521511278
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2592.51 secs
+
+Start simulation 42: "1xBI @55 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1824281380
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2537.15 secs
+
+Start simulation 43: "2xBI @55&60 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  682244262
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2481.01 secs
+
+Start simulation 44: "3xBI @55&60&65 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1858972432
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2524.35 secs
+
+Start simulation 45: "3xBI @55&56&57 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 2013024850
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2558.92 secs
+
+Start simulation 46: "1xBI @35 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1063391958
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2556.25 secs
+
+Start simulation 47: "2xBI @35&40 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1880739244
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2554.17 secs
+
+Start simulation 48: "2xBI @35&55 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  443796899
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2540.94 secs
+
+Start simulation 49: "3xBI @35&40&45 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  768631742
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2506.75 secs
+
+Start simulation 50: "1xII @55 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1112887359
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2540.42 secs
+
+Start simulation 51: "2xII @55&60 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1349592283
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2549.87 secs
+
+Start simulation 52: "3xII @55&60&65 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  442199231
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2538.99 secs
+
+Start simulation 53: "3xII @55&56&57 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1192351368
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2547.74 secs
+
+Start simulation 54: "1xII @35 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  531028359
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2583.84 secs
+
+Start simulation 55: "2xII @35&40 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 2035238818
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2528.99 secs
+
+Start simulation 56: "2xII @35&55 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed: 1990116183
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2530.72 secs
+
+Start simulation 57: "3xII @35&40&45 (18%) + 2xSCR-HR @55&56 (18%) + survival-dx=37.14%"
+Using seed:  991301584
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2543.84 secs
+
+Start simulation 58: "1xBI @55 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  109876968
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2579.25 secs
+
+Start simulation 59: "2xBI @55&60 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1090038004
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2579.30 secs
+
+Start simulation 60: "3xBI @55&60&65 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  551931771
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2562.31 secs
+
+Start simulation 61: "3xBI @55&56&57 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:   16343751
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2561.96 secs
+
+Start simulation 62: "1xBI @35 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1410771102
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2518.80 secs
+
+Start simulation 63: "2xBI @35&40 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  260562396
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2529.87 secs
+
+Start simulation 64: "2xBI @35&55 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  749059119
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2601.00 secs
+
+Start simulation 65: "3xBI @35&40&45 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  173177370
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2578.68 secs
+
+Start simulation 66: "1xII @55 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  195790655
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2499.29 secs
+
+Start simulation 67: "2xII @55&60 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1388245349
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2574.05 secs
+
+Start simulation 68: "3xII @55&60&65 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1966216787
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2551.24 secs
+
+Start simulation 69: "3xII @55&56&57 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  417590391
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2555.33 secs
+
+Start simulation 70: "1xII @35 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1348973829
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2513.19 secs
+
+Start simulation 71: "2xII @35&40 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1347616537
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2517.18 secs
+
+Start simulation 72: "2xII @35&55 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1337050126
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2546.83 secs
+
+Start simulation 73: "3xII @35&40&45 (18%) + 3xSCR-HR @55&56&57 (18%) + survival-dx=37.14%"
+Using seed:  532594184
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2557.94 secs
+
+Start simulation 74: "1xBI @55 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1520716735
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2515.39 secs
+
+Start simulation 75: "2xBI @55&60 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1165269962
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2547.86 secs
+
+Start simulation 76: "3xBI @55&60&65 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  547758293
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2562.12 secs
+
+Start simulation 77: "3xBI @55&56&57 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1891689177
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2615.84 secs
+
+Start simulation 78: "1xBI @35 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  308190007
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2566.08 secs
+
+Start simulation 79: "2xBI @35&40 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  177064738
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2555.97 secs
+
+Start simulation 80: "2xBI @35&55 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:   90269809
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2540.21 secs
+
+Start simulation 81: "3xBI @35&40&45 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  631277346
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2591.47 secs
+
+Start simulation 82: "1xII @55 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1302180903
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2537.14 secs
+
+Start simulation 83: "2xII @55&60 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1462739874
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2563.35 secs
+
+Start simulation 84: "3xII @55&60&65 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1081813485
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2570.80 secs
+
+Start simulation 85: "3xII @55&56&57 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1697283379
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2596.99 secs
+
+Start simulation 86: "1xII @35 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1458441154
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2519.85 secs
+
+Start simulation 87: "2xII @35&40 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  760663770
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2520.10 secs
+
+Start simulation 88: "2xII @35&55 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:   82838671
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2552.37 secs
+
+Start simulation 89: "3xII @35&40&45 (18%) + 2xSCR-HR @55&60 (18%) + survival-dx=37.14%"
+Using seed:  577988716
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2551.71 secs
+
+Start simulation 90: "1xBI @55 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  492730691
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2479.21 secs
+
+Start simulation 91: "2xBI @55&60 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1396930327
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2561.41 secs
+
+Start simulation 92: "3xBI @55&60&65 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  244254842
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2577.37 secs
+
+Start simulation 93: "3xBI @55&56&57 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1708983925
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2590.07 secs
+
+Start simulation 94: "1xBI @35 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  629420497
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2442.99 secs
+
+Start simulation 95: "2xBI @35&40 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1643992877
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2536.54 secs
+
+Start simulation 96: "2xBI @35&55 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1233440380
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2557.71 secs
+
+Start simulation 97: "3xBI @35&40&45 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1448476962
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2601.72 secs
+
+Start simulation 98: "1xII @55 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 2138360181
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2511.49 secs
+
+Start simulation 99: "2xII @55&60 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  736343362
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2521.53 secs
+
+Start simulation 100: "3xII @55&60&65 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 2102136911
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2547.04 secs
+
+Start simulation 101: "3xII @55&56&57 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  982816967
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2583.98 secs
+
+Start simulation 102: "1xII @35 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  432557382
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2567.30 secs
+
+Start simulation 103: "2xII @35&40 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1156360207
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2566.65 secs
+
+Start simulation 104: "2xII @35&55 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed: 1834090210
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2521.84 secs
+
+Start simulation 105: "3xII @35&40&45 (18%) + 3xSCR-HR @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  496418530
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2593.21 secs
+
+Start simulation 106: "1xBI @55 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1673626255
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2544.08 secs
+
+Start simulation 107: "2xBI @55&60 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  107512636
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2586.94 secs
+
+Start simulation 108: "3xBI @55&60&65 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  626710373
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2606.11 secs
+
+Start simulation 109: "3xBI @55&56&57 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1766016767
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2602.80 secs
+
+Start simulation 110: "1xBI @35 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  166885023
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2600.46 secs
+
+Start simulation 111: "2xBI @35&40 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  871470683
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2533.63 secs
+
+Start simulation 112: "2xBI @35&55 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1670723273
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2558.12 secs
+
+Start simulation 113: "3xBI @35&40&45 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  519681474
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2535.42 secs
+
+Start simulation 114: "1xII @55 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  899419074
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2526.19 secs
+
+Start simulation 115: "2xII @55&60 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1785206310
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2528.16 secs
+
+Start simulation 116: "3xII @55&60&65 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  144183313
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2517.59 secs
+
+Start simulation 117: "3xII @55&56&57 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  637869276
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2602.08 secs
+
+Start simulation 118: "1xII @35 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2087740569
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2515.53 secs
+
+Start simulation 119: "2xII @35&40 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2015763983
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2564.64 secs
+
+Start simulation 120: "2xII @35&55 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1835829773
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2514.45 secs
+
+Start simulation 121: "3xII @35&40&45 (18%) + 1y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  495387252
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2556.53 secs
+
+Start simulation 122: "1xBI @55 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2025998965
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2539.44 secs
+
+Start simulation 123: "2xBI @55&60 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  970024528
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2508.36 secs
+
+Start simulation 124: "3xBI @55&60&65 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  750927966
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2538.33 secs
+
+Start simulation 125: "3xBI @55&56&57 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2035713189
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2562.27 secs
+
+Start simulation 126: "1xBI @35 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2103684418
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2516.06 secs
+
+Start simulation 127: "2xBI @35&40 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  151450593
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2590.69 secs
+
+Start simulation 128: "2xBI @35&55 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  629670477
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2587.76 secs
+
+Start simulation 129: "3xBI @35&40&45 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1148813526
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2572.31 secs
+
+Start simulation 130: "1xII @55 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1976812114
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2518.61 secs
+
+Start simulation 131: "2xII @55&60 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:   68516707
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2515.94 secs
+
+Start simulation 132: "3xII @55&60&65 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  206592001
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2502.83 secs
+
+Start simulation 133: "3xII @55&56&57 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1019057637
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2508.14 secs
+
+Start simulation 134: "1xII @35 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  323872195
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2515.55 secs
+
+Start simulation 135: "2xII @35&40 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1701290252
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2523.31 secs
+
+Start simulation 136: "2xII @35&55 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  265513414
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2488.92 secs
+
+Start simulation 137: "3xII @35&40&45 (18%) + 2y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:   89421076
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2574.37 secs
+
+Start simulation 138: "1xBI @55 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1925976535
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2566.73 secs
+
+Start simulation 139: "2xBI @55&60 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1104992062
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2485.24 secs
+
+Start simulation 140: "3xBI @55&60&65 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  571067717
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2551.18 secs
+
+Start simulation 141: "3xBI @55&56&57 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1783656812
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2557.70 secs
+
+Start simulation 142: "1xBI @35 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  121398550
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2496.35 secs
+
+Start simulation 143: "2xBI @35&40 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  991018700
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2518.28 secs
+
+Start simulation 144: "2xBI @35&55 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  760916850
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2508.93 secs
+
+Start simulation 145: "3xBI @35&40&45 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  739883242
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2577.01 secs
+
+Start simulation 146: "1xII @55 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  198570292
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2497.42 secs
+
+Start simulation 147: "2xII @55&60 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  284187198
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2539.82 secs
+
+Start simulation 148: "3xII @55&60&65 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1459300416
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2573.38 secs
+
+Start simulation 149: "3xII @55&56&57 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  575773610
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2511.35 secs
+
+Start simulation 150: "1xII @35 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1063643801
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2524.77 secs
+
+Start simulation 151: "2xII @35&40 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1901963320
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2519.60 secs
+
+Start simulation 152: "2xII @35&55 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  401562254
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2546.29 secs
+
+Start simulation 153: "3xII @35&40&45 (18%) + 3y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  690545152
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2626.27 secs
+
+Start simulation 154: "1xBI @55 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 2110262547
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2593.61 secs
+
+Start simulation 155: "2xBI @55&60 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1423195180
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2538.27 secs
+
+Start simulation 156: "3xBI @55&60&65 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1021906744
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2601.11 secs
+
+Start simulation 157: "3xBI @55&56&57 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  745130845
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2505.14 secs
+
+Start simulation 158: "1xBI @35 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  276654532
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2539.97 secs
+
+Start simulation 159: "2xBI @35&40 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1699772326
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2606.65 secs
+
+Start simulation 160: "2xBI @35&55 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  955909903
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2590.82 secs
+
+Start simulation 161: "3xBI @35&40&45 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  684008724
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2532.92 secs
+
+Start simulation 162: "1xII @55 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  865217396
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2527.21 secs
+
+Start simulation 163: "2xII @55&60 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1719163891
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2559.73 secs
+
+Start simulation 164: "3xII @55&60&65 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1963836924
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2574.36 secs
+
+Start simulation 165: "3xII @55&56&57 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1468849612
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2552.37 secs
+
+Start simulation 166: "1xII @35 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1853328194
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2517.48 secs
+
+Start simulation 167: "2xII @35&40 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1961275164
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2521.50 secs
+
+Start simulation 168: "2xII @35&55 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed: 1272625431
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2540.31 secs
+
+Start simulation 169: "3xII @35&40&45 (18%) + 4y-xSCR-HR @55 (18%) + survival-dx=37.14%"
+Using seed:  725387173
+Saving...Updating results file: results/0-lc_excelresults_costpostdx+15.xlsx
+ OK!		
+Execution time:    2622.78 secs
+
+
+*******************
+*** CLEANING UP ***
+*******************
+Stopping cluster
+Done
+
+Execution time:    2625.97 secs
+
+Stopping log

@@ -1,0 +1,102 @@
+---
+title: "Context file specification"
+author: "David Gómez"
+date: "7/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The CEAModel package provides support for parameterization in all of its model structures (decision trees, markov models). To accomplish this goal, the package uses a data structure called **context** to easily replace values in a parameterized model. This context is simply a named list of parameter names with their values. To generalize further, a **stratified context** is also defined: a named list where each item is a regular context. In this way we can work with different contexts for each stratum (e.g. age groups). For simplicity, all contexts from a stratified context when loaded have the same parameters (see [Strata]).
+
+# File structure
+
+These stratified contexts are saved as excel (xlsx) files with the structure described below:
+
+## Strata
+
+Each worksheet of the xlsx file represen
+ts a stratum, with the same name as the worksheet.
+
+**Important**: To avoid duplication for constant values that don't depend on the strata, the first stratum/worksheet must always include all the parameters. Then, on the rest of strata only those parameters whose values change must be defined; **if a parameter does not appear its value is assumed to be the same as the value in the first stratum**. Therefore, when loading a context in R all strata in a stratified context will have the same parameters available, even if in some worksheets only a subset of them are defined.
+
+Excel formulas can be used, and when loading the context in R they will be appropriately considered.
+
+## Context
+
+Each worksheet has five columns:
+
+### Parameter name
+The full name of the parameter (including suffixes if any) as they appear in the model specifications (decision trees, markov models).
+
+### Base value
+The base value of the parameter for that stratum.
+
+### Lower limit
+The lower limit of the parameter, if available (-1 otherwise). Used for sensitivity analysis.
+
+### Upper limit
+The upper limit value of the parameter, if available (-1 otherwise). Used for sensitivity analysis.
+
+### Source
+String with the source of that parameter value (e.g. study reference or any other necessary notes). This value is only used for information, they are not available when loading the context in R.
+
+# Usage in R
+
+## Loading and setting up context
+
+```{r}
+library(CEAModel)
+# Load the stratified context
+strat.ctx <- loadStratifiedContextFile('example_context.xlsx')
+
+# Keep only the base values, ignoring the ranges
+strat.ctx <- lapply(strat.ctx, function(ctx) {
+  lapply(ctx, function(par) par[[1]])
+})
+
+# Access the desired parameter from stratum (e.g. c_cytology, ly_cyto_positive)
+print(paste0('Cost cytology: ', strat.ctx$age_lt_50$c_cytology, ' €'))
+print(paste0('Life years after positive in cyto (<50y): ', strat.ctx$age_lt_50$ly_cyto_positive, 'y'))
+print(paste0('Life years after positive in cyto (>50y): ', strat.ctx$age_gt_50$ly_cyto_positive, 'y'))
+```
+
+## Using a context with a tree
+
+```{r}
+# Loading a decision tree
+tree <- loadDecisionTree('example_tree_1.yaml')
+
+# Visualizing (interactively, via webapp) the decision tree using the parameters from the first stratum
+print(tree$show(strat.ctx$age_lt_50))
+
+# Visualizing (interactively, via webapp) the decision tree using the parameters from the other stratum
+print(tree$show(strat.ctx$age_gt_50))
+
+# Sumnmarizing the decision tree outcomes using the same parameters
+tree$summarize(strat.ctx$age_lt_50)
+
+# Sumnmarizing the decision tree outcomes using the other stratum parameters
+tree$summarize(strat.ctx$age_gt_50)
+```
+
+## Using a context with a tree with sensitivity/specificity (recommended)
+
+```{r}
+# Loading a decision tree
+tree2 <- loadDecisionTree('example_tree_2.yaml')
+
+# Visualizing (interactively, via webapp) the decision tree using the parameters from the first stratum and the 'prevalence' parameter as prevalence
+print(tree2$show(strat.ctx$age_lt_50, prevalence='prevalence'))
+
+# Visualizing (interactively, via webapp) the decision tree using the parameters from the other stratum and the 'prevalence' parameter as prevalence
+print(tree2$show(strat.ctx$age_gt_50, prevalence='prevalence'))
+
+# Sumnmarizing the decision tree outcomes using the same parameters and the 'prevalence' parameter as prevalence
+tree2$summarize(strat.ctx$age_lt_50, prevalence='prevalence')
+
+# Sumnmarizing the decision tree outcomes using the other stratum parameters and the 'prevalence' parameter as prevalence
+tree2$summarize(strat.ctx$age_gt_50, prevalence='prevalence')
+```

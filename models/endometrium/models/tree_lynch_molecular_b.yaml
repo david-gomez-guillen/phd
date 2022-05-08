@@ -1,0 +1,77 @@
+tvu:
+  description: TVU
+  cost: c_tvu
+  suffix: lynch
+  sensitivity: .sensitivity_tvu___lynch
+  specificity: .specificity_tvu___lynch
+  probs: p_endo_thick, _
+  children:
+    - pipelle:
+        in_transition: thick endometrium
+        description: Pipelle
+        cost: c_pipelle
+        sensitivity: .p_pipelle_insertion_tissue_success
+        specificity: .p_pipelle_insertion_tissue_failure
+        probs: p_pipelle_success, _
+        suffix: endo_thick
+        children:
+            - pipelle_result:
+                in_transition: success
+                description: Pipelle result
+                sensitivity: .sensitivity_pipelle___lynch
+                specificity: .specificity_pipelle___lynch
+                probs: p_pipelle_p, _
+                children:
+                    - hysterectomy:
+                        in_transition: positive
+                        include: '_lynch_hysterectomy.yaml'
+                        suffix: pipelle_p
+                    - hysteroscopy:
+                        in_transition: negative
+                        include: '_lynch_hysteroscopy_evaluation.yaml'
+                        suffix: pipelle_n
+            - hysteroscopy:
+                in_transition: failure
+                include: '_lynch_hysteroscopy_evaluation.yaml'
+                suffix: pipelle_f
+    - molecular_test:
+        in_transition: thin endometrium
+        description: Molecular test
+        cost: c_molecular_test
+        sensitivity: .sensitivity_molecular
+        specificity: .specificity_molecular
+        probs: p_molecular_p, _
+        suffix: endo_thin
+        children:
+            - pipelle:
+                in_transition: positive
+                description: Pipelle
+                cost: c_pipelle
+                sensitivity: .p_pipelle_insertion_tissue_success
+                specificity: .p_pipelle_insertion_tissue_failure
+                probs: p_pipelle_success, _
+                suffix: molecular_p
+                children:
+                    - pipelle_result:
+                        in_transition: success
+                        description: Pipelle result
+                        sensitivity: .sensitivity_pipelle___lynch
+                        specificity: .specificity_pipelle___lynch
+                        probs: p_pipelle_p, _
+                        children:
+                            - hysterectomy:
+                                in_transition: positive
+                                include: '_lynch_hysterectomy.yaml'
+                                suffix: pipelle_p
+                            - hysteroscopy:
+                                in_transition: negative
+                                include: '_lynch_hysteroscopy_evaluation.yaml'
+                                suffix: pipelle_n
+                    - hysteroscopy:
+                        in_transition: failure
+                        include: '_lynch_hysteroscopy_evaluation.yaml'
+                        suffix: pipelle_f
+            - evaluation:
+                in_transition: negative
+                include: '_evaluation.yaml'
+                suffix: molecular_n

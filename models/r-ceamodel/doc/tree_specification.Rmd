@@ -1,0 +1,329 @@
+# Decision tree file specification
+
+The CEAModel package provides support for decision trees. In order to easily define, visualize, load, work and debug them, a dedicated file format has been designed and defined in this document. These files extend the [YAML](https://en.wikipedia.org/wiki/YAML) specification.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: 0.6, _
+  children:
+      - more_tests:
+          description: "More tests"
+      - discharge:
+          description: "Discharge"
+```
+
+The tree specification file describes the necessary information for each node: first its (not necessarily unique) identifier (`root_node` in the above example), a list of optional attributes (e.g. `name`) and finally, if necessary, a list of its children (e.g. `child_1` and `child_2`) recursively defined in the same manner, under the attribute `children`.
+
+## Attributes
+
+A complete list of available attributes is described below. Unless stated otherwise, all of them are optional. Some of the numeric attributes (namely `cost`, `outcome`, `probs`, `sensitivity` and `specificity`) can be assigned placeholder values representing the parameter names. When using the tree in R the decision tree methods allow to attach a context (see tree methods documentation) to automatically and easily replace the values. 
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_positive, _  # p_cytology_positive is a parameter
+  children:
+      - more_tests:
+          description: "More tests"
+      - discharge:
+          description: "Discharge"
+```
+
+Besides these, other attributes can be freely added and accessed when loading the trees in R:
+
+```{yaml}
+cytology:
+  description: Cytology test
+  cytology_type: "aspiration"  # Added attribute with cytology type
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          description: "More tests"
+      - discharge:
+          description: "Discharge"
+```
+
+### children
+
+A sub-list value where each item represents a child node of the current node. The probabilities of each child are specified either by the `probs` attribute or (preferably) calculated with the `sensitivity` and `specificity` attributes (see description for each of these attributes in this document). If not present, the current node doesn't have any children.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:  # First child node
+          in_transition: positive
+          description: "More tests"
+      - discharge:  # Second child node
+          in_transition: negative
+          description: "Discharge"
+```
+
+### cost
+
+A numeric value (or placeholder) assigning the cost of the current node. If not present, the assumed cost of the current node is 0. Used in cost-effectiveness analysis of the tree.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  cost: 50  # This cytology has a cost of 50
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+### description
+
+A string used as the display title of the node. It is mostly used as the node name for visualization purposes.
+
+```{yaml}
+cytology:
+  description: Cytology test  # This node will be displayed as "Cytology test"
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          description: "More tests"
+      - discharge:
+          description: "Discharge"
+```
+
+### in_transition
+
+A string describing the relationship with the node's parent with itself (unused for the root node). Mostly used as the edge name when displaying the tree as a graph.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+### include
+
+A string with the file path to another tree specification file. The tree defined in this attribute is embedded as a subtree in the current node. This is useful to reuse subtrees in different places without repeating code. In order to differentiate the probabilities of the same subtree according to the location where it is attached, see the attribute `suffix`.
+
+main.yaml
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_failure, p_cytology_positive, _ 
+  children:
+      - repeat_cytology:
+          in_transition: failure
+          probs: p_cytology_failure, p_cytology_positive, _
+          children:
+            - evaluation:
+                in_transition: failure
+                description: "Evaluation in 12 months"
+            - more_tests:
+                in_transition: positive
+                include: "more_tests.yaml"
+            - discharge:
+                in_transition: negative
+                description: "Discharge"
+      - more_tests:
+          in_transition: positive
+          include: "more_tests.yaml"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+more_tests.yaml
+```{yaml}
+test:
+  description: Other test
+  probs: p_other_test_positive, _ 
+  children:
+      cancer:
+        in_transition: positive
+        description: "Cancer"
+      no_cancer:
+        in_transition: negative
+        description: "No cancer"
+```
+
+### outcome
+
+A numeric value (or placeholder) assigning an outcome/effectiveness measure (e.g. life years, QALYs, utility, ...) of the current node. If not present, the assumed outcome of the current node is 1. Used in cost-effectiveness analysis of the tree.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+### probs
+
+A comma-separated string with the probabilities of reaching each child node, in the same order as defined in the list. The string must contain as many values as children in the `children` list. As the other numeric values, it can be specified directly or using a placeholder for each individual value. The underscore character represents the complement, i.e., 1 minus the sum of the rest of probabilities. 
+
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_failure, p_cytology_positive, _ 
+  # e.g. if p_cytology_failure = 0.1 and p_cytology_positive = 0.6
+  # the probabilities would be:
+  #   10% for repeat_cytology child
+  #   60% for more_tests child
+  #   30% for discharge child
+  children:
+      - repeat_cytology:
+          in_transition: failure
+          description: "Repeat cytology"
+      - more_tests:
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+
+### sensitivity
+
+A comma-separated string with the probabilities, or its placeholder names, of each children (except the last one) conditional to the desired positive outcome event of the tree (e.g. cancer). That is, if $A_i$ represents each child and $C$ represents the outcome, this attribute has the values $P(A_1|C), P(A_2|C), ..., P(A_{n-1}|C)$. The sum of these values must be less than or equal to 1.
+
+In the particular case that $n=2$ this attribute is just a numeric value with the sensitivity of the test, i.e. $P(A_1|C)$. This assumes that the first child in the list is the outcome when the test is positive.
+
+This attribute replaces `probs` and it is highly recommended when calculating the children probabilities, since it takes into account the prevalence of the outcome event for each node in the tree. If both `sensitivity`/`specificity` and `probs` are defined, the former is used when calculating the outcomes but the placeholder names from `probs` are used when visualizing the edges in the trees.
+
+When using this attribute `specificity` must also be defined. Also, when using one of the tree methods in R, a prevalence (or prevalence parameter name) must be defined too, or else the `probs` attribute will be used instead.
+
+```{yaml}
+cytology:
+  description: Cytology test
+  sensitivity: sensitivity_cyto
+  specificity: specificity_cyto
+  children:
+      - more_tests:  
+          # If prevalence was 0.1, 
+          #    sensitivity_cyto=0.8 and specificity_cyto=0.6
+          # the probability of this child would be:
+          # prev * sensitivity + (1-prev) * (1-specificity) =
+          # 0.1 * 0.8 + 0.9 * 0.4 = 0.44
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          # If prevalence was 0.1, 
+          #    sensitivity_cyto=0.8 and specificity_cyto=0.6
+          # the probability of this child would be:
+          # prev * (1-sensitivity) + (1-prev) * specificity =
+          # 0.1 * 0.2 + 0.9 * 0.6 = 0.56
+          in_transition: negative
+          description: "Discharge"
+```
+
+```{yaml}
+cytology:
+  description: Cytology test
+  sensitivity: p_cytology_failure___cancer, p_cytology_positive___cancer
+  specificity: p_cytology_not_failure___no_cancer, p_cytology_not_positive___no_cancer
+  # Assuming prevalence of 0.1 and:
+  #    p_cytology_failure___cancer=0.5
+  #    p_cytology_positive___cancer=0.4
+  #    p_cytology_not_failure___no_cancer=0.6
+  #    p_cytology_not_positive___no_cancer=0.7
+  children:
+      - repeat_cytology:
+          # The probability of this child would be:
+          # prev * p_cytology_failure___cancer + (1-prev) * (1-p_cytology_not_failure___no_cancer) =
+          # 0.1 * 0.5 + 0.9 * 0.4 = 0.41
+          in_transition: failure
+          description: "Repeat cytology"
+      - more_tests:  
+          # The probability of this child would be:
+          # prev * p_cytology_positive___cancer + (1-prev) * (1-p_cytology_not_positive___no_cancer) =
+          # 0.1 * 0.4 + 0.9 * 0.3 = 0.31
+          in_transition: positive
+          description: "More tests"
+      - discharge:
+          # The probability of this child would be:
+          # prev * (1-(p_cytology_failure___cancer+p_cytology_positive___cancer)) + 
+          #   (1-prev) * (1-((1-p_cytology_not_failure___no_cancer)+(1-p_cytology_not_positive___no_cancer))) =
+          # 0.1 * (1-(0.5+0.4)) + 0.9 * (1-((1-0.6)+(1-0.7))) = 0.28
+          in_transition: negative
+          description: "Discharge"
+```
+
+### specificity
+
+A comma-separated string with the probabilities, or its placeholder names, of each children (except the last one) conditional to the desired negative outcome event of the tree (e.g. no cancer). That is, if $A_i$ represents each child and $C$ represents the outcome, this attribute has the values $P(\bar{A}_1|\bar{C}), P(\bar{A}_2|\bar{C}), ..., P(\bar{A}_{n-1}|\bar{C})$. The sum of the complementary of these values ($P(A_1|\bar{C}) +
+P(A_2|\bar{C}) + ... + P(A_{n-1}|\bar{C})$) must be less than or equal to 1.
+
+In the particular case that $n=2$ this attribute is just a numeric value with the specificity of the test, i.e. $P(\bar{A}_1|\bar{C})$. This assumes that the first child in the list is the outcome when the test is positive.
+
+This attribute replaces `probs` and it is highly recommended when calculating the children probabilities, since it takes into account the prevalence of the outcome event for each node in the tree. If both `sensitivity`/`specificity` and `probs` are defined, the former is used when calculating the outcomes but the placeholder names from `probs` are used when visualizing the edges in the trees.
+
+When using this attribute `sensitivity` must also be defined. Also, when using one of the tree methods in R, a prevalence (or prevalence parameter name) must be defined too, or else the `probs` attribute will be used instead.
+
+To see examples, see the `sensitivity` attribute.
+
+### suffix
+
+A string with the suffix to be appended to probability parameters when including a subtree. The suffix is appended using a triple underscore (`___`) as a delimiter between name and suffix except when the suffix is not present, in which case no suffix will be appended. This can be useful for those cases where the same subtree in different locations may have the same structure but different probabilities. E.g, for the tree in the `include` attribute:
+
+main.yaml
+```{yaml}
+cytology:
+  description: Cytology test
+  probs: p_cytology_failure, p_cytology_positive, _ 
+  children:
+      - repeat_cytology:
+          in_transition: failure
+          probs: p_cytology_failure, p_cytology_positive, _
+          children:
+            - evaluation:
+                in_transition: failure
+                description: "Evaluation in 12 months"
+            - more_tests:
+                in_transition: positive
+                suffix: "cyto_repeated"         
+                # Include suffix to differentiate probabilities when the 
+                # more_tests subtree is accessed when the cytology is repeated
+                include: "more_tests.yaml"
+            - discharge:
+                in_transition: negative
+                description: "Discharge"
+      - more_tests:
+          in_transition: positive
+          include: "more_tests.yaml"
+      - discharge:
+          in_transition: negative
+          description: "Discharge"
+```
+
+more_tests.yaml
+```{yaml}
+test:
+  description: Other test
+  probs: p_other_test_positive, _ 
+  children:
+      cancer:
+        in_transition: positive
+        description: "Cancer"
+      no_cancer:
+        in_transition: negative
+        description: "No cancer"
+```
+
+In this case the probability of "Other test" being positive is `p_other_test_positive` when the cytology is positive in the first try, but it will be `p_other_test_positive___cyto_repeated` when the cytology is repeated.

@@ -1,0 +1,19 @@
+Package: CEAModel
+Type: Package
+Title: Cost-Effectiveness Analysis Model Simulation and Visualization
+Version: 0.1.0
+Author: David Gomez
+Maintainer: David Gomez <david.gomez.guillen@gmail.com>
+Description: Load, simulate and visualize cost-effectiveness models (decision trees and markov models) from specification files (YAML for decision trees and XLSX for markov models).
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports:
+  ggplot2,
+  igraph,
+  tools,
+  visNetwork,
+  readxl,
+  xlsx,
+  yaml

@@ -1,0 +1,43 @@
+tvu:
+  description: TVU
+  cost: c_tvu
+  sensitivity: .sensitivity_tvu___lynch
+  specificity: .specificity_tvu___lynch
+  probs: p_endo_thick, _
+  suffix: lynch
+  children:
+    - pipelle:
+        in_transition: thick endometrium
+        description: Pipelle
+        cost: c_pipelle
+        sensitivity: .p_pipelle_insertion_tissue_success___lynch
+        specificity: .p_pipelle_insertion_tissue_failure___lynch
+        probs: p_pipelle_success, _
+        suffix: endo_thick
+        children:
+          - pipelle_result:
+              in_transition: success
+              description: Pipelle result
+              sensitivity: .sensitivity_pipelle___lynch
+              specificity: .specificity_pipelle___lynch
+              probs: p_pipelle_p, _
+              children:
+                - hysterectomy:
+                    in_transition: positive
+                    description: Hysterectomy
+                    include: '_lynch_hysterectomy.yaml'
+                    suffix: pipelle_p
+                - evaluation:
+                    in_transition: negative
+                    include: '_evaluation.yaml'
+                    suffix: pipelle_n
+          - hysteroscopy:
+              in_transition: sampling failure
+              description: Hysteroscopy
+              cost: c_phone_visit
+              include: '_lynch_hysteroscopy_evaluation.yaml'
+              suffix: pipelle_f
+    - evaluation:
+        in_transition: thin endometrium
+        include: '_evaluation.yaml'
+        suffix: endo_thin

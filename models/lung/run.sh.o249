@@ -1,0 +1,43 @@
+	50 slaves are spawned successfully. 0 failed.
+Cluster initialized
+
+Loading matrix from file:Remarkable TP matrices/tp_dan20.xls
+Matriu carregada
+Start simulation 1: "1xBI @55 (18%) + survival-dx=37.14%"
+Using seed: 1680655447
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     632.55 secs
+
+Start simulation 2: "2xBI @55&60 (18%) + survival-dx=37.14%"
+Using seed: 1621542543
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     612.06 secs
+
+Start simulation 3: "3xBI @55&60&65 (18%) + survival-dx=37.14%"
+Using seed:  508121757
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     606.75 secs
+
+Start simulation 4: "3xBI @55&56&57 (18%) + survival-dx=37.14%"
+Using seed: 1725424880
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     604.58 secs
+
+Start simulation 5: "1xBI @35 (18%) + survival-dx=37.14%"
+Using seed:    9030132
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     599.73 secs
+
+Start simulation 6: "2xBI @35&40 (18%) + survival-dx=37.14%"
+Using seed: 1567974501
+Saving...Updating results file: results/0-lc_excelresults_cost4_50mat.xlsx
+ OK!		
+Execution time:     596.52 secs
+
+Start simulation 7: "2xBI @35&55 (18%) + survival-dx=37.14%"
+Using seed: 1197104973

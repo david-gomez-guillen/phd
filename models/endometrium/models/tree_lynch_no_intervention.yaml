@@ -1,0 +1,13 @@
+no_intervention:
+    description: No intervention
+    sensitivity: 1
+    specificity: 1
+    probs: .p_cancer, _
+    suffix: lynch
+    children:
+        - undetected_cancer_evaluation:
+            in_transition: cancer
+            description: Undetected cancer
+        - no_cancer:
+            in_transition: no cancer
+            description: No cancer

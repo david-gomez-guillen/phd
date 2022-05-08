@@ -1,0 +1,21 @@
+* Mirar pq mis mails del outlook se ven mal
+* -> Wish list, variar mpst. Cómo? Recalibrando para que los mpst sean distintos. Sí, sí, es eso. No es fácil.
+* Plantejar efecte LINEAL dels efectes de quitting
+* Mirar l'últim mail de la Montse. Als articles segurament puguem veure com calculen el RR, id'aquesta manera es podrà decidir si aplicar-ho anualment, lifetime o què. Els articles són Thun i Freedman.
+* Fer proves i pensar outputs amb tots els costos a 1 euro.
+* Pensar alguna taula d'output amb els efectes i costos de les intervencions
+* Desenvolupar l'output de costos:
+  Cost anual: s'hauran d'acabar descomptant!
+  Cost per persona, i persona per persona
+  Tenir el booleà "persona tractada" per poder analitzar també el cost *per persona tractada*
+* Demanar els costos si s'escau
+* TFM: PENSAR, ESTRUCTURAR, AVANÇAR. El mètode ja gairebé el tenim, vaaaaaa!!!!
+  Possible ponent: Klaus :-O
+* Buscar i implementar utilities... 
+  Hi ha referències al Hinde i a la tesi de la Thao!
+* Explorar la bibliografia que ha deixat la Mireia a la S:\
+* El càlcul de la incidència en fumadors, deixar-lo en "current"
+* Sobre el TODO de survival: A tota persona que ha estat diagnosticada, se li reduirà tant el risc de progressió com el risc de mort. Això s'ha de pensar molt bé.
+* ANAR CONFECCIONANT QUESTION LIST per al grup de Prevenció i la reunió del dia 12.
+* ANAR PREPARANT presentació per al meeting amb Drolet-Brisson.
+* Pensar en una 3a persona. Dani?

@@ -1,0 +1,92 @@
+pipelle:
+  description: Pipelle
+  cost: c_pipelle_tvu # We assume pipelle and tvu are done together
+  sensitivity: .p_pipelle_insertion_success___lynch
+  specificity: .p_pipelle_insertion_failure___lynch
+  probs: p_pipelle_insertion_success, _
+  suffix: lynch
+  children:
+    - pipelle_tissue:
+        in_transition: success
+        description: Pipelle tissue
+        sensitivity: .p_pipelle_tissue_success
+        specificity: .p_pipelle_tissue_failure
+        probs: p_pipelle_tissue_success, _    
+        children:
+            - pipelle_result:
+                in_transition: success
+                description: Pipelle result
+                sensitivity: .sensitivity_pipelle___lynch
+                specificity: .specificity_pipelle___lynch
+                probs: p_pipelle_p, _
+                children:
+                    # Pipelle+
+                    - hysterectomy:
+                        in_transition: positive
+                        description: Hysterectomy
+                        include: '_lynch_hysterectomy.yaml'
+                        suffix: pipelle_p
+                    - tvu:
+                        in_transition: negative
+                        description: TVU
+                        cost: 0 # Cost already added (see parent node)
+                        sensitivity: .sensitivity_tvu___lynch
+                        specificity: .specificity_tvu___lynch
+                        probs: p_endo_thick, _
+                        suffix: pipelle_n
+                        children:
+                            # Pipelle- & TVU+
+                            - hysteroscopy:
+                                in_transition: thick endometrium
+                                include: '_lynch_hysteroscopy_evaluation.yaml'
+                                suffix: endo_thick
+                            # Pipelle- & TVU-
+                            - evaluation:
+                                in_transition: thin endometrium
+                                cost: c_phone_visit
+                                include: '_evaluation.yaml'
+                                suffix: endo_thin
+            # Pipelle tissue failure
+            - tvu:
+                in_transition: failure
+                description: TVU
+                cost: 0 # Cost already added (see parent node)
+                sensitivity: .sensitivity_tvu___lynch
+                specificity: .specificity_tvu___lynch
+                probs: p_endo_thick, _
+                suffix: pipelle_tissue_f
+                children:
+                    # Pipelle tissue failure & TVU+
+                    - hysteroscopy:
+                        in_transition: thick endometrium
+                        description: Hysteroscopy
+                        include: '_lynch_hysteroscopy_evaluation.yaml'
+                        suffix: endo_thick
+                    # Pipelle tissue failure & TVU-
+                    - evaluation:
+                        in_transition: thin endometrium
+                        cost: c_phone_visit
+                        include: '_evaluation.yaml'
+                        suffix: endo_thin
+    # Pipelle insertion failure
+    - tvu:
+        in_transition: failure
+        description: TVU
+        cost: 0 # Cost already added (see parent node)
+        sensitivity: .sensitivity_tvu___lynch
+        specificity: .specificity_tvu___lynch
+        probs: p_endo_thick, _
+        suffix: pipelle_insertion_f
+        children:
+            # Pipelle insertion failure & TVU+
+            - hysteroscopy:
+                in_transition: thick endometrium
+                description: Hysteroscopy
+                include: '_lynch_hysteroscopy_evaluation.yaml'
+                suffix: endo_thick
+            # Pipelle insertion failure & TVU-
+            - evaluation:
+                in_transition: thin endometrium
+                cost: c_phone_visit
+                include: '_evaluation.yaml'
+                suffix: endo_thin

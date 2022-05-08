@@ -1,0 +1,33 @@
+cytology:
+  description: Cytology test
+  cost: c_cytology
+  probs: p_cytology_failure, p_cytology_positive, _
+  children:
+      - repeat_cytology:
+          in_transition: failure
+          description: "Repeat cytology"
+          cost: c_cytology
+          probs: p_cytology_failure, p_cytology_positive, _
+          children:
+              - repeat_cytology:
+                  in_transition: failure
+                  description: "Further testing"
+                  cost: c_cytology
+                  outcome: ly_cyto_failure
+                  probs: p_cytology_failure, p_cytology_positive, _
+              - more_tests:
+                  in_transition: positive
+                  description: "Further testing"
+                  outcome: ly_cyto_positive
+              - discharge:
+                  in_transition: negative
+                  outcome: ly_cyto_negative
+                  description: "Discharge"
+      - more_tests:
+          in_transition: positive
+          description: "Further testing"
+          outcome: ly_cyto_positive
+      - discharge:
+          in_transition: negative
+          outcome: ly_cyto_negative
+          description: "Discharge"

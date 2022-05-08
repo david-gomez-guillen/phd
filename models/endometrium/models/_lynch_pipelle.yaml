@@ -1,0 +1,59 @@
+pipelle:
+  description: Pipelle
+  cost: c_pipelle
+  sensitivity: .p_pipelle_insertion_success___lynch
+  specificity: .p_pipelle_insertion_failure___lynch
+  probs: p_pipelle_insertion_success___lynch, _
+  children:
+    - pipelle_tissue:
+        in_transition: success
+        description: Pipelle tissue
+        sensitivity: .p_pipelle_tissue_success
+        specificity: .p_pipelle_tissue_failure
+        probs: p_pipelle_tissue_success, _
+        children:
+          - pipelle_result:
+              in_transition: success
+              description: Pipelle result
+              sensitivity: .sensitivity_pipelle___lynch
+              specificity: .specificity_pipelle___lynch
+              probs: p_pipelle_p, _
+              children:
+                # Pipelle+
+                - hysterectomy:
+                    in_transition: positive
+                    description: Hysterectomy
+                    include: '_lynch_hysterectomy.yaml'
+                    suffix: 'pipelle_p'
+                # Pipelle-
+                - hysteroscopy:
+                    in_transition: failure
+                    description: Hysteroscopy
+                    include: '_lynch_hysteroscopy_evaluation.yaml'
+                    suffix: 'pipelle_f'
+          - molecular_test:
+              # Pipelle tissue failure
+              in_transition: failure
+              description: Molecular test (pipelle sample)
+              cost: c_molecular_test
+              sensitivity: .sensitivity_molecular_pipelle
+              specificity: .specificity_molecular_pipelle
+              probs: p_molecular_pipelle_p, _
+              suffix: pipelle_tissue_f
+              children:
+                - hysterectomy:
+                    in_transition: positive
+                    description: Hysterectomy
+                    include: '_lynch_hysterectomy.yaml'
+                    suffix: 'molecular_p'
+                - hysteroscopy:
+                    in_transition: negative
+                    description: Hysteroscopy
+                    include: '_lynch_hysteroscopy_evaluation.yaml'
+                    suffix: 'molecular_n'
+    # Pipelle insertion failure
+    - hysteroscopy:
+        in_transition: failure
+        description: Hysteroscopy
+        include: '_lynch_hysteroscopy_evaluation.yaml'
+        suffix: 'pipelle_insertion_f'

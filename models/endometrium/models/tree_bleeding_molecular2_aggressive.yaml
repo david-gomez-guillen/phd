@@ -1,0 +1,189 @@
+tvu:
+  description: TVU
+  cost: c_tvu
+  sensitivity: .sensitivity_tvu
+  specificity: .specificity_tvu
+  probs: p_endo_thick, _
+  suffix: bleeding
+  children:
+    - pipelle:
+        in_transition: thick endometrium
+        description: Pipelle insertion
+        cost: c_pipelle
+        # By using sensitivity = p and specificity = 1 - p
+        # we obtain a p_success = p and we preserve the original prevalence
+        # in both the positive and negative branches
+        sensitivity: .p_pipelle_insertion_success
+        specificity: .p_pipelle_insertion_failure
+        probs: p_pipelle_insertion_success, _
+        suffix: endo_thick
+        children:
+            - pipelle_tissue:
+                in_transition: success
+                description: Pipelle tissue
+                sensitivity: .p_pipelle_tissue_success
+                specificity: .p_pipelle_tissue_failure
+                probs: p_pipelle_tissue_success, _
+                children:
+                    - pipelle_result:
+                        in_transition: success
+                        description: Pipelle result
+                        sensitivity: .sensitivity_pipelle___bleeding
+                        specificity: .specificity_pipelle
+                        probs: p_pipelle_p, _
+                        suffix: pipelle_tissue_success
+                        children:
+                            - hysterectomy:
+                                in_transition: positive
+                                description: Hysterectomy
+                                cost: c_hysterectomy_visit
+                                include: '_hysterectomy.yaml'
+                                suffix: pipelle_p
+                            - molecular_test_pipelle:
+                                in_transition: negative
+                                description: Molecular test (pipelle sample)
+                                cost: c_molecular_test_pipelle_visit
+                                sensitivity: .sensitivity_molecular_pipelle
+                                specificity: .specificity_molecular_pipelle
+                                probs: p_molecular_pipelle_p, _
+                                suffix: pipelle_n
+                                children:
+                                - hysterectomy:
+                                    in_transition: positive
+                                    description: Hysterectomy
+                                    include: '_hysterectomy.yaml'
+                                    suffix: molecular_pipelle_p
+                                - evaluation:
+                                    in_transition: negative
+                                    cost: c_phone_visit
+                                    include: '_evaluation.yaml'
+                                    suffix: molecular_pipelle_n
+                    - molecular_test_pipelle:
+                        in_transition: failure
+                        description: Molecular test (pipelle sample)
+                        cost: c_molecular_test_pipelle_visit
+                        sensitivity: .sensitivity_molecular_pipelle
+                        specificity: .specificity_molecular_pipelle
+                        probs: p_molecular_pipelle_p, _
+                        suffix: pipelle_tissue_failure
+                        children:
+                            - hysterectomy:
+                                in_transition: positive
+                                description: Hysterectomy
+                                cost: c_hysterectomy_visit
+                                include: '_hysterectomy.yaml'
+                                suffix: molecular_pipelle_p
+                            - evaluation:
+                                in_transition: negative
+                                include: '_evaluation.yaml'
+                                suffix: molecular_pipelle_n
+            - molecular_test_cyto:
+                in_transition: failure
+                description: Molecular test (cytology)
+                cost: c_molecular_test_cyto
+                sensitivity: .sensitivity_molecular_cyto
+                specificity: .specificity_molecular_cyto
+                probs: p_molecular_cyto_p, _
+                suffix: pipelle_insertion_f
+                children:
+                    - hysterectomy:
+                        in_transition: positive
+                        description: Hysterectomy
+                        cost: c_hysterectomy_visit
+                        include: '_hysterectomy.yaml'
+                        suffix: molecular_cyto_p
+                    - hysteroscopy:
+                        in_transition: negative
+                        description: Hysteroscopy
+                        include: '_bleeding_hysteroscopy_evaluation.yaml'
+                        suffix: molecular_cyto_n
+    - molecular_test_cyto:
+        in_transition: thin endometrium
+        description: Molecular test (cytology)
+        cost: c_molecular_test_cyto
+        sensitivity: .sensitivity_molecular_cyto
+        specificity: .specificity_molecular_cyto
+        probs: p_molecular_cyto_p, _
+        suffix: endo_thin
+        children:
+            - pipelle:
+                in_transition: positive
+                description: Pipelle insertion
+                cost: c_pipelle
+                # By using sensitivity = p and specificity = 1 - p
+                # we obtain a p_success = p and we preserve the original prevalence
+                # in both the positive and negative branches
+                sensitivity: .p_pipelle_insertion_success
+                specificity: .p_pipelle_insertion_failure
+                probs: p_pipelle_insertion_success, _
+                suffix: endo_thick
+                children:
+                    - pipelle_tissue:
+                        in_transition: success
+                        description: Pipelle tissue
+                        sensitivity: .p_pipelle_tissue_success
+                        specificity: .p_pipelle_tissue_failure
+                        probs: p_pipelle_tissue_success, _
+                        children:
+                            - pipelle_result:
+                                in_transition: success
+                                description: Pipelle result
+                                sensitivity: .sensitivity_pipelle___bleeding
+                                specificity: .specificity_pipelle
+                                probs: p_pipelle_p, _
+                                suffix: pipelle_tissue_success
+                                children:
+                                    - hysterectomy:
+                                        in_transition: positive
+                                        description: Hysterectomy
+                                        cost: c_hysterectomy_visit
+                                        include: '_hysterectomy.yaml'
+                                        suffix: molecular_cyto_p
+                                    - molecular_test_pipelle:
+                                        in_transition: negative
+                                        description: Molecular test (pipelle sample)
+                                        cost: c_molecular_test_pipelle_visit
+                                        sensitivity: .sensitivity_molecular_pipelle
+                                        specificity: .specificity_molecular_pipelle
+                                        probs: p_molecular_pipelle_p, _
+                                        suffix: molecular_cyto_n
+                                        children:
+                                            - hysterectomy:
+                                                in_transition: positive
+                                                description: Hysterectomy
+                                                cost: c_hysterectomy_visit
+                                                include: '_hysterectomy.yaml'
+                                                suffix: molecular_pipelle_p
+                                            - evaluation:
+                                                in_transition: negative
+                                                include: '_evaluation.yaml'
+                                                suffix: molecular_pipelle_n
+                            - molecular_test_pipelle:
+                                in_transition: failure
+                                description: Molecular test (pipelle sample)
+                                cost: c_molecular_test_pipelle_visit
+                                sensitivity: .sensitivity_molecular_pipelle
+                                specificity: .specificity_molecular_pipelle
+                                probs: p_molecular_pipelle_p, _
+                                suffix: pipelle_tissue_failure
+                                children:
+                                    - hysterectomy:
+                                        in_transition: positive
+                                        description: Hysterectomy
+                                        cost: c_hysterectomy_visit
+                                        include: '_hysterectomy.yaml'
+                                        suffix: molecular_pipelle_p
+                                    - evaluation:
+                                        in_transition: negative
+                                        include: '_evaluation.yaml'
+                                        suffix: molecular_pipelle_n
+                    - hysteroscopy:
+                        in_transition: failure
+                        description: Hysteroscopy
+                        include: '_bleeding_hysteroscopy_evaluation.yaml'
+                        suffix: pipelle_insertion_failure
+            - discharge:
+                in_transition: negative
+                cost: c_phone_visit
+                include: '_discharge.yaml'
+                suffix: molecular_cyto_n

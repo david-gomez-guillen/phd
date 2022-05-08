@@ -1,0 +1,15 @@
+cytology:
+  description: Cytology test
+  cost: c_cytology
+  sensitivity: sensitivity_cytology
+  specificity: specificity_cytology
+  probs: p_cytology_positive, _
+  children:
+      - more_tests:
+          in_transition: positive
+          outcome: ly_cyto_positive
+          description: "More tests"
+      - discharge:
+          in_transition: negative
+          outcome: ly_cyto_negative
+          description: "Discharge"

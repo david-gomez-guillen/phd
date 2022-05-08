@@ -1,0 +1,13 @@
+evaluation:
+    description: Evaluation in 12 months
+    sensitivity: 1
+    specificity: 1
+    probs: p_cancer, _
+    children:
+        - undetected_cancer_evaluation:
+            in_transition: cancer
+            cost: c_treatment_delayed
+            description: Undetected cancer
+        - no_cancer_evaluation:
+            in_transition: no cancer
+            description: No cancer

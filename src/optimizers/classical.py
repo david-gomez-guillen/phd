@@ -13,7 +13,7 @@ class ScipyOptimizer(Optimizer):
       return result
     return wrapper
 
-  def _optimize(self, algorithm, model, params, bounds, error_measure, silence_model_output=True, **kwargs) -> list:
+  def _optimize(self, algorithm, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
     start_time = timeit.default_timer()
     initial_guess = kwargs['initial_guess']
     if kwargs.get('seed'):
@@ -21,7 +21,8 @@ class ScipyOptimizer(Optimizer):
     model.setup(params=params, silence_model_output=silence_model_output)
     def model_evaluation_error(x):
       y = self.rpy_function_wrapper(model.evaluate)(x, silence_model_output=silence_model_output)
-      error = error_measure.calculate_error(json.loads(y))
+      measure = measure_extractor.get_measure(json.loads(y))
+      error = error_measure.calculate_error(measure)
       print('Error: {}'.format(error))
       return error
     result = minimize(model_evaluation_error, initial_guess, method=algorithm, bounds=bounds)
@@ -37,5 +38,5 @@ class ScipyOptimizer(Optimizer):
 
 
 class NelderMeadOptimizer(ScipyOptimizer):
-  def optimize(self, model, params, bounds, error_measure, silence_model_output=True, **kwargs) -> list:
-    return self._optimize('Nelder-Mead', model, params, bounds, error_measure, silence_model_output, **kwargs)
+  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
+    return self._optimize('Nelder-Mead', model, params, bounds, measure_extractor, error_measure, silence_model_output, **kwargs)

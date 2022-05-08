@@ -1,0 +1,32 @@
+tvu:
+  description: TVU
+  cost: c_tvu
+  suffix: lynch
+  sensitivity: .sensitivity_tvu___lynch
+  specificity: .specificity_tvu___lynch
+  probs: p_endo_thick, _
+  children:
+    - pipelle:
+        in_transition: thick endometrium
+        description: Pipelle
+        include: '_lynch_pipelle.yaml'
+        suffix: endo_thick
+    - molecular_test_cyto:
+        in_transition: thin endometrium
+        description: Molecular test (cyto sample)
+        cost: c_molecular_test
+        sensitivity: .sensitivity_molecular_cyto
+        specificity: .specificity_molecular_cyto
+        probs: p_molecular_cyto_p, _
+        suffix: endo_thin
+        children:
+            - pipelle:
+                in_transition: positive
+                description: Pipelle
+                include: '_lynch_pipelle.yaml'
+                suffix: molecular_cyto_p
+            - evaluation:
+                in_transition: negative
+                cost: c_phone_visit
+                include: '_evaluation.yaml'
+                suffix: molecular_cyto_n

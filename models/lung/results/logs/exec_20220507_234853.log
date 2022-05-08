@@ -1,0 +1,55 @@
+Logfile "results/logs/exec_20220507_234853.log" initialized
+Called from: eval(expr, p)
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#402: sol[[1]] = optim(par = conIni, fn = distgrup1, control = list(trace = 0, 
+    maxit = 1e+05, verbose = TRUE))
+
+
+Warning message:
+In optim(par = conIni, fn = distgrup1, control = list(trace = 0,  :
+  unknown names in control: verbose
+Using seed:  387883046
+
+***********************************
+*** RUNNING ON A 8-core CLUSTER ***
+***********************************
+
+Initializing cluster...
+Cluster initialized
+
+Loading matrix from file:Remarkable TP matrices/tp_dan20.xls
+Matriu carregada
+
+*******************
+*** CLEANING UP ***
+*******************
+Stopping cluster
+Done
+Logfile "results/logs/exec_20220507_235131.log" initialized
+Called from: eval(expr, p)
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#402: sol[[1]] = optim(par = conIni, fn = distgrup1, control = list(trace = 0, 
+    maxit = 1e+05, verbose = TRUE))
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#411: ma[[1]] = get_matrix(sol[[1]]$par)$mat
+Warning message:
+In optim(par = conIni, fn = distgrup1, control = list(trace = 0,  :
+  unknown names in control: verbose
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#413: incidence[[1]] = get_matrix(sol[[1]]$par)$inc
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#414: lcmort[[1]] = get_matrix(sol[[1]]$par)$lcm
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#415: othermort[[1]] = get_matrix(sol[[1]]$par)$om
+debug at C:/Users/David/OneDrive - Generalitat de Catalunya/PhD/models/lung/calib1_allmatrix.R#422: cal_m9 = calib_mat9(ma[[1]], incidence[[1]], lcmort[[1]], othermort[[1]])
+[[1]]
+[1]  0.6604345  9.4302164 20.6362615 35.7928665 53.4257255
+[6] 68.7881309 78.0567291 70.4390165 57.9461581
+
+Warning message:
+In sink() : no sink to remove
+Warning message:
+In sink() : no sink to remove
+Warning message:
+In optim(par = conIni, fn = distgrup1, control = list(trace = 0,  :
+  unknown names in control: verbose
+Warning messages:
+1: closing unused connection 6 (results/logs/exec_20220508_000924.log) 
+2: closing unused connection 5 (results/logs/exec_20220507_235131.log) 
+Warning message:
+In optim(par = conIni, fn = distgrup1, control = list(trace = 0,  :
+  unknown names in control: verbose

@@ -1,0 +1,55 @@
+hra:
+  description: High Resolution Anoscopy
+  cost: c_hra
+  probs: dist_hra
+  children:
+    # HRA, cytology no HSIL
+    - hra_annual_followup:
+        in_transition: HRA, cytology no HSIL
+        description: Annual followup after HRA
+        cost: c_followup
+        outcome: u_no_hsil
+    # HRA no HSIL, cytology HSIL or ASC-H
+    - semestral_followup:
+        in_transition: HRA no HSIL, cytology HSIL or ASC-H
+        description: Semestral followup after HSIL on HRA
+        cost: c_followup
+        probs: p_regression,_
+        children:
+          # No HSIL in HRA, cytology (two consecutive followups)
+          - regression_annual_followup:
+              in_transition: no HSIL in HRA, cytology (two consecutive followups)
+              description: Annual followup after regression
+              cost: c_followup
+              outcome: u_hsil
+          # Invasive cancer
+          - followup_surgery:
+              in_transition: invasive cancer
+              description: Colorrectal surgery
+              cost: c_surgery
+              outcome: u_surgery
+    # HRA HSIL
+    - irc_semestral_followup:
+        in_transition: HRA HSIL
+        description: Semestral followup after HSIL on HRA
+        cost: c_irc_followup
+        probs: p_irc_regression,_
+        children:
+          # No HSIL in HRA, cytology (two consecutive followups)
+          - irc_regression_annual_followup:
+              in_transition: no HSIL in HRA, cytology (two consecutive followups)
+              description: Annual followup after regression
+              cost: c_followup
+              outcome: u_hsil
+          # Invasive cancer
+          - irc_followup_surgery:
+              in_transition: invasive cancer
+              description: Colorrectal surgery
+              cost: c_surgery
+              outcome: u_surgery
+    # Invasive cancer
+    - surgery:
+        in_transition: invasive cancer
+        description: Colorrectal surgery
+        cost: c_surgery
+        outcome: u_surgery

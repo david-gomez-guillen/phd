@@ -1,0 +1,48 @@
+bleeding:
+    description: Bleeding
+    cost: c_visit
+    probs: p_bleeding, _
+    suffix: bleeding_endo_thin
+    children:
+      - pipelle:
+          in_transition: bleeding
+          description: Pipelle
+          cost: c_pipelle_visit
+          probs: p_pipelle_success, _
+          children:
+            - pipelle_result:
+                in_transition: success
+                description: Pipelle result
+                probs: p_pipelle_p, _
+                children:
+                  - hysterectomy:
+                      in_transition: positive
+                      description: Hysterectomy
+                      include: '_hysterectomy.yaml'
+                      suffix: 'pipelle_p'
+                  - bleeding:
+                      in_transition: negative
+                      description: Bleeding
+                      cost: c_phone_visit
+                      probs: p_bleeding, _
+                      children:
+                        - hysteroscopy:
+                            in_transition: bleeding
+                            description: Hysteroscopy
+                            include: '_bleeding_hysteroscopy_evaluation.yaml'
+                            suffix: 'pipelle_n'
+                        - evaluation:
+                            in_transition: no bleeding
+                            description: Evaluation in 12 months
+                            include: '_evaluation.yaml'
+                            suffix: 'pipelle_n_stop_bleeding'
+            - hysteroscopy:
+                in_transition: failure
+                description: Hysteroscopy
+                include: '_bleeding_hysteroscopy_evaluation.yaml'
+                suffix: 'pipelle_f'
+      - discharge:
+          in_transition: no bleeding
+          include: '_discharge.yaml'
+          cost: 0
+          suffix: 'stop_bleeding' # Not bleeding anymore

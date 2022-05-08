@@ -1,0 +1,10 @@
+Loading gcc-7.2.0.
+Loaded.
+Loading java-9.0.4
+Loaded.
+
+*** Successfully loaded .Rprofile written by Xesco Alarcón ***
+
+Error in setwd("S:/grups/MODELING/Lung_AECC_Gerard/3_ModelAECC_Gerard/ModelLC/Git_LC") : 
+  no es posible cambiar el directorio de trabajo
+Ejecución interrumpida
