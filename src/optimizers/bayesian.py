@@ -15,6 +15,12 @@ class BayesianOptimizer(Optimizer):
   DEFAULT_INITIAL_POINTS = 5
   DEFAULT_NUM_EVALUATIONS = 20
 
+  def __init__(self,
+               initial_points=DEFAULT_INITIAL_POINTS,
+               n_evaluations=DEFAULT_NUM_EVALUATIONS):
+    self.initial_points = initial_points
+    self.n_evaluations = n_evaluations
+
   def rpy_function_wrapper(self, func):
     def wrapper(X, **kwargs):
       results = []
@@ -43,8 +49,7 @@ class BayesianOptimizer(Optimizer):
 
     observer = trieste.objectives.utils.mk_observer(model_evaluation_error)
 
-    num_initial_points = kwargs.get('initial_points', self.DEFAULT_INITIAL_POINTS)
-    initial_query_points = search_space.sample_sobol(num_initial_points)
+    initial_query_points = search_space.sample_sobol(self.initial_points)
     initial_data = observer(initial_query_points)
 
     gpflow_model = build_gpr(initial_data, search_space, likelihood_variance=1e-7)
@@ -52,8 +57,7 @@ class BayesianOptimizer(Optimizer):
 
     bo = trieste.bayesian_optimizer.BayesianOptimizer(observer, search_space)
 
-    num_steps = kwargs.get('num_evaluations', self.DEFAULT_NUM_EVALUATIONS)
-    result = bo.optimize(num_steps, initial_data, surrogate_model)
+    result = bo.optimize(self.n_evaluations, initial_data, surrogate_model)
     dataset = result.try_get_final_dataset()
 
     errors = dataset.observations.numpy().T.tolist()[0]
