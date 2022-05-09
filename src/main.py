@@ -13,7 +13,7 @@ def calibrate(model, optimizer, params, bounds, extractor, error, initial_guess)
                                 error, 
                                 initial_guess=initial_guess)
 
-    print('{} optimizer'.format(optimizer.__class__.__name__))
+    print('{}'.format(optimizer.__class__.__name__))
     print('Best solution: {}'.format(result['x']))
     print(' Error: {}'.format(result['error']))
     print(' Model evaluations: {}'.format(result['evaluations']))
@@ -56,7 +56,7 @@ def calibrate_lung_model():
     nm_optimizer = NelderMeadOptimizer()
     calibrate(model, nm_optimizer, params, bounds, extractor, error, initial_guess)
 
-    bo_optimizer = BayesianOptimizer(initial_points=10)
+    bo_optimizer = BayesianOptimizer(initial_points=10, n_evaluations=40)
     calibrate(model, bo_optimizer, params, bounds, extractor, error, initial_guess)
 
 

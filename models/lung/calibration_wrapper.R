@@ -125,8 +125,8 @@ distgrup1<-function(par,verbose=TRUE){
   #   
   #   p=p%*%P[[q]]
   # }
-  dist=sum(0.45*abs(incidence-real.inc)/real.inc+0.45*abs(lcmort-real.lcmort)/real.lcmort+0.1*abs(othermort-real.othermort)/real.othermort) #dones
-  #dist=0.49*abs(incidence-1.3)/1.3+0.49*abs(lcmort-0.9)/0.9+0.02*abs(othermort-38.0972)/38.0972 #dones
+  dist <- 0
+  # dist=sum(0.45*abs(incidence-real.inc)/real.inc+0.45*abs(lcmort-real.lcmort)/real.lcmort+0.1*abs(othermort-real.othermort)/real.othermort) #dones
   
   #############################################################################################################
 
