@@ -111,20 +111,22 @@ distgrup1<-function(par,verbose=TRUE){
   lcmort[1]=P[[1]][1,5]*100000/5
   othermort[1]=P[[1]][1,6]*100000/5
   p=P[[1]]
-  # for(q in 2:N_MATRICES){
-  # 
-  #   p1=p[1,1]
-  #   p2=p[1,2]
-  #   p3=p[1,3]
-  #   p4=p[1,4]
-  #   pt=p1+p2+p3+p4
-  #   i=0:60
-  #   incidence[q]=sum((x[[q]][1,1]^i)*a[q])*100000/5
-  #   lcmort[q]=(P[[q]][1,5]*(p1/pt)+P[[q]][2,5]*(p2/pt)+P[[q]][3,5]*(p3/pt)+P[[q]][4,5]*(p4/pt))*100000/5
-  #   othermort[q]=(P[[q]][1,6]*(p1/pt)+P[[q]][2,6]*(p2/pt)+P[[q]][3,6]*(p3/pt)+P[[q]][4,6]*(p4/pt))*100000/5
-  #   
-  #   p=p%*%P[[q]]
-  # }
+  if (N_MATRICES > 1) {
+    for(q in 2:N_MATRICES){
+  
+      p1=p[1,1]
+      p2=p[1,2]
+      p3=p[1,3]
+      p4=p[1,4]
+      pt=p1+p2+p3+p4
+      i=0:60
+      incidence[q]=sum((x[[q]][1,1]^i)*a[q])*100000/5
+      lcmort[q]=(P[[q]][1,5]*(p1/pt)+P[[q]][2,5]*(p2/pt)+P[[q]][3,5]*(p3/pt)+P[[q]][4,5]*(p4/pt))*100000/5
+      othermort[q]=(P[[q]][1,6]*(p1/pt)+P[[q]][2,6]*(p2/pt)+P[[q]][3,6]*(p3/pt)+P[[q]][4,6]*(p4/pt))*100000/5
+  
+      p=p%*%P[[q]]
+    }
+  }
   dist <- 0
   # dist=sum(0.45*abs(incidence-real.inc)/real.inc+0.45*abs(lcmort-real.lcmort)/real.lcmort+0.1*abs(othermort-real.othermort)/real.othermort) #dones
   
@@ -160,8 +162,8 @@ distgrup1<-function(par,verbose=TRUE){
  
   if (dist > 1e6) {
     incidence <- incidence * dist
-    lc_mortality <- lc_mortality * dist
-    other_mortality <- other_mortality * dist
+    lc_mortality <- lcmort * dist
+    other_mortality <- othermort * dist
   }
   result <- list(incidence=incidence,
                  lc_mortality=lcmort,
