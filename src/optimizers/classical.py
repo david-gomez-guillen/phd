@@ -13,7 +13,7 @@ class ScipyOptimizer(Optimizer):
       return result
     return wrapper
 
-  def _optimize(self, algorithm, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
+  def _optimize(self, algorithm, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
     start_time = timeit.default_timer()
     initial_guess = kwargs['initial_guess']
     if kwargs.get('seed'):
@@ -38,5 +38,5 @@ class ScipyOptimizer(Optimizer):
 
 
 class NelderMeadOptimizer(ScipyOptimizer):
-  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
-    return self._optimize('Nelder-Mead', model, params, bounds, measure_extractor, error_measure, silence_model_output, **kwargs)
+  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
+    return self._optimize('Nelder-Mead', model, params, bounds, measure_extractor, error_measure, silence_model_output, print_errors, **kwargs)

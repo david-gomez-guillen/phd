@@ -30,7 +30,7 @@ class BayesianOptimizer(Optimizer):
       return results
     return wrapper
 
-  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, **kwargs) -> list:
+  def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
     start_time = timeit.default_timer()
     self.model = model
     bounds = list(zip(*bounds))
