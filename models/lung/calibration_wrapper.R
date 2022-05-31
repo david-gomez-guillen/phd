@@ -42,7 +42,7 @@ make.calibration.func <- function(population, param.names, param.strata) {
 
 distgrup1<-function(par,verbose=TRUE){
   
-  N_MATRICES <- 1
+  N_MATRICES <- 9
   
   a=vector()
   b=vector()

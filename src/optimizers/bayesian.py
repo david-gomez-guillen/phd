@@ -1,13 +1,6 @@
-import numpy as np
-import tensorflow as tf
-import tensorflow_probability as tfp
 import rpy2.robjects as ro
-import trieste
-import gpflow
 import json
 import timeit
-from trieste.models.gpflow import build_gpr, GaussianProcessRegression
-from trieste.space import Box
 from .base import Optimizer
 
 class BayesianOptimizer(Optimizer):
@@ -31,6 +24,11 @@ class BayesianOptimizer(Optimizer):
     return wrapper
 
   def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
+    import tensorflow as tf  # Lazy import
+    from trieste.models.gpflow import build_gpr, GaussianProcessRegression
+    import trieste
+    from trieste.space import Box
+
     start_time = timeit.default_timer()
     self.model = model
     bounds = list(zip(*bounds))

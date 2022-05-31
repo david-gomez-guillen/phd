@@ -1,12 +1,6 @@
-import numpy as np
-import tensorflow as tf
-import tensorflow_probability as tfp
 import rpy2.robjects as ro
-import trieste
 import json
 import timeit
-from trieste.models.gpflow import build_gpr, GaussianProcessRegression
-from trieste.space import Box
 from pyswarm import pso
 from .base import Optimizer
 
@@ -25,17 +19,27 @@ class ParticleSwarmOptimizer(Optimizer):
     self.model_evaluations = 0
 
     self.model.setup(params)
+    # def model_evaluation_error(x):
+    #   y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
+    #   errors = []
+    #   for y_i in y:
+    #     measure = measure_extractor.get_measure(json.loads(y_i))
+    #     errors += [error_measure.calculate_error(measure)]
+    #   errors = tf.reshape(tf.convert_to_tensor(errors), shape=(len(errors),1))
+    #   if print_errors:
+    #     print('Errors: {}'.format(errors))
+    #   self.model_evaluations = self.model_evaluations + 1
+    #   return errors
+
     def model_evaluation_error(x):
       y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
       errors = []
       for y_i in y:
         measure = measure_extractor.get_measure(json.loads(y_i))
         errors += [error_measure.calculate_error(measure)]
-      errors = tf.reshape(tf.convert_to_tensor(errors), shape=(len(errors),1))
-      if print_errors:
-        print('Errors: {}'.format(errors))
-      self.model_evaluations = self.model_evaluations + 1
-      return errors
+      error = error_measure.calculate_error(measure)
+      print('Error: {}'.format(error))
+      return error
 
     xopt, fopt = pso(model_evaluation_error, bounds[0], bounds[1], f_ieqcons=None, **kwargs)
     
