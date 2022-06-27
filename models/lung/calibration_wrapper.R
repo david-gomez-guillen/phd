@@ -41,7 +41,7 @@ make.calibration.func <- function(population, param.names, param.strata) {
 ###################
 
 distgrup1<-function(par,verbose=TRUE){
-    
+  
   a=vector()
   b=vector()
   c=vector()
@@ -139,7 +139,8 @@ distgrup1<-function(par,verbose=TRUE){
     for(q in 1:N_MATRICES){
     for(i in 1:36){
       if(x1[[q]][i]<0){
-        dist=1e7
+        #dist = 1e7
+        dist <- dist - x1[[q]][i] * 1e7  # Modificat per forçar distancia derivable
       }
     }
   }

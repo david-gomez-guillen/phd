@@ -25,8 +25,9 @@ class BayesianOptimizer(Optimizer):
 
   def optimize(self, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
     import tensorflow as tf  # Lazy import
-    from trieste.models.gpflow import build_gpr, GaussianProcessRegression
     import trieste
+    import gpflow
+    from trieste.models.gpflow import build_gpr, GaussianProcessRegression
     from trieste.space import Box
 
     start_time = timeit.default_timer()
@@ -50,8 +51,15 @@ class BayesianOptimizer(Optimizer):
     initial_query_points = search_space.sample_sobol(self.initial_points)
     initial_data = observer(initial_query_points)
 
+    optimizer = trieste.models.optimizer.Optimizer(
+      optimizer=gpflow.optimizers.Scipy(),
+      minimize_args=dict(method='Nelder-Mead')
+    )
+
     gpflow_model = build_gpr(initial_data, search_space, likelihood_variance=1e-7)
-    surrogate_model = GaussianProcessRegression(gpflow_model, num_kernel_samples=100)
+    surrogate_model = GaussianProcessRegression(gpflow_model, 
+                                                optimizer=optimizer,
+                                                num_kernel_samples=100)
 
     bo = trieste.bayesian_optimizer.BayesianOptimizer(observer, search_space)
 
