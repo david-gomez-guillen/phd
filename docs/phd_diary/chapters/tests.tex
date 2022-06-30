@@ -1,0 +1,70 @@
+% Chapter 1
+\chapter{Tests performed} % Main chapter title
+
+\label{sec:tests} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+\section{Test model: lung cancer}
+
+\begin{itemize}
+	\item Total of 9 matrices (one per age group: 35-39, 40-44, …, 75-79).
+	\item 7 health states: healthy, stages I-II, stage IIIa, stage IIIb, LC survival, death from LC, death from other causes → 7x7 matrices. Sometimes the LC survival state is excluded from the calibration resulting in 6x6 matrices.
+	\item Matrices represent monthly steps in the simulation. Since they are applied for 5-year groups, each matrix is used in 5 * 12 = 60 iterations in the model.
+	\item A simplified calibration can be performed without running the model, only the matrices are used. This is a fast approximation since we are not considering some factors of the full model (e.g. prevalence of smoking):
+	\begin{itemize}
+		\item LC survival state is excluded → 6x6 matrices
+		\item From the 6x6=36 probabilities per matrix, only 11 probabilities are allowed to change. The rest are either constant (zeroes, ones) or one minus the sum of the rest of the row.
+		\item The error measurement is a weighted sum of the absolute differences of the LC incidence, LC mortality and mortality from other causes. The weights are 0.45, 0.45 and 0.10 respectively.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Simplified calibration, 1 matrix}
+
+\begin{itemize}
+	\item Source file: models/lung/calibration\_wrapper.R (N\_MATRICES set to 1)
+	\item Only the first age group is being calibrated (35-39): 1x11 = 11 parameters.
+\end{itemize}
+
+\begin{table}[h]
+	\begin{tabular}{p{2cm}|l|l|l|l}
+		\textbf{Algorithm} 		& \textbf{Initial matrix} & \textbf{Nelder-Mead} 		& \textbf{Particle swarm} 	& \textbf{Bayesian} \\
+		\hline \\
+		\textbf{Error}	& 1.1545799674960& 0.6633085653748	& \cellcolor{green}0.66298515		& \cellcolor{green}0.6629851533965 \\
+		\textbf{Time (s)} & - & \cellcolor{green}0.76 & 22.97 & \cellcolor{red!20}114.89 \\
+		\textbf{Evaluations} & - & 252 & \cellcolor{red!20}10100 & \cellcolor{green}21 \\
+	\end{tabular}
+\end{table}
+
+\subsection{Simplified calibration, 2 matrices}
+
+\begin{itemize}
+	\item Source file: models/lung/calibration\_wrapper.R (N\_MATRICES set to 2)
+	\item The first and second age groups are being calibrated (35-39 and 40-44): 2x11 = 22 parameters.
+\end{itemize}
+
+
+\begin{table}[h]
+	\begin{tabular}{p{2cm}|l|l|l|l}
+		\textbf{Algorithm} 		& \textbf{Initial matrix} & \textbf{Nelder-Mead} 		& \textbf{Particle swarm} 	& \textbf{Bayesian} \\
+		\hline \\
+		\textbf{Error}	& 1.6495138536869 & 0.7333381543348456 & \cellcolor{green}0.72801101 & \cellcolor{green}0.7287116136105645 \\
+		\textbf{Time (s)} & - & \cellcolor{green}4.44 & 24.46 & \cellcolor{red!20}421.69 \\
+		\textbf{Evaluations} & - & 2092 & \cellcolor{green}10100 & \cellcolor{green}70 \\
+	\end{tabular}
+\end{table}
+
+\subsection{Simplified calibration, all (9) matrices}
+\begin{itemize}
+    \item Source file: models/lung/calibration\_wrapper.R (N\_MATRICES set to 9)
+	\item All age groups are being calibrated: 9x11 = 99 parameters.
+	\item Standard bayesian optimization takes too much time and the process was aborted before completion. Other strategies could be attempted: calibrate matrices sequentially, restrict number of parameters, optimize gaussian process regression (see section \ref{sec:proposal}), ...
+\end{itemize}
+
+\begin{table}[h]
+	\begin{tabular}{p{2cm}|l|l|l|l}
+		\textbf{Algorithm} 		& \textbf{Initial matrix} & \textbf{Nelder-Mead} 		& \textbf{Particle swarm} 	& \textbf{Bayesian} \\
+		\hline \\
+		\textbf{Error}	& 6.6842251473203 & 4.0210661197016	& 4.3594607 & \cellcolor{red}<Aborted> \\
+		\textbf{Time (s)} & - & 57.58 & 35.64 & \cellcolor{red}- \\
+		\textbf{Evaluations} & - & 19800 & 9407 & \cellcolor{red}- \\
+	\end{tabular}
+\end{table}
