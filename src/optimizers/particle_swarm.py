@@ -38,6 +38,7 @@ class ParticleSwarmOptimizer(Optimizer):
         measure = measure_extractor.get_measure(json.loads(y_i))
         errors += [error_measure.calculate_error(measure)]
       error = error_measure.calculate_error(measure)
+      self.model_evaluations = self.model_evaluations + 1
       print('Error: {}'.format(error))
       return error
 

@@ -1,12 +1,14 @@
 import os
 from matplotlib.cbook import silent_list
 import numpy as np
+import pandas as pd
 from models import RModel
 from measure_extractors.measure_extractors import ECModelExtractor, LCModelExtractor
 from error_measures.error_measures import PMBIncidenceL2Error, PMBMortalityL2Error, WeightedError
 from optimizers.classical import NelderMeadOptimizer
 from optimizers.bayesian import BayesianOptimizer
 from optimizers.particle_swarm import ParticleSwarmOptimizer
+from optimizers.annealing import AnnealingOptimizer
 
 def calibrate(model, optimizer, params, bounds, extractor, error, **kwargs):
     result = optimizer.optimize(model, 
@@ -21,6 +23,8 @@ def calibrate(model, optimizer, params, bounds, extractor, error, **kwargs):
     print(' Error: {}'.format(result['error']))
     print(' Model evaluations: {}'.format(result['evaluations']))
     print(' Time: {}'.format(result['time']))
+    label = kwargs.get('label', optimizer.__class__.__name__)
+    result['trace'].to_csv('{}/../trace_{}.csv'.format(os.path.dirname(__file__), label), index_label='index')
 
 
 def calibrate_endometrium_model():
@@ -54,7 +58,10 @@ def calibrate_endometrium_model():
     pso_optimizer = ParticleSwarmOptimizer()
     calibrate(model, pso_optimizer, params, bounds, extractor, error)
 
-def calibrate_lung_model():
+    annealing_optimizer = AnnealingOptimizer()
+    calibrate(model, annealing_optimizer, params, bounds, extractor, error)
+
+def calibrate_lung_model(n_matrices, label):
     initial_guess = [0.0000014899094538366, 0.00005867, 0.0373025655099923, 0.45001903545473, 
                     0.0310692140027966, 2.06599720339873E-06, 0.083259360316924, 0.0310687721751887, 
                     2.50782481130141E-06, 0.031069806, 1.47440016369862E-06
@@ -77,12 +84,13 @@ def calibrate_lung_model():
                     0.00029203, 0.00124249, 0.57293827, 0.071391822, 0.040115762, 0.000770938, 
                     0.922967658, 0.004939897, 0.035946803, 0.031592197, 0.009294503,
                     
-                    # 0.00005383, 0.00190251, 0.224558597, 0.349067177, 0.040817026, 6.96743E-05,
-                    # 0.071749361, 0.001859725, 0.039026975, 0.037767242, 0.003119458,
+                    0.00005383, 0.00190251, 0.224558597, 0.349067177, 0.040817026, 6.96743E-05,
+                    0.071749361, 0.001859725, 0.039026975, 0.037767242, 0.003119458,
                     
-                    # 0.000058942, 0.00330943, 0.009683304, 0.414010634, 0.022973067, 0.030664353, 
-                    # 0.60868601, 0.006745365, 0.046892055, 0.067318463, 0.004318957
+                    0.000058942, 0.00330943, 0.009683304, 0.414010634, 0.022973067, 0.030664353, 
+                    0.60868601, 0.006745365, 0.046892055, 0.067318463, 0.004318957
                     ]
+    initial_guess = initial_guess[:n_matrices*11]
     target = {
         'incidence': np.array([1.9, 9.0, 20.9, 39.7, 57.9, 68.8, 71.4, 70.4, 69.9]),
         'lc_mortality': np.array([0.29, 5.0, 13.4, 26.6, 42.5, 51.1, 52.0, 52.3, 53.9]),
@@ -90,25 +98,39 @@ def calibrate_lung_model():
     }
     params = [('x{}'.format(i), '') for i, _ in enumerate(initial_guess)]
     bounds = [(.75*p, min(1.25*p, 1)) for p in initial_guess]
-    model = RModel(script_path=os.path.abspath('models/lung/calibration_wrapper.R'), 
+    model = RModel(script_path=os.path.abspath('{}/../models/lung/calibration_wrapper.R'.format(os.path.dirname(__file__))), 
                     r_function='make.calibration.func', 
                     population='',
-                    global_vars={'N_MATRICES': len(initial_guess)//11})
+                    global_vars={'N_MATRICES': n_matrices})
                     
     extractor = LCModelExtractor()
     error = WeightedError(target=target)
 
-    # nm_optimizer = NelderMeadOptimizer()
-    # calibrate(model, nm_optimizer, params, bounds, extractor, error, initial_guess=initial_guess)
+    nm_optimizer = NelderMeadOptimizer()
+    calibrate(model,
+              nm_optimizer,
+              params,
+              bounds,
+              extractor,
+              error,
+              initial_guess=initial_guess,
+              label='{}_{}'.format(label, n_matrices))
 
-    bo_optimizer = BayesianOptimizer(initial_points=10, n_evaluations=40)
-    calibrate(model, bo_optimizer, params, bounds, extractor, error
-    , silence_model_output=False
-    )
+    # annealing_optimizer = AnnealingOptimizer()
+    # calibrate(model, annealing_optimizer, params, bounds, extractor, error, initial_guess=initial_guess)
 
     # pso_optimizer = ParticleSwarmOptimizer()
     # calibrate(model, pso_optimizer, params, bounds, extractor, error, swarmsize=100, maxiter=100)
 
+    # bo_optimizer = BayesianOptimizer(initial_points=10, n_evaluations=40)
+    # calibrate(model, bo_optimizer, params, bounds, extractor, error
+    # , silence_model_output=False
+    # )
 
 if __name__ == '__main__':
-    calibrate_lung_model()
+    dfs = []
+    for i in range(1,9):
+        label = 'NM'
+        calibrate_lung_model(n_matrices=i, label=label)
+        dfs += [pd.read_csv('{}/../trace_{}_{}.csv'.format(os.path.dirname(__file__), label, i))]
+
