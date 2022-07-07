@@ -1,5 +1,6 @@
 import os
-from matplotlib.cbook import silent_list
+import json
+import concurrent.futures
 import numpy as np
 import pandas as pd
 from models import RModel
@@ -24,7 +25,12 @@ def calibrate(model, optimizer, params, bounds, extractor, error, **kwargs):
     print(' Model evaluations: {}'.format(result['evaluations']))
     print(' Time: {}'.format(result['time']))
     label = kwargs.get('label', optimizer.__class__.__name__)
-    result['trace'].to_csv('{}/../trace_{}.csv'.format(os.path.dirname(__file__), label), index_label='index')
+    trace = result['trace']
+    result['trace'] = None
+    result['x'] = result['x'].tolist()
+
+    json.dump(result, open('{}/phd/output/{}_info.csv'.format(os.path.expanduser('~'), label), 'w'))
+    trace.to_csv('{}/phd/output/{}_trace.csv'.format(os.path.expanduser('~'), label), index_label='index')
 
 
 def calibrate_endometrium_model():
@@ -61,7 +67,7 @@ def calibrate_endometrium_model():
     annealing_optimizer = AnnealingOptimizer()
     calibrate(model, annealing_optimizer, params, bounds, extractor, error)
 
-def calibrate_lung_model(n_matrices, label):
+def calibrate_lung_model(algorithm, n_matrices):
     initial_guess = [0.0000014899094538366, 0.00005867, 0.0373025655099923, 0.45001903545473, 
                     0.0310692140027966, 2.06599720339873E-06, 0.083259360316924, 0.0310687721751887, 
                     2.50782481130141E-06, 0.031069806, 1.47440016369862E-06
@@ -106,31 +112,67 @@ def calibrate_lung_model(n_matrices, label):
     extractor = LCModelExtractor()
     error = WeightedError(target=target)
 
-    nm_optimizer = NelderMeadOptimizer()
-    calibrate(model,
-              nm_optimizer,
-              params,
-              bounds,
-              extractor,
-              error,
-              initial_guess=initial_guess,
-              label='{}_{}'.format(label, n_matrices))
-
-    # annealing_optimizer = AnnealingOptimizer()
-    # calibrate(model, annealing_optimizer, params, bounds, extractor, error, initial_guess=initial_guess)
-
-    # pso_optimizer = ParticleSwarmOptimizer()
-    # calibrate(model, pso_optimizer, params, bounds, extractor, error, swarmsize=100, maxiter=100)
-
-    # bo_optimizer = BayesianOptimizer(initial_points=10, n_evaluations=40)
-    # calibrate(model, bo_optimizer, params, bounds, extractor, error
-    # , silence_model_output=False
-    # )
+    if algorithm == 'nelder-mead':
+        nm_optimizer = NelderMeadOptimizer()
+        calibrate(model,
+                nm_optimizer,
+                params,
+                bounds,
+                extractor,
+                error,
+                initial_guess=initial_guess,
+                label='{}_{}'.format(algorithm, n_matrices))
+    elif algorithm == 'annealing':
+        annealing_optimizer = AnnealingOptimizer()
+        calibrate(model,
+                  annealing_optimizer,
+                  params,
+                  bounds,
+                  extractor,
+                  error,
+                  initial_guess=initial_guess,
+                  label='{}_{}'.format(algorithm, n_matrices))
+    elif algorithm == 'pso':
+        pso_optimizer = ParticleSwarmOptimizer()
+        calibrate(model,
+                  pso_optimizer,
+                  params,
+                  bounds,
+                  extractor,
+                  error,
+                  swarmsize=n_matrices*100,
+                  maxiter=n_matrices*100,
+                  label='{}_{}'.format(algorithm, n_matrices))
+    elif algorithm == 'bayesian':
+        bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, n_evaluations=40+n_matrices*10)
+        calibrate(model,
+                  bo_optimizer,
+                  params,
+                  bounds,
+                  extractor,
+                  error,
+                  label='{}_{}'.format(algorithm, n_matrices)
+        , silence_model_output=False
+        )
+    else:
+        raise ValueError('Algorithm not implemented')
 
 if __name__ == '__main__':
+    algorithms = ['nelder-mead', 'annealing', 'pso', 'bayesian']
     dfs = []
-    for i in range(1,9):
-        label = 'NM'
-        calibrate_lung_model(n_matrices=i, label=label)
-        dfs += [pd.read_csv('{}/../trace_{}_{}.csv'.format(os.path.dirname(__file__), label, i))]
+    #for alg in algorithms:
+    #    for n_matrices in range(1,9):
+    #        calibrate_lung_model(algorithm=alg, n_matrices=n_matrices)
+    #        # dfs += [pd.read_csv('{}/../trace_{}_{}.csv'.format(os.path.dirname(__file__), alg, n_matrices))]
 
+    algorithms = ['nelder-mead', 'annealing']
+    for alg in algorithms:
+         with concurrent.futures.ProcessPoolExecutor(max_workers=9) as executor:
+             for n_matrices in range(1,10):
+                 executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
+         executor.shutdown(wait=True)
+
+    algorithms = ['pso', 'bayesian']
+    for alg in algorithms:
+        for n_matrices in range(1,10):
+            calibrate_lung_model(algorithm=alg, n_matrices=n_matrices)

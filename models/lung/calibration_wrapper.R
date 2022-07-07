@@ -90,14 +90,14 @@ calibration.func<-function(par,verbose=TRUE){
   dist <- 0
   
   # No negative probabilities
-    alpha <- 1  # Factor to multiply outputs when constraints not met
-    for(q in 1:N_MATRICES){
-    for(i in 1:36){
-      if(x1[[q]][i]<0){
-        alpha <- alpha - x1[[q]][i] * 1e1  # Modificat per forçar distancia derivable
-      }
-    }
-  }
+  #   alpha <- 1  # Factor to multiply outputs when constraints not met
+  #   for(q in 1:N_MATRICES){
+  #   for(i in 1:36){
+  #     if(x1[[q]][i]<0){
+  #       alpha <- alpha - x1[[q]][i] * 1e1  # Modificat per forçar distancia derivable
+  #     }
+  #   }
+  # }
 
   #el risc de morir de cancer ha d'augmentar en cada estat
  # for(q in 1:N_MATRICES){
@@ -106,9 +106,9 @@ calibration.func<-function(par,verbose=TRUE){
  #   }
  # }
 
-  incidence <- incidence * alpha
-  lc_mortality <- lcmort * alpha
-  other_mortality <- othermort * alpha
+  # incidence <- incidence * alpha
+  # lc_mortality <- lcmort * alpha
+  # other_mortality <- othermort * alpha
 
   result <- list(incidence=incidence,
                  lc_mortality=lcmort,

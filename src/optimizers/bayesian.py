@@ -1,4 +1,5 @@
 import rpy2.robjects as ro
+import pandas as pd
 import json
 import timeit
 from .base import Optimizer
@@ -34,6 +35,7 @@ class BayesianOptimizer(Optimizer):
     self.model = model
     bounds = list(zip(*bounds))
     search_space = Box(*bounds)
+    trace_errors = []
 
     self.model.setup(params)
     def model_evaluation_error(x):
@@ -43,6 +45,7 @@ class BayesianOptimizer(Optimizer):
         measure = measure_extractor.get_measure(json.loads(y_i))
         errors += [error_measure.calculate_error(measure)]
       errors = tf.reshape(tf.convert_to_tensor(errors), shape=(len(errors),1))
+      trace_errors.extend(errors)
       print('Errors: {}'.format(errors))
       return errors
 
@@ -77,5 +80,6 @@ class BayesianOptimizer(Optimizer):
       'error': min_error,
       'evaluations': len(dataset.observations),
       'time': stop_time - start_time,
+      'trace': pd.DataFrame({'error': errors}),
       'success': True,
     }

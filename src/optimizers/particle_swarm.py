@@ -1,4 +1,5 @@
 import rpy2.robjects as ro
+import pandas as pd
 import json
 import timeit
 from pyswarm import pso
@@ -16,6 +17,7 @@ class ParticleSwarmOptimizer(Optimizer):
     start_time = timeit.default_timer()
     self.model = model
     bounds = list(zip(*bounds))
+    trace_errors = []
     self.model_evaluations = 0
 
     self.model.setup(params)
@@ -39,10 +41,11 @@ class ParticleSwarmOptimizer(Optimizer):
         errors += [error_measure.calculate_error(measure)]
       error = error_measure.calculate_error(measure)
       self.model_evaluations = self.model_evaluations + 1
+      trace_errors.extend(errors)
       print('Error: {}'.format(error))
       return error
 
-    xopt, fopt = pso(model_evaluation_error, bounds[0], bounds[1], f_ieqcons=None, **kwargs)
+    xopt, fopt = pso(model_evaluation_error, bounds[0], bounds[1], f_ieqcons=None)
     
     stop_time = timeit.default_timer()
     return {
@@ -50,5 +53,6 @@ class ParticleSwarmOptimizer(Optimizer):
       'error': fopt,
       'evaluations': self.model_evaluations,
       'time': stop_time - start_time,
+      'trace': pd.DataFrame({'error': trace_errors}),
       'success': True,
     }
