@@ -17,6 +17,7 @@ class ScipyOptimizer(Optimizer):
   def _optimize(self, algorithm, model, params, bounds, measure_extractor, error_measure, silence_model_output=True, print_errors=True, **kwargs) -> list:
     start_time = timeit.default_timer()
     initial_guess = kwargs['initial_guess']
+    del kwargs['initial_guess']
     errors = []
     if kwargs.get('seed'):
       np.random.seed(kwargs['seed'])
@@ -29,7 +30,7 @@ class ScipyOptimizer(Optimizer):
       errors.extend([error])
       print('Error: {}'.format(error))
       return error
-    result = minimize(model_evaluation_error, initial_guess, method=algorithm, bounds=bounds)
+    result = minimize(model_evaluation_error, initial_guess, method=algorithm, bounds=bounds, **kwargs)
 
     stop_time = timeit.default_timer()
 

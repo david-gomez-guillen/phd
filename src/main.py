@@ -11,7 +11,7 @@ from optimizers.bayesian import BayesianOptimizer
 from optimizers.particle_swarm import ParticleSwarmOptimizer
 from optimizers.annealing import AnnealingOptimizer
 
-def calibrate(model, optimizer, params, bounds, extractor, error, **kwargs):
+def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwargs):
     result = optimizer.optimize(model, 
                                 params, 
                                 bounds, 
@@ -24,7 +24,6 @@ def calibrate(model, optimizer, params, bounds, extractor, error, **kwargs):
     print(' Error: {}'.format(result['error']))
     print(' Model evaluations: {}'.format(result['evaluations']))
     print(' Time: {}'.format(result['time']))
-    label = kwargs.get('label', optimizer.__class__.__name__)
     trace = result['trace']
     result['trace'] = None
     result['x'] = result['x'].tolist()
@@ -104,7 +103,7 @@ def calibrate_lung_model(algorithm, n_matrices):
     }
     params = [('x{}'.format(i), '') for i, _ in enumerate(initial_guess)]
     bounds = [(.75*p, min(1.25*p, 1)) for p in initial_guess]
-    model = RModel(script_path=os.path.abspath('{}/../models/lung/calibration_wrapper.R'.format(os.path.dirname(__file__))), 
+    model = RModel(script_path=os.path.expanduser('~/phd/models/lung/calibration_wrapper.R'.format(os.path.dirname(__file__))), 
                     r_function='make.calibration.func', 
                     population='',
                     global_vars={'N_MATRICES': n_matrices})
@@ -151,28 +150,25 @@ def calibrate_lung_model(algorithm, n_matrices):
                   bounds,
                   extractor,
                   error,
-                  label='{}_{}'.format(algorithm, n_matrices)
-        , silence_model_output=False
-        )
+                  label='{}_{}'.format(algorithm, n_matrices),
+                  silence_model_output=False)
     else:
         raise ValueError('Algorithm not implemented')
 
 if __name__ == '__main__':
-    algorithms = ['nelder-mead', 'annealing', 'pso', 'bayesian']
+    algorithms = [#'nelder-mead', 
+                  #'annealing', 
+                  #'pso', 
+                  'bayesian']
+    max_workers = [#9, 
+                   #9, 
+                   #1, 
+                   1]
     dfs = []
-    #for alg in algorithms:
-    #    for n_matrices in range(1,9):
-    #        calibrate_lung_model(algorithm=alg, n_matrices=n_matrices)
-    #        # dfs += [pd.read_csv('{}/../trace_{}_{}.csv'.format(os.path.dirname(__file__), alg, n_matrices))]
 
-    algorithms = ['nelder-mead', 'annealing']
-    for alg in algorithms:
-         with concurrent.futures.ProcessPoolExecutor(max_workers=9) as executor:
+    for i, alg in enumerate(algorithms):
+         with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
              for n_matrices in range(1,10):
                  executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
          executor.shutdown(wait=True)
 
-    algorithms = ['pso', 'bayesian']
-    for alg in algorithms:
-        for n_matrices in range(1,10):
-            calibrate_lung_model(algorithm=alg, n_matrices=n_matrices)

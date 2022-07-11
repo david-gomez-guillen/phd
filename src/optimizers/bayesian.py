@@ -1,4 +1,5 @@
 import rpy2.robjects as ro
+import numpy as np
 import pandas as pd
 import json
 import timeit
@@ -76,7 +77,7 @@ class BayesianOptimizer(Optimizer):
     
     stop_time = timeit.default_timer()
     return {
-      'x': min_x,
+      'x': np.array(min_x),
       'error': min_error,
       'evaluations': len(dataset.observations),
       'time': stop_time - start_time,

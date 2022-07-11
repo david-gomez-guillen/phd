@@ -20,7 +20,7 @@ class ParticleSwarmOptimizer(Optimizer):
     trace_errors = []
     self.model_evaluations = 0
 
-    self.model.setup(params)
+    model.setup(params, silence_model_output=silence_model_output)
     # def model_evaluation_error(x):
     #   y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
     #   errors = []
