@@ -37,19 +37,28 @@ class BayesianOptimizer(Optimizer):
     bounds = list(zip(*bounds))
     search_space = Box(*bounds)
     trace_errors = []
+    trace_times = []
+    n_iteration = 0
 
     self.model.setup(params)
     def model_evaluation_error(x):
-      y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
+      nonlocal last_time, trace_errors, trace_times, n_iteration
       errors = []
+      y = self.rpy_function_wrapper(self.model.evaluate)(x, silence_model_output=silence_model_output)
       for y_i in y:
         measure = measure_extractor.get_measure(json.loads(y_i))
         errors += [error_measure.calculate_error(measure)]
       errors = tf.reshape(tf.convert_to_tensor(errors), shape=(len(errors),1))
-      trace_errors.extend(errors)
-      print('Errors: {}'.format(errors))
+      now = timeit.default_timer()
+      trace_time = now - last_time
+      trace_errors.extend(errors.numpy().T.tolist())
+      trace_times.extend([trace_time] * len(y))
+      last_time = now
+      print('Iteration {}:\n Errors: {}\n Time: {}\n'.format(n_iteration, errors, trace_time))
+      n_iteration += 1
       return errors
 
+    last_time = timeit.default_timer()
     observer = trieste.objectives.utils.mk_observer(model_evaluation_error)
 
     initial_query_points = search_space.sample_sobol(self.initial_points)
@@ -57,7 +66,7 @@ class BayesianOptimizer(Optimizer):
 
     optimizer = trieste.models.optimizer.Optimizer(
       optimizer=gpflow.optimizers.Scipy(),
-      minimize_args=dict(method='Nelder-Mead')
+      #minimize_args=dict(method='Nelder-Mead')
     )
 
     gpflow_model = build_gpr(initial_data, search_space, likelihood_variance=1e-7)
@@ -66,6 +75,11 @@ class BayesianOptimizer(Optimizer):
                                                 num_kernel_samples=100)
 
     bo = trieste.bayesian_optimizer.BayesianOptimizer(observer, search_space)
+
+    # Reinitialize error tracking, excluding model initialization sampling
+    trace_errors = []
+    trace_times = []
+    last_time = timeit.default_timer()
 
     result = bo.optimize(self.n_evaluations, initial_data, surrogate_model)
     dataset = result.try_get_final_dataset()
@@ -81,6 +95,6 @@ class BayesianOptimizer(Optimizer):
       'error': min_error,
       'evaluations': len(dataset.observations),
       'time': stop_time - start_time,
-      'trace': pd.DataFrame({'error': errors}),
+      'trace': pd.DataFrame({'error': trace_errors, 'time': trace_times}),
       'success': True,
     }

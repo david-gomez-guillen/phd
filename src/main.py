@@ -11,6 +11,8 @@ from optimizers.bayesian import BayesianOptimizer
 from optimizers.particle_swarm import ParticleSwarmOptimizer
 from optimizers.annealing import AnnealingOptimizer
 
+PROJECT_PATH = os.path.abspath(os.path.join(__file__, os.path.pardir, os.path.pardir))
+
 def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwargs):
     result = optimizer.optimize(model, 
                                 params, 
@@ -28,8 +30,16 @@ def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwarg
     result['trace'] = None
     result['x'] = result['x'].tolist()
 
-    json.dump(result, open('{}/phd/output/{}_info.csv'.format(os.path.expanduser('~'), label), 'w'))
-    trace.to_csv('{}/phd/output/{}_trace.csv'.format(os.path.expanduser('~'), label), index_label='index')
+    trace['error'] = trace['error'].apply(lambda x: x[0])  # Assuming one value per line
+
+    jobid = os.getenv('SLURM_JOB_ID')
+    output_dir = 'output/{}'.format(jobid) if jobid else 'output'
+    try:
+        os.makedirs('{}/{}'.format(PROJECT_PATH, output_dir))
+    except FileExistsError:
+        pass
+    json.dump(result, open('{}/{}/{}_info.csv'.format(PROJECT_PATH, output_dir, label), 'w'))
+    trace.to_csv('{}/{}/{}_trace.csv'.format(PROJECT_PATH, output_dir, label), index_label='index')
 
 
 def calibrate_endometrium_model():
@@ -40,7 +50,7 @@ def calibrate_endometrium_model():
         0.119602721, 0.119602721, 0.119602721
     ]
     bounds = [(.75*p, min(1.25*p, 1)) for p in initial_guess]
-    model = RModel(script_path=os.path.abspath('models/endometrium/calibration_wrapper.R'), 
+    model = RModel(script_path='{}/models/endometrium/calibration_wrapper.R'.format(PROJECT_PATH), 
                     r_function='make.calibration.func', 
                     population='bleeding')
 
@@ -103,7 +113,7 @@ def calibrate_lung_model(algorithm, n_matrices):
     }
     params = [('x{}'.format(i), '') for i, _ in enumerate(initial_guess)]
     bounds = [(.75*p, min(1.25*p, 1)) for p in initial_guess]
-    model = RModel(script_path=os.path.expanduser('~/phd/models/lung/calibration_wrapper.R'.format(os.path.dirname(__file__))), 
+    model = RModel(script_path='{}/models/lung/calibration_wrapper.R'.format(PROJECT_PATH), 
                     r_function='make.calibration.func', 
                     population='',
                     global_vars={'N_MATRICES': n_matrices})
@@ -143,7 +153,8 @@ def calibrate_lung_model(algorithm, n_matrices):
                   maxiter=n_matrices*100,
                   label='{}_{}'.format(algorithm, n_matrices))
     elif algorithm == 'bayesian':
-        bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, n_evaluations=40+n_matrices*10)
+        bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, 
+                                         n_evaluations=20+n_matrices*15)
         calibrate(model,
                   bo_optimizer,
                   params,
@@ -172,3 +183,4 @@ if __name__ == '__main__':
                  executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
          executor.shutdown(wait=True)
 
+    # calibrate_lung_model(algorithm='bayesian', n_matrices=1)
