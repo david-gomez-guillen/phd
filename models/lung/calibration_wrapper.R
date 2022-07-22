@@ -1,5 +1,7 @@
 library(jsonlite)
 
+# N_MATRICES, STARTING_MATRIX set as global variables (constants)
+
 make.calibration.func <- function(population, param.names, param.strata) {
 
 calibration.func<-function(par,verbose=TRUE){
@@ -18,7 +20,7 @@ calibration.func<-function(par,verbose=TRUE){
   
   # Assemble vectors for matrices
   count=0
-  for(q in 1:N_MATRICES){
+  for(q in STARTING_MATRIX:N_MATRICES){
     a[q]=par[11*count+1] 
     b[q]=par[11*count+2]
     c[q]=par[11*count+3]
@@ -36,7 +38,7 @@ calibration.func<-function(par,verbose=TRUE){
   # Assemble matrices
   x1=list()
   x=list()
-  for(q in 1:N_MATRICES){
+  for(q in STARTING_MATRIX:N_MATRICES){
     x1[[q]]=c(1-a[q]-b[q],a[q],0,0,0,b[q],
               0,1-c[q]-d[q]-e[q]-f[q],c[q],d[q],e[q],f[q],
               0,0,1-g[q]-h[q]-l[q],g[q],h[q],l[q],
@@ -48,7 +50,7 @@ calibration.func<-function(par,verbose=TRUE){
   
   # Multiply matrices
   P=list()
-  for(q in 1:N_MATRICES){
+  for(q in STARTING_MATRIX:N_MATRICES){
     P[[q]]=diag(6)
     for(r in 1:60){
       P[[q]]=P[[q]]%*%x[[q]]
@@ -73,7 +75,7 @@ calibration.func<-function(par,verbose=TRUE){
   othermort[1]=P[[1]][1,6]*100000/5
   p=P[[1]]
   if (N_MATRICES > 1) {
-    for(q in 2:N_MATRICES){  
+    for(q in (1+STARTING_MATRIX):N_MATRICES){  
       p1=p[1,1]
       p2=p[1,2]
       p3=p[1,3]

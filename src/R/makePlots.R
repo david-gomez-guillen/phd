@@ -104,19 +104,76 @@ for(n in seq(9)) {
   dev.off()
 }
 
-# BO time boxplots
-plt <- ggplot(dff[dff$alg=='bayesian',], aes(x=index, y=time, color=n_matrices)) + 
-  geom_boxplot() +
-  xlab('Evaluation') +
-  ylab('Time (s)') +
-  ggtitle('BO iteration time boxplot by n_matrices')
-print(plt)
+### Bayesian outputs
+
+dfb <- dff[dff$alg=='bayesian',]
+dfb$label <- paste0(dfb$n_matrices, ' (', dfb$type, ')')
+
+dfbs <- dfb.cpu %>% group_by(n_matrices) %>% summarise(avg.time=mean(time), median.time=median(time))
+dfbs$n_matrices <- as.numeric(dfbs$n_matrices)
+
+dfb.cpu <- dfb[dfb$type=='cpu',]
+dfbs.cpu <- dfb.cpu %>% group_by(n_matrices) %>% summarise(avg.time=mean(time), median.time=median(time))
+dfbs.cpu$n_matrices <- as.numeric(dfbs.cpu$n_matrices)
+
+dfb.gpu <- dfb[dfb$type=='gpu',]
+dfbs.gpu <- dfb.gpu %>% group_by(n_matrices) %>% summarise(avg.time=mean(time), median.time=median(time))
+dfbs.gpu$n_matrices <- as.numeric(dfbs.gpu$n_matrices)
+
+# m.mean.exp <- lm(log(avg.time)~n_matrices, dfbs)
+# dfbs$expected.avg.time.exp <- exp(predict(m.mean.exp, list(n_matrices=dfbs$n_matrices)))
+# 
+# m.median <- lm(median.time~exp(n_matrices), dfbs)
+# dfbs$expected.median.time <- exp(predict(m.median, list(n_matrices=dfbs$n_matrices)))
+# 
+# m.mean.squared <- lm(avg.time^(1/2)~n_matrices, dfbs)
+# dfbs$expected.avg.time.squared <- exp(predict(m.mean.squared, list(n_matrices=dfbs$n_matrices)))
+# 
+# m.mean.cubic <- lm(avg.time^(1/3)~n_matrices, dfbs)
+# dfbs$expected.avg.time.cubic <- exp(predict(m.mean.cubic, list(n_matrices=dfbs$n_matrices)))
 
 # BO time plots by n_matrices
-plt <- ggplot(dff[dff$alg=='bayesian',], aes(x=index, y=time, color=n_matrices, linetype=type)) + 
+plt <- ggplot(dfb, aes(x=index, y=time, color=n_matrices, linetype=type)) + 
   geom_line() +
   xlab('Iteration') +
   ylab('Time (s)') +
-  ggtitle('BO iteration time by iteration and n_matrices')
+  ggtitle('BO (CPU) iteration time by iteration and n_matrices')
 print(plt)
 
+
+# BO time boxplots (CPU & GPU)
+plt <- ggplot(dfb, aes(x=n_matrices, y=time, fill=type)) + 
+  geom_boxplot() +
+  xlab('Number of matrices') +
+  ylab('Time (s)') +
+  ggtitle('BO (CPU) iteration time boxplot by n_matrices')
+# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
+print(plt)
+
+
+# BO time boxplots (CPU)
+plt <- ggplot(dfb.cpu, aes(x=n_matrices, y=time)) + 
+  geom_boxplot() +
+  geom_point(data=dfbs.cpu, aes(x=n_matrices, y=avg.time), color='red', pch=18, size=4) +
+  geom_smooth(data=dfbs.cpu, method='lm', formula=y~exp(x), aes(x=n_matrices, y=avg.time), color='red') +
+  geom_smooth(data=dfbs.cpu, method='lm', formula=y~poly(x,2), aes(x=n_matrices, y=avg.time), color='blue') +
+  geom_smooth(data=dfbs.cpu, method='lm', formula=y~poly(x,3), aes(x=n_matrices, y=avg.time), color='green') +
+  xlab('Number of matrices') +
+  ylab('Time (s)') +
+  ggtitle('BO (CPU) iteration time boxplot by n_matrices')
+# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
+print(plt)
+
+
+# BO time boxplots (GPU)
+plt <- ggplot(dfb.gpu, aes(x=n_matrices, y=time)) + 
+  geom_boxplot() +
+  geom_point(data=dfbs.gpu, aes(x=n_matrices, y=avg.time), color='red', pch=18, size=4) +
+  geom_smooth(data=dfbs.gpu, method='lm', formula=y~exp(x), aes(x=n_matrices, y=avg.time), color='red') +
+  geom_smooth(data=dfbs.gpu, method='lm', formula=y~poly(x,2), aes(x=n_matrices, y=avg.time), color='blue') +
+  geom_smooth(data=dfbs.gpu, method='lm', formula=y~poly(x,3), aes(x=n_matrices, y=avg.time), color='green') +
+  xlab('Number of matrices') +
+  ylab('Time (s)') +
+  ggtitle('BO (GPU Quadro P620) iteration time boxplot by n_matrices')
+# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
+print(plt)

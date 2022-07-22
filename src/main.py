@@ -32,7 +32,7 @@ def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwarg
 
     trace['error'] = trace['error'].apply(lambda x: x[0])  # Assuming one value per line
 
-    jobid = os.getenv('SLURM_JOB_ID')
+    jobid = '{}_{}'.format(os.getenv('SLURM_JOB_NAME'), os.getenv('SLURM_JOB_ID'))
     output_dir = 'output/{}'.format(jobid) if jobid else 'output'
     try:
         os.makedirs('{}/{}'.format(PROJECT_PATH, output_dir))
@@ -76,7 +76,7 @@ def calibrate_endometrium_model():
     annealing_optimizer = AnnealingOptimizer()
     calibrate(model, annealing_optimizer, params, bounds, extractor, error)
 
-def calibrate_lung_model(algorithm, n_matrices):
+def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
     initial_guess = [0.0000014899094538366, 0.00005867, 0.0373025655099923, 0.45001903545473, 
                     0.0310692140027966, 2.06599720339873E-06, 0.083259360316924, 0.0310687721751887, 
                     2.50782481130141E-06, 0.031069806, 1.47440016369862E-06
@@ -105,7 +105,7 @@ def calibrate_lung_model(algorithm, n_matrices):
                     0.000058942, 0.00330943, 0.009683304, 0.414010634, 0.022973067, 0.030664353, 
                     0.60868601, 0.006745365, 0.046892055, 0.067318463, 0.004318957
                     ]
-    initial_guess = initial_guess[:n_matrices*11]
+    initial_guess = initial_guess[((starting_matrix-1)*11):(starting_matrix+n_matrices)*11]
     target = {
         'incidence': np.array([1.9, 9.0, 20.9, 39.7, 57.9, 68.8, 71.4, 70.4, 69.9]),
         'lc_mortality': np.array([0.29, 5.0, 13.4, 26.6, 42.5, 51.1, 52.0, 52.3, 53.9]),
@@ -116,7 +116,8 @@ def calibrate_lung_model(algorithm, n_matrices):
     model = RModel(script_path='{}/models/lung/calibration_wrapper.R'.format(PROJECT_PATH), 
                     r_function='make.calibration.func', 
                     population='',
-                    global_vars={'N_MATRICES': n_matrices})
+                    global_vars={'N_MATRICES': n_matrices,
+                                 'STARTING_MATRIX': starting_matrix})
                     
     extractor = LCModelExtractor()
     error = WeightedError(target=target)
@@ -124,13 +125,13 @@ def calibrate_lung_model(algorithm, n_matrices):
     if algorithm == 'nelder-mead':
         nm_optimizer = NelderMeadOptimizer()
         calibrate(model,
-                nm_optimizer,
-                params,
-                bounds,
-                extractor,
-                error,
-                initial_guess=initial_guess,
-                label='{}_{}'.format(algorithm, n_matrices))
+                  nm_optimizer,
+                  params,
+                  bounds,
+                  extractor,
+                  error,
+                  initial_guess=initial_guess,
+                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
     elif algorithm == 'annealing':
         annealing_optimizer = AnnealingOptimizer()
         calibrate(model,
@@ -140,7 +141,7 @@ def calibrate_lung_model(algorithm, n_matrices):
                   extractor,
                   error,
                   initial_guess=initial_guess,
-                  label='{}_{}'.format(algorithm, n_matrices))
+                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
     elif algorithm == 'pso':
         pso_optimizer = ParticleSwarmOptimizer()
         calibrate(model,
@@ -151,7 +152,7 @@ def calibrate_lung_model(algorithm, n_matrices):
                   error,
                   swarmsize=n_matrices*100,
                   maxiter=n_matrices*100,
-                  label='{}_{}'.format(algorithm, n_matrices))
+                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
     elif algorithm == 'bayesian':
         bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, 
                                          n_evaluations=20+n_matrices*15)
@@ -161,26 +162,37 @@ def calibrate_lung_model(algorithm, n_matrices):
                   bounds,
                   extractor,
                   error,
-                  label='{}_{}'.format(algorithm, n_matrices),
+                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices),
                   silence_model_output=False)
     else:
         raise ValueError('Algorithm not implemented')
 
 if __name__ == '__main__':
-    algorithms = [#'nelder-mead', 
-                  #'annealing', 
-                  #'pso', 
-                  'bayesian']
-    max_workers = [#9, 
-                   #9, 
-                   #1, 
-                   1]
+    parameters = [
+        # ('nelder-mead', 9),
+        # ('annealing', 9),
+        # ('pso', 1),
+        ('bayesian', 1)
+        ]
     dfs = []
 
-    for i, alg in enumerate(algorithms):
-         with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
-             for n_matrices in range(1,10):
-                 executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
-         executor.shutdown(wait=True)
+    # for i, alg in enumerate(algorithms):
+    #      with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
+    #          for n_matrices in range(1,10):
+    #              executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
+    #      executor.shutdown(wait=True)
+
+    # for i, alg in enumerate(algorithms):
+    #     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
+    #         for last_matrix in range(1,10):
+    #             for starting_matrix in range(1,last_matrix+1):
+    #                 executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
+    #             executor.shutdown(wait=True)
+
+    for alg, n_workers in parameters:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
+            for starting_matrix in range(1,10):
+                executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
+            executor.shutdown(wait=True)
 
     # calibrate_lung_model(algorithm='bayesian', n_matrices=1)
