@@ -133,47 +133,82 @@ dfbs.gpu$n_matrices <- as.numeric(dfbs.gpu$n_matrices)
 # dfbs$expected.avg.time.cubic <- exp(predict(m.mean.cubic, list(n_matrices=dfbs$n_matrices)))
 
 # BO time plots by n_matrices
-plt <- ggplot(dfb, aes(x=index, y=time, color=n_matrices, linetype=type)) + 
+plt.time <- ggplot(dfb, aes(x=index, y=time, color=n_matrices, linetype=type)) + 
   geom_line() +
   xlab('Iteration') +
   ylab('Time (s)') +
-  ggtitle('BO (CPU) iteration time by iteration and n_matrices')
-print(plt)
+  ggtitle('BO iteration time by n_matrices')
+ggsave('output/figures/bo_time.png', plt.time, width=10, height=8)
+print(plt.time)
 
+# BO time plot for many evaluations (CPU + 1 matrix)
+df.long <- read.csv('output/bayesian_1_trace_2000iter_cpu.csv')
+df.long$index <- 1:nrow(df.long)
+df.long$col <- 'red'
+plt.long.cpu <- ggplot(df.long, aes(x=index, y=time)) + 
+  geom_point() +
+  geom_smooth(method='lm', formula=y~poly(x,2), mapping=aes(color='red')) +
+  geom_smooth(method='lm', formula=y~poly(x,3), mapping=aes(color='blue')) +
+  xlab('Iteration') +
+  ylab('Time (s)') +
+  scale_color_manual(values=c('red', 'blue'), breaks=c('red', 'blue'), labels=c('Quadratic', 'Cubic'), name='Fit') +
+  ggtitle('BO iteration time (CPU, 1 matrix)')
+ggsave('output/figures/bo_time_cpu_long.png', plt.long.cpu, width=10, height=8)
+print(plt.long.cpu)
+
+# BO time plot for many evaluations (GPU + 1 matrix)
+df.long <- read.csv('output/bayesian_1_trace_2000iter_gpu.csv')
+df.long$index <- 1:nrow(df.long)
+plt.long.gpu <- ggplot(df.long, aes(x=index, y=time)) + 
+  geom_point() +
+  geom_smooth(method='lm', formula=y~poly(x,2), mapping=aes(color='red')) +
+  geom_smooth(method='lm', formula=y~poly(x,3), mapping=aes(color='blue')) +
+  xlab('Iteration') +
+  ylab('Time (s)') +
+  scale_color_manual(values=c('red', 'blue'), breaks=c('red', 'blue'), labels=c('Quadratic', 'Cubic'), name='Fit') +
+  ggtitle('BO iteration time (GPU, 1 matrix)')
+ggsave('output/figures/bo_time_gpu_long.png', plt.long.gpu, width=10, height=8)
+print(plt.long.gpu)
 
 # BO time boxplots (CPU & GPU)
-plt <- ggplot(dfb, aes(x=n_matrices, y=time, fill=type)) + 
+plt.box <- ggplot(dfb, aes(x=n_matrices, y=time, fill=type)) + 
   geom_boxplot() +
   xlab('Number of matrices') +
   ylab('Time (s)') +
   ggtitle('BO (CPU) iteration time boxplot by n_matrices')
-# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
-print(plt)
+ggsave('output/figures/bo_boxplot.png', plt.box, width=10, height=8)
+print(plt.box)
 
 
 # BO time boxplots (CPU)
-plt <- ggplot(dfb.cpu, aes(x=n_matrices, y=time)) + 
-  geom_boxplot() +
-  geom_point(data=dfbs.cpu, aes(x=n_matrices, y=avg.time), color='red', pch=18, size=4) +
-  geom_smooth(data=dfbs.cpu, method='lm', formula=y~exp(x), aes(x=n_matrices, y=avg.time), color='red') +
-  geom_smooth(data=dfbs.cpu, method='lm', formula=y~poly(x,2), aes(x=n_matrices, y=avg.time), color='blue') +
-  geom_smooth(data=dfbs.cpu, method='lm', formula=y~poly(x,3), aes(x=n_matrices, y=avg.time), color='green') +
+plt.box.cpu <- ggplot(dfbs.cpu, aes(x=n_matrices, y=avg.time)) + 
+  geom_boxplot(data=dfb.cpu, mapping = aes(x=n_matrices, y=time)) +
+  geom_point(aes(x=n_matrices, y=avg.time), color='orange', pch=18, size=4) +
+  geom_smooth(method='lm', formula=y~exp(x), mapping=aes(color='red')) +
+  geom_smooth(method='lm', formula=y~poly(x,2), mapping=aes(color='blue')) +
+  geom_smooth(method='lm', formula=y~poly(x,3), mapping=aes(color='green')) +
   xlab('Number of matrices') +
   ylab('Time (s)') +
+  scale_color_manual(name='Fit', 
+                     values=c('red', 'blue', 'green'), 
+                     labels=c('Quadratic', 'Cubic', 'Exponential')) +
   ggtitle('BO (CPU) iteration time boxplot by n_matrices')
-# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
-print(plt)
+ggsave('output/figures/bo_boxplot_cpu.png', plt.box.cpu, width=10, height=8)
+print(plt.box.cpu)
 
 
 # BO time boxplots (GPU)
-plt <- ggplot(dfb.gpu, aes(x=n_matrices, y=time)) + 
-  geom_boxplot() +
-  geom_point(data=dfbs.gpu, aes(x=n_matrices, y=avg.time), color='red', pch=18, size=4) +
-  geom_smooth(data=dfbs.gpu, method='lm', formula=y~exp(x), aes(x=n_matrices, y=avg.time), color='red') +
-  geom_smooth(data=dfbs.gpu, method='lm', formula=y~poly(x,2), aes(x=n_matrices, y=avg.time), color='blue') +
-  geom_smooth(data=dfbs.gpu, method='lm', formula=y~poly(x,3), aes(x=n_matrices, y=avg.time), color='green') +
+plt.box.gpu <- ggplot(dfbs.gpu, aes(x=n_matrices, y=avg.time)) + 
+  geom_boxplot(data=dfb.gpu, mapping = aes(x=n_matrices, y=time)) +
+  geom_point(aes(x=n_matrices, y=avg.time), color='orange', pch=18, size=4) +
+  geom_smooth(method='lm', formula=y~exp(x), mapping=aes(color='red')) +
+  geom_smooth(method='lm', formula=y~poly(x,2), mapping=aes(color='blue')) +
+  geom_smooth(method='lm', formula=y~poly(x,3), mapping=aes(color='green')) +
   xlab('Number of matrices') +
   ylab('Time (s)') +
+  scale_color_manual(name='Fit', 
+                     values=c('red', 'blue', 'green'), 
+                     labels=c('Quadratic', 'Cubic', 'Exponential')) +
   ggtitle('BO (GPU Quadro P620) iteration time boxplot by n_matrices')
-# scale_color_manual('', breaks=c('Exponential', 'Quadratic', 'Cubic'), values = c('red', 'blue', 'green'))
-print(plt)
+ggsave('output/figures/bo_boxplot_gpu.png', plt.box.gpu, width=10, height=8)
+print(plt.box.gpu)

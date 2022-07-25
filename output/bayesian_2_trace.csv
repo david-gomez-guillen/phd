@@ -1,0 +1,3 @@
+index,error,time
+0,"tf.Tensor([1.29202628], shape=(1,), dtype=float64)",14.149105484830216
+1,"tf.Tensor([1.25584507], shape=(1,), dtype=float64)",13.211027015000582
