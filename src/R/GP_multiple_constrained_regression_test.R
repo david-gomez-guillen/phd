@@ -1,13 +1,14 @@
 library(MASS)
 library(ggplot2)
 library(cowplot)
+library(mvtnorm)
 
 ### Kernel
 k <- function(x,x2) exp(-(x-x2)^2)
 # k <- function(x,x2) exp(-5*(x-x2)^2)
 
 # Kernel for constraint model
-k.c <- function(x,x2) exp(-(x-x2)^2)
+k.c <- function(x,x2) exp(-5*(x-x2)^2)
 
 # Objective function noise
 f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
@@ -15,8 +16,37 @@ f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
 f.noise <- 0
 
 # Constraint (constraint(x) < lambda)
-constraint <- function(x) sin(1.3*(x-4.5))
-c.lambda <- .6
+x.plt <- seq(0, 10, .01)
+constraint <- function(x) {
+  return(c(
+    sin(1.3*(x-4.5)),
+    ifelse(x<5, tan(x), cos(x)),
+    (x-7)^2
+  ))
+}
+c.lambda <- c(
+  .6, 
+  .5,
+  15
+)
+
+# Quick plot to display each constraint's cover
+constraint.plots <- lapply(seq(length(c.lambda)+1), function(i) {
+  if (i < length(c.lambda) + 1) {
+    plt.df <- data.frame(x=x.plt, y=sapply(x.plt, function(x) constraint(x)[i] < c.lambda[i]))
+    plt <- ggplot(plt.df, aes(x=x, y=y)) + 
+      geom_point() +
+      scale_y_discrete(breaks=c(F,T), limits=c(F,T)) +
+      ylab(paste0('Restriction ', i))
+  } else {
+    plt.df <- data.frame(x=x.plt, y=sapply(x.plt, function(x) all(constraint(x) < c.lambda)))
+    plt <- ggplot(plt.df, aes(x=x, y=y)) + 
+      geom_point() +
+      ylab('All restrictions')
+  }
+  return(plt)
+})
+plot_grid(plotlist=constraint.plots, nrow=length(constraint.plots), align='v')
 
 # Constant prior value
 prior.mu <- 0
@@ -26,8 +56,9 @@ x.limits <- c(0, 10)
 y.limits <- c(-3, 3)
 
 # Optimization values
-n.iterations <- 30
+n.iterations <- 50
 batch.size <- 1
+
 
 
 # Function definitions
@@ -53,8 +84,6 @@ calculate.regression.model <- function(X, y, cx) {
     Ks <- outer(Xs, X, k)
     Kss <- outer(Xs, Xs, k)
     S <- Kss - Ks %*% Ki %*% t(Ks)
-    if (Xs %in% observed.x)
-      S <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
     S <- apply(S, 1:2, function(x) max(x,0)) # Numerical instability, (small) negative values should be 0
     return(S)
   }
@@ -73,25 +102,28 @@ calculate.regression.model <- function(X, y, cx) {
   
   fs.c <- function(Xs) {
     Ks.c <- outer(Xs, X, k.c)
-    return(prior.mu + Ks.c %*% Ki.c %*% (cx - prior.mu))
+    mu.c <- apply(cx, 2, function(cx.i) {
+      prior.mu + Ks.c %*% Ki.c %*% (cx.i - prior.mu)
+    })
+    return(mu.c)
+    # return(prior.mu + Ks.c %*% Ki.c %*% (cx - prior.mu))
   }
   
   sigma.c <- function(Xs) {
     Ks.c <- outer(Xs, X, k.c)
     Kss.c <- outer(Xs, Xs, k.c)
     S.c <- Kss.c - Ks.c %*% Ki.c %*% t(Ks.c)
-    if (Xs %in% observed.x)
-      S <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
-    S.c <- apply(S.c, 1:2, function(x) max(x,0)) # Numerical instability, (small) negative values should be 0
+    S.c <- diag(ncol(cx)) * c(apply(S.c, 1:2, function(x) max(x,0))) # Numerical instability, (small) negative values should be 0
     return(S.c)
   }
   
-  feasable.index <- constraint(X) < c.lambda
+  feasable.index <- sapply(X, function(x) all(constraint(x) < c.lambda))
   
   if (d== 0 || sum(feasable.index) == 0) {
     best.x <- prior.mu
     best.y <- -1e10
   } else {
+    feasable.index <- sapply(X, function(x) all(constraint(x) < c.lambda))
     feasable.x <- X[feasable.index]
     feasable.y <- y[feasable.index]
     best.x <- feasable.x[which.max(feasable.y)]
@@ -140,7 +172,8 @@ acq.func.ei <- function(gp.model, x) {
 }
 
 acq.func.pf <- function(gp.model, x) {
-  return(pnorm(c.lambda, mean=gp.model$mean.c(x), sd=sqrt(gp.model$cov.c(x))))
+  # return(pnorm(c.lambda, mean=gp.model$mean.c(x), sd=sqrt(gp.model$cov.c(x))))
+  return(suppressWarnings(pmvnorm(lower=rep(-Inf, length(c.lambda)), upper=c.lambda, mean=gp.model$mean.c(x), sigma=sqrt(gp.model$cov.c(x)))[1]))
 }
 
 acq.func.cei <- function(gp.model, x) {
@@ -149,21 +182,25 @@ acq.func.cei <- function(gp.model, x) {
   return(ei*pf)
 }
 
+calculate.unfeasable.area <- function(x, n=NULL) {
+  if (is.null(n)) n <- 1:length(c.lambda)
+  restrictions <- constraint(x)[n] < c.lambda[n]
+  return(all(restrictions))
+}
+
 
 
 # Build target function plot
 
-x.plt <- seq(0, 10, .01)
 xx <- x.plt
 yy <- f(xx)
 df <- data.frame(x=xx, y=yy)
+yy.constraints <- lapply(xx, function(x) constraint(x))
 
-df.constraint <- data.frame(xmin=xx, ymin=-Inf, ymax=Inf, fill=constraint(xx)<c.lambda)
-rect.bounds <- c(df.constraint$fill,T) != c(!df.constraint[1,'fill'],df.constraint$fill)
-rect.bounds[nrow(df.constraint)] <- TRUE
-df.constraint <- df.constraint[rect.bounds,]
-df.constraint$xmax <- c(df.constraint[2:nrow(df.constraint),'xmin'], -1)
-df.constraint <- df.constraint[1:(nrow(df.constraint)-2),]
+df.constraint <- data.frame(xmin=xx, ymin=-Inf, ymax=Inf, fill=sapply(xx, function(x) calculate.unfeasable.area(x)))
+shifted.fill <- c('_', df.constraint$fill[1:(nrow(df.constraint)-1)])
+df.constraint <- df.constraint[df.constraint$fill != shifted.fill,]
+df.constraint$xmax <- c(df.constraint$xmin[2:nrow(df.constraint)], xx[length(xx)])
 
 plt.f <- ggplot(df, aes(x=x, y=y)) + 
   geom_rect(data=df.constraint, inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, fill=fill), alpha=.2) +
@@ -175,12 +212,11 @@ plt.f <- ggplot(df, aes(x=x, y=y)) +
 plt.f
 
 
-
 # Start optimization
 
 observed.x <- numeric(0)
 observed.y <- numeric(0)
-observed.c <- numeric(0)
+observed.c <- matrix(nrow=0, ncol=length(c.lambda))
 
 set.seed(1)
 
@@ -219,7 +255,7 @@ for(n in seq(n.iterations)) {
   yy.c <- sapply(xx, function(x) acq.func.pf(gp.model,x))
   df.c <- data.frame(x=xx, y=yy.c, ymin=yy.c-ss, ymax=yy.c+ss, fill=yy.c > .5)
   df.c$xmin <- df.c$x
-  df.c$xmax <- df.c$x + .01
+  df.c$xmax <- df.c$x + (xx[2]-xx[1])
   c.plt <- ggplot(df.c, aes(x=x, y=y, ymin=ymin, ymax=ymax)) + 
     geom_rect(inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, fill=fill), color=NA, ymin=-Inf, ymax=Inf, alpha=.1) +
     geom_line() +
@@ -232,7 +268,11 @@ for(n in seq(n.iterations)) {
   
   observed.x <- c(observed.x, next.evaluation.points)
   observed.y <- c(observed.y, f(next.evaluation.points))
-  observed.c <- c(observed.c, constraint(next.evaluation.points))
+  observed.c <- rbind(observed.c, 
+                      matrix(unlist(lapply(next.evaluation.points, constraint)), 
+                             ncol=3, 
+                             byrow = T)
+                      )
   
   df.acq <- data.frame(x=xx, y=yy.acq)
   acq.plt <- ggplot(df.acq, aes(x=x, y=y)) +
@@ -242,11 +282,11 @@ for(n in seq(n.iterations)) {
     xlim(x.limits)
   
   plt2 <- plot_grid(plt, ei.plt, c.plt, acq.plt, nrow=4, align='v')
-  
+
   # print(plt2)
   # browser()
   
-  png(paste0('output/gp/c_', n, '.png'), width=1700, height = 1000)
+  png(paste0('output/gp/c_m_', n, '.png'), width=1700, height = 1000)
   print(plt2)
   dev.off()
   cat(paste('Iteration',n,'\n'))
