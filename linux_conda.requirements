@@ -236,6 +236,7 @@ r-callr=3.7.0=r41hc72bb7e_0
 r-cellranger=1.1.0=r41hc72bb7e_1004
 r-cli=3.2.0=r41h03ef668_0
 r-colorspace=2.0_3=r41h06615bd_0
+r-cowplot=1.1.1=r41hc72bb7e_0
 r-cpp11=0.4.2=r41hc72bb7e_0
 r-crayon=1.5.0=r41hc72bb7e_0
 r-crosstalk=1.2.0=r41hc72bb7e_0
@@ -276,6 +277,7 @@ r-matrix=1.4_1=r41h0154571_0
 r-mgcv=1.8_40=r41h0154571_0
 r-mime=0.12=r41hcfec24a_0
 r-munsell=0.5.0=r41hc72bb7e_1004
+r-mvtnorm=1.1_3=r41h859d828_0
 r-nlme=3.1_157=r41h8da6f51_0
 r-openssl=2.0.0=r41hfaab4ff_0
 r-pbdzmq=0.3_7=r41h42bf92c_0

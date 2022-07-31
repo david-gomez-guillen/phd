@@ -200,6 +200,7 @@ r-callr
 r-cellranger
 r-cli
 r-colorspace
+r-cowplot
 r-cpp11
 r-crayon
 r-crosstalk
@@ -240,6 +241,7 @@ r-matrix
 r-mgcv
 r-mime
 r-munsell
+r-mvtnorm
 r-nlme
 r-openssl
 r-pbdzmq
