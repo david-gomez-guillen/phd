@@ -46,7 +46,7 @@ calculate.regression.model <- function(X, y) {
     Ks <- outer(Xs, X, k)
     Kss <- outer(Xs, Xs, k)
     S <- Kss - Ks %*% Ki %*% t(Ks)
-    if (Xs %in% observed.x)
+    if (Xs %in% observed.x && f.noise == 0)
       S <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
     S <- apply(S, 1:2, function(x) max(x,0)) # Numerical instability, (small) negative values should be 0
     return(S)

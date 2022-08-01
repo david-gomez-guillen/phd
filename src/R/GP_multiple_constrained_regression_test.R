@@ -8,7 +8,7 @@ k <- function(x,x2) exp(-(x-x2)^2)
 # k <- function(x,x2) exp(-5*(x-x2)^2)
 
 # Kernel for constraint model
-k.c <- function(x,x2) exp(-5*(x-x2)^2)
+k.c <- function(x,x2) exp(-(x-x2)^2)
 
 # Objective function noise
 f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
@@ -84,6 +84,8 @@ calculate.regression.model <- function(X, y, cx) {
     Ks <- outer(Xs, X, k)
     Kss <- outer(Xs, Xs, k)
     S <- Kss - Ks %*% Ki %*% t(Ks)
+    if (Xs %in% observed.x && f.noise == 0)
+      S <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
     S <- apply(S, 1:2, function(x) max(x,0)) # Numerical instability, (small) negative values should be 0
     return(S)
   }
@@ -113,6 +115,8 @@ calculate.regression.model <- function(X, y, cx) {
     Ks.c <- outer(Xs, X, k.c)
     Kss.c <- outer(Xs, Xs, k.c)
     S.c <- Kss.c - Ks.c %*% Ki.c %*% t(Ks.c)
+    if (Xs %in% observed.x && f.noise == 0)
+      S.c <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
     S.c <- diag(ncol(cx)) * c(apply(S.c, 1:2, function(x) max(x,0))) # Numerical instability, (small) negative values should be 0
     return(S.c)
   }
