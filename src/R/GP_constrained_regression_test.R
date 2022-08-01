@@ -221,7 +221,7 @@ for(n in seq(n.iterations)) {
   df.c$xmin <- df.c$x
   df.c$xmax <- df.c$x + .01
   c.plt <- ggplot(df.c, aes(x=x, y=y, ymin=ymin, ymax=ymax)) + 
-    geom_rect(inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, fill=fill), color=NA, ymin=-Inf, ymax=Inf, alpha=.1) +
+    geom_rect(inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, fill=fill), color=NA, ymin=-Inf, ymax=Inf, alpha=.05) +
     geom_line() +
     geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
     ylim(0,1) +

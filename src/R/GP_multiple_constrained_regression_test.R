@@ -20,13 +20,13 @@ x.plt <- seq(0, 10, .01)
 constraint <- function(x) {
   return(c(
     sin(1.3*(x-4.5)),
-    ifelse(x<5, tan(x), cos(x)),
+    ifelse(x<5, exp(sin(x-5)), cos(x)),
     (x-7)^2
   ))
 }
 c.lambda <- c(
   .6, 
-  .5,
+  1.5,
   15
 )
 
@@ -213,8 +213,27 @@ plt.f <- ggplot(df, aes(x=x, y=y)) +
   xlim(x.limits) +
   ylab('Gaussian process estimate') +
   theme(legend.position = "none")
-plt.f
 
+constraint.plt.list <- lapply(seq_along(c.lambda), function(i) {
+  yy.ci <- sapply(xx, function(x) constraint(x)[i])
+  df.ci <- data.frame(x=xx, y=yy.ci, fill=yy.ci<c.lambda[i])
+  df.ci$xmin <- df.ci$x
+  df.ci$xmax <- df.ci$x + (xx[2]-xx[1])
+  plt.ci <- ggplot(df.ci, aes(x=x, y=y, xmin=xmin, xmax=xmax)) + 
+    geom_rect(aes(fill=fill), ymin=-Inf, ymax=Inf, color=NA, alpha=.2) +
+    geom_line(size=2, alpha=.3) +
+    geom_hline(yintercept = c.lambda[i], linetype='dotted') +
+    scale_fill_manual(name='Region', breaks=c(FALSE, TRUE), values=c('red', 'green'), labels=c('Unfeasable', 'Feasable')) +
+    coord_cartesian(xlim=x.limits) +
+    ylab(paste0('Restriction ', i)) +
+    theme(legend.position = "none")
+  return(plt.ci)
+})
+
+list.plt <- append(list(plt.f), constraint.plt.list)
+
+plt.cs <- plot_grid(plotlist=list.plt, align='v', nrow=length(c.lambda)+1)
+print(plt.cs)
 
 # Start optimization
 
@@ -261,7 +280,7 @@ for(n in seq(n.iterations)) {
   df.c$xmin <- df.c$x
   df.c$xmax <- df.c$x + (xx[2]-xx[1])
   c.plt <- ggplot(df.c, aes(x=x, y=y, ymin=ymin, ymax=ymax)) + 
-    geom_rect(inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, fill=fill), color=NA, ymin=-Inf, ymax=Inf, alpha=.1) +
+    geom_rect(inherit.aes = FALSE, mapping=aes(xmin=xmin, xmax=xmax, fill=fill), color=NA, ymin=-Inf, ymax=Inf, alpha=.05) +
     geom_line() +
     geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
     ylim(0,1) +
@@ -270,14 +289,6 @@ for(n in seq(n.iterations)) {
     scale_color_manual(name='Region', breaks=c(FALSE, TRUE), values=c('red', 'green'), labels=c('Unfeasable', 'Feasable')) +
     theme(legend.position = "none")
   
-  observed.x <- c(observed.x, next.evaluation.points)
-  observed.y <- c(observed.y, f(next.evaluation.points))
-  observed.c <- rbind(observed.c, 
-                      matrix(unlist(lapply(next.evaluation.points, constraint)), 
-                             ncol=3, 
-                             byrow = T)
-                      )
-  
   df.acq <- data.frame(x=xx, y=yy.acq)
   acq.plt <- ggplot(df.acq, aes(x=x, y=y)) +
     geom_line() +
@@ -285,7 +296,47 @@ for(n in seq(n.iterations)) {
     ylab('Constrained Expected Improvement') +
     xlim(x.limits)
   
-  plt2 <- plot_grid(plt, ei.plt, c.plt, acq.plt, nrow=4, align='v')
+  constraint.est.plt.list <- lapply(seq_along(c.lambda), function(i) {
+    yy.ci <- sapply(xx, function(x)gp.model$mean.c(x)[i])
+    yy.ci.real <- sapply(xx, function(x) constraint(x)[i])
+    ss.ci <- sapply(xx, function(x)gp.model$cov.c(x)[i,i])
+    df.ci <- data.frame(x=xx, y=yy.ci, yr=yy.ci.real, ymin=yy.ci-ss.ci, ymax=yy.ci+ss.ci, fill=yy.ci<c.lambda[i])
+    df.ci$xmin <- df.ci$x
+    df.ci$xmax <- df.ci$x + (xx[2]-xx[1])
+    
+    points.df.ci <- data.frame(x=observed.x, y=as.numeric(sapply(observed.x, function(x) constraint(x)[i])))
+    next.points.df.ci <- data.frame(x=next.evaluation.points, y=as.numeric(sapply(next.evaluation.points, function(x) constraint(x)[i])))
+    
+    plt.ci <- ggplot(df.ci, aes(x=x, y=y, xmin=xmin, xmax=xmax, fill)) + 
+      geom_rect(mapping=aes(xmin=xmin, xmax=xmax, fill=fill), ymin=-Inf, ymax=Inf, color=NA, alpha=.05) +
+      geom_line(mapping=aes(x=x, y=yr), size=2, alpha=.3) +
+      geom_line(linetype='solid', color='blue', size=2) +
+      geom_ribbon(aes(ymin=ymin, ymax=ymax), fill='blue', alpha=.2) +
+      geom_point(data=points.df.ci, inherit.aes = FALSE, mapping=aes(x=x, y=y), color='black', size=3) +
+      geom_point(data=next.points.df.ci, inherit.aes = FALSE, mapping=aes(x=x, y=y), color='red', size=3) +
+      geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
+      geom_hline(yintercept = c.lambda[i], linetype='dotted') +
+      # scale_fill_manual(name='Region', breaks=c(FALSE, TRUE), values=c('red', 'green'), labels=c('Unfeasable', 'Feasable')) +
+      coord_cartesian(xlim=x.limits) +
+      ylab(paste0('Restriction ', i)) +
+      scale_fill_manual(name='Region', breaks=c(FALSE, TRUE), values=c('red', 'green'), labels=c('Unfeasable', 'Feasable')) +
+      scale_color_manual(name='Region', breaks=c(FALSE, TRUE), values=c('red', 'green'), labels=c('Unfeasable', 'Feasable')) +
+      theme(legend.position = "none")
+    return(plt.ci)
+  })
+  
+  observed.x <- c(observed.x, next.evaluation.points)
+  observed.y <- c(observed.y, f(next.evaluation.points))
+  observed.c <- rbind(observed.c, 
+                      matrix(unlist(lapply(next.evaluation.points, constraint)), 
+                             ncol=3, 
+                             byrow = T)
+  )
+  
+  plts.iter <- append(append(list(plt), constraint.est.plt.list), list(ei.plt, c.plt, acq.plt))
+  plts.iter <- plts.iter[seq(-2,-(length(constraint.est.plt.list)+1))]
+  
+  plt2 <- plot_grid(plotlist = plts.iter, nrow=length(plts.iter), align='v')
 
   # print(plt2)
   # browser()
