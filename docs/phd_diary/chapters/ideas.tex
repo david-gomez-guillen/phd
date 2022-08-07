@@ -4,6 +4,14 @@
 
 \label{sec:ideas} % For referencing the chapter elsewhere, use \ref{Chapter1} 
 
+\section{Sequential Model-Based Optimization (SMBO)}
+Current tests are performed using regular Bayesian Optimization (BO) via Gaussian Processes. The error functions that we are trying to optimize are not particularly time-consuming, so other more naive approaches work better by giving good values in a much shorter time. In order to improve the SMBO method for these uses we can focus on different areas:
+
+\subsection{Constraints}
+\subsection{Kernel selection/composition}
+\subsection{Batch iterations}
+\subsection{Surrogate model}
+
 \section{Calibration over original inputs}
 
 In the standard calibration procedure we change the transition probabilities in the matrices, assuming they are independent and enforcing constraints in the error calculation step. One alternative would be to calibrate over those relevant original inputs (i.e. those found in the literature, studies, expert opinions, ...) and then calculate the transition probabilities (and possibly other inputs of the model) from them. With this method we preserve and inject the knowledge we have about the domain into the model (that is, how to calculate the probabilities from the scientific sources, assumptions, implicit restrictions, ...).
