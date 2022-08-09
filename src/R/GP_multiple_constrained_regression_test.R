@@ -5,7 +5,7 @@ library(mvtnorm)
 
 ### Kernel
 k <- function(x,x2) exp(-(x-x2)^2)
-# k <- function(x,x2) exp(-5*(x-x2)^2)
+# k <- function(x,x2) exp(-abs(x-x2))
 
 # Kernel for constraint model
 k.c <- function(x,x2) exp(-(x-x2)^2)
@@ -20,13 +20,13 @@ x.plt <- seq(0, 10, .01)
 constraint <- function(x) {
   return(c(
     sin(1.3*(x-4.5)),
-    ifelse(x<5, exp(sin(x-5)), cos(x)),
+    ifelse(x<4, exp(sin(x-5))+1, cos(x)),
     (x-7)^2
   ))
 }
 c.lambda <- c(
   .6, 
-  1.5,
+  .8,
   15
 )
 
@@ -56,7 +56,7 @@ x.limits <- c(0, 10)
 y.limits <- c(-3, 3)
 
 # Optimization values
-n.iterations <- 50
+n.iterations <- 30
 batch.size <- 1
 
 
@@ -115,9 +115,12 @@ calculate.regression.model <- function(X, y, cx) {
     Ks.c <- outer(Xs, X, k.c)
     Kss.c <- outer(Xs, Xs, k.c)
     S.c <- Kss.c - Ks.c %*% Ki.c %*% t(Ks.c)
+    
     if (Xs %in% observed.x && f.noise == 0)
-      S.c <- matrix(0) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
+      S.c <- matrix(rep(0,ncol(cx)^2), nrow=ncol(cx)) # Due to numerical instability values already observed haved a non-zero sigma, forcing 0 here
+    
     S.c <- diag(ncol(cx)) * c(apply(S.c, 1:2, function(x) max(x,0))) # Numerical instability, (small) negative values should be 0
+
     return(S.c)
   }
   
@@ -334,7 +337,7 @@ for(n in seq(n.iterations)) {
   )
   
   plts.iter <- append(append(list(plt), constraint.est.plt.list), list(ei.plt, c.plt, acq.plt))
-  plts.iter <- plts.iter[seq(-2,-(length(constraint.est.plt.list)+1))]
+  # plts.iter <- plts.iter[seq(-2,-(length(constraint.est.plt.list)+1))]
   
   plt2 <- plot_grid(plotlist = plts.iter, nrow=length(plts.iter), align='v')
 
