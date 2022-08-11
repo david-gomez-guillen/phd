@@ -48,8 +48,9 @@ constraint.plots <- lapply(seq(length(c.lambda)+1), function(i) {
 })
 plot_grid(plotlist=constraint.plots, nrow=length(constraint.plots), align='v')
 
-# Constant prior value
-prior.mu <- 0
+# GP prior means
+prior.mu <- function(x) 0
+prior.mu.c <- function(x) 0
 
 # Plot values
 x.limits <- c(0, 10)
@@ -77,7 +78,7 @@ calculate.regression.model <- function(X, y, cx) {
   
   fs <- function(Xs) {
     Ks <- outer(Xs, X, k)
-    return(prior.mu + Ks %*% Ki %*% (y - prior.mu))
+    return(prior.mu(Xs) + Ks %*% Ki %*% (y - prior.mu(X)))
   }
   
   sigma <- function(Xs) {
@@ -105,7 +106,7 @@ calculate.regression.model <- function(X, y, cx) {
   fs.c <- function(Xs) {
     Ks.c <- outer(Xs, X, k.c)
     mu.c <- apply(cx, 2, function(cx.i) {
-      prior.mu + Ks.c %*% Ki.c %*% (cx.i - prior.mu)
+      prior.mu.c(Xs) + Ks.c %*% Ki.c %*% (cx.i - prior.mu.c(X))
     })
     return(mu.c)
     # return(prior.mu + Ks.c %*% Ki.c %*% (cx - prior.mu))
@@ -127,7 +128,7 @@ calculate.regression.model <- function(X, y, cx) {
   feasable.index <- sapply(X, function(x) all(constraint(x) < c.lambda))
   
   if (d== 0 || sum(feasable.index) == 0) {
-    best.x <- prior.mu
+    best.x <- prior.mu(0)
     best.y <- -1e10
   } else {
     feasable.index <- sapply(X, function(x) all(constraint(x) < c.lambda))

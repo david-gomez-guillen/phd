@@ -18,8 +18,9 @@ f.noise <- 0
 constraint <- function(x) sin(1.3*(x-4.5))
 c.lambda <- .6
 
-# Constant prior value
-prior.mu <- 0
+# GP prior means
+prior.mu <- function(x) 0
+prior.mu.c <- function(x) 0
 
 # Plot values
 x.limits <- c(0, 10)
@@ -46,7 +47,7 @@ calculate.regression.model <- function(X, y, cx) {
   
   fs <- function(Xs) {
     Ks <- outer(Xs, X, k)
-    return(prior.mu + Ks %*% Ki %*% (y - prior.mu))
+    return(prior.mu(Xs) + Ks %*% Ki %*% (y - prior.mu(X)))
   }
   
   sigma <- function(Xs) {
@@ -73,7 +74,7 @@ calculate.regression.model <- function(X, y, cx) {
   
   fs.c <- function(Xs) {
     Ks.c <- outer(Xs, X, k.c)
-    return(prior.mu + Ks.c %*% Ki.c %*% (cx - prior.mu))
+    return(prior.mu.c(Xs) + Ks.c %*% Ki.c %*% (cx - prior.mu.c(X)))
   }
   
   sigma.c <- function(Xs) {
@@ -89,7 +90,7 @@ calculate.regression.model <- function(X, y, cx) {
   feasable.index <- constraint(X) < c.lambda
   
   if (d== 0 || sum(feasable.index) == 0) {
-    best.x <- prior.mu
+    best.x <- prior.mu(0)
     best.y <- -1e10
   } else {
     feasable.x <- X[feasable.index]

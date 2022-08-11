@@ -11,8 +11,8 @@ f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
 # f <- function(x) -exp(-x)*sin(2*pi*x)
 f.noise <- 0
 
-# Constant prior value
-prior.mu <- 0
+# GP prior mean
+prior.mu <- function(x) 0
 
 # Plot values
 x.limits <- c(0, 10)
@@ -39,7 +39,7 @@ calculate.regression.model <- function(X, y) {
   
   fs <- function(Xs) {
     Ks <- outer(Xs, X, k)
-    return(prior.mu + Ks %*% Ki %*% (y - prior.mu))
+    return(prior.mu(Xs) + Ks %*% Ki %*% (y - prior.mu(Xs)))
   }
   
   sigma <- function(Xs) {
@@ -53,7 +53,7 @@ calculate.regression.model <- function(X, y) {
   }
   
   if (d== 0) {
-    best.x <- prior.mu
+    best.x <- prior.mu(0)
     best.y <- -1e10
   } else {
     best.x <- X[which.max(y)]
