@@ -6,8 +6,8 @@ Use `setup.sh` or the following commands:
 conda create -n <env_name> -c conda-forge -y --strict-channel-priority --file <requirements_file>
 conda activate <env_name>
 
-# Trieste package for bayesian optimization, only available from pip
-pip install trieste
+# Trieste package for bayesian optimization and pyswarm, only available from pip
+pip install trieste pyswarm
 
 # CEAModel package, for endometrium model
 R CMD INSTALL models/r-ceamodel
