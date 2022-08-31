@@ -30,7 +30,7 @@ def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwarg
     result['trace'] = None
     result['x'] = result['x'].tolist()
 
-    trace['error'] = trace['error'].apply(lambda x: x[0])  # Assuming one value per line
+    trace['error'] = trace['error'].apply(lambda x: x if type(x) is float else x[0])  # Assuming one value per line
 
     jobid = '{}_{}'.format(os.getenv('SLURM_JOB_NAME'), os.getenv('SLURM_JOB_ID'))
     output_dir = 'output/{}'.format(jobid) if jobid else 'output'
@@ -131,7 +131,10 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
                   extractor,
                   error,
                   initial_guess=initial_guess,
-                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
+                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices),
+                  options={'maxiter':n_matrices*11*10000,
+                           'xatol': 1e-12,
+                           'fatol': 1e-12})
     elif algorithm == 'annealing':
         annealing_optimizer = AnnealingOptimizer()
         calibrate(model,
@@ -150,8 +153,8 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
                   bounds,
                   extractor,
                   error,
-                  swarmsize=n_matrices*100,
-                  maxiter=n_matrices*100,
+                  swarmsize=n_matrices*1000,
+                  maxiter=n_matrices*1000,
                   label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
     elif algorithm == 'bayesian':
         bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, 
@@ -169,30 +172,36 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
 
 if __name__ == '__main__':
     parameters = [
-        # ('nelder-mead', 9),
+        # ('nelder-mead', 5),
         # ('annealing', 9),
-        # ('pso', 1),
-        ('bayesian', 1)
+        ('pso', 1),
+        # ('bayesian', 1)
         ]
-    dfs = []
+    dfs = []    
+    results = []
 
-    # for i, alg in enumerate(algorithms):
-    #      with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
-    #          for n_matrices in range(1,10):
-    #              executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices)
-    #      executor.shutdown(wait=True)
+    for alg, n_workers in parameters:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
+            for n_matrices in range(5,10):
+                results.append(executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices))
+        executor.shutdown(wait=True)
 
-    # for i, alg in enumerate(algorithms):
-    #     with concurrent.futures.ProcessPoolExecutor(max_workers=max_workers[i]) as executor:
+    # for alg, n_workers in parameters:
+    #     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
     #         for last_matrix in range(1,10):
     #             for starting_matrix in range(1,last_matrix+1):
     #                 executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
     #             executor.shutdown(wait=True)
 
-    for alg, n_workers in parameters:
-        with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-            for starting_matrix in range(1,10):
-                executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
-            executor.shutdown(wait=True)
+    # for alg, n_workers in parameters:
+    #     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
+    #         for starting_matrix in range(1,10):
+    #             executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
+    #         executor.shutdown(wait=True)
 
     # calibrate_lung_model(algorithm='bayesian', n_matrices=1)
+
+
+    # Print possible exceptions
+    for r in results:
+        print(r.exception())
