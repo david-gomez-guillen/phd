@@ -4,11 +4,11 @@ library(cowplot)
 library(hydroPSO)
 
 ### Kernel
-k <- function(x,x2) exp(-(x-x2)^2)
+k <- function(x,x2) 2*exp(-10*(x-x2)^2)
 # k <- function(x,x2) exp(-5*(x-x2)^2)
 
 # Objective function noise
-f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
+f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x^1.5)
 # f <- function(x) -exp(-x)*sin(2*pi*x)
 f.noise <- 0
 
@@ -20,7 +20,7 @@ x.limits <- c(0, 10)
 y.limits <- c(-3, 3)
 
 # Optimization values
-n.iterations <- 30
+n.iterations <- 50
 batch.size <- 1
 
 
@@ -65,15 +65,16 @@ calculate.regression.model <- function(X, y) {
 }
 
 choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
-  sink('/dev/null')
+  optim.func <- function(x) -acq.func(gp.model, x)
   best <- tryCatch(suppressMessages(
-    hydroPSO(fn=function(x) -acq.func(gp.model, x), 
+    hydroPSO(fn=optim.func,
              lower=0, 
              upper=10, 
              control=list(
-               npart=2
-               ))), 
-    finally=sink())
+               npart=10
+               )))
+    # ,finally=sink()
+    )
   return(best$par)
 }
 
@@ -166,10 +167,16 @@ for(n in seq(n.iterations)) {
   acq.plt <- ggplot(df.acq, aes(x=x, y=y)) +
     geom_line() +
     geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
-    ylab('Acquisition measure') +
+    ylab('Expected Improvement') +
     xlim(x.limits)
   
-  plt2 <- plot_grid(plt, acq.plt, nrow=2, align='v')
+  log.acq.plt <- ggplot(df.acq, aes(x=x, y=log(y))) +
+    geom_line() +
+    geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
+    ylab('Log Expected Improvement') +
+    xlim(x.limits)
+  
+  plt2 <- plot_grid(plt, acq.plt, log.acq.plt, nrow=3, align='v')
   
   print(plt2)
   # browser()
