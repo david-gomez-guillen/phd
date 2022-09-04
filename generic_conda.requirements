@@ -209,6 +209,7 @@ r-data.table
 r-desc
 r-diffobj
 r-digest
+r-doparallel
 r-dplyr
 r-ellipsis
 r-evaluate

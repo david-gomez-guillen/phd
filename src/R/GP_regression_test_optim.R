@@ -8,7 +8,7 @@ k <- function(x,x2) 2*exp(-10*(x-x2)^2)
 # k <- function(x,x2) exp(-5*(x-x2)^2)
 
 # Objective function noise
-f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x^1.5)
+f <- function(x) sin(1.2*x) + sin((10.0 / 3) * x)
 # f <- function(x) -exp(-x)*sin(2*pi*x)
 f.noise <- 0
 
@@ -178,12 +178,12 @@ for(n in seq(n.iterations)) {
   
   plt2 <- plot_grid(plt, acq.plt, log.acq.plt, nrow=3, align='v')
   
-  print(plt2)
+  # print(plt2)
   # browser()
   
-  # png(paste0('output/gp/', n, '.png'), width=1700, height = 1000)
-  # print(plt2)
-  # dev.off()
+  png(paste0('output/gp/optim_', n, '.png'), width=1700, height = 1000)
+  print(plt2)
+  dev.off()
   cat(paste('Iteration',n,'\n'))
 }
 

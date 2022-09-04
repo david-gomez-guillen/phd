@@ -11,3 +11,4 @@ pip install trieste pyswarm
 R CMD INSTALL models/r-ceamodel
 R CMD build models/lung/lcsimul.dev
 R CMD INSTALL models/lung/lcsimul.dev*.tar.gz
+R -e "install.packages('hydroPSO', dependencies=TRUE, repos='https://cran.rstudio.com')"

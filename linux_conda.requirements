@@ -260,6 +260,7 @@ r-data.table=1.14.2=r41hcfec24a_0
 r-desc=1.4.1=r41hc72bb7e_0
 r-diffobj=0.3.5=r41hcfec24a_0
 r-digest=0.6.29=r41h03ef668_0
+r-doparallel=1.0.17=r41hc72bb7e_0
 r-dplyr=1.0.9=r41h7525677_0
 r-ellipsis=0.3.2=r41hcfec24a_0
 r-evaluate=0.16=r41hc72bb7e_0
