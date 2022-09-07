@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV_NAME=ce_calibration
+ENV_NAME=phd
 CONDA_PATH=`conda info --base`
 
 conda create -n $ENV_NAME -c conda-forge -y --strict-channel-priority --file linux_conda.requirements

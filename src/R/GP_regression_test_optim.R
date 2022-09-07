@@ -22,7 +22,7 @@ y.limits <- c(-3, 3)
 # Optimization values
 n.iterations <- 50
 batch.size <- 1
-
+n.pso.particles <- 10
 
 
 # Function definitions
@@ -71,7 +71,7 @@ choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
              lower=0, 
              upper=10, 
              control=list(
-               npart=10
+               npart=n.pso.particles
                )))
     # ,finally=sink()
     )
@@ -80,22 +80,6 @@ choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
 
 acq.func <- function(gp.model, x) {
   return(acq.func.ei(gp.model, x))
-}
-
-acq.func.ucb <- function(gp.model, x) {
-  mu <- gp.model$mean(x)
-  sigma <- sqrt(gp.model$cov(x)[1,1])
-  lambda <- 1
-  
-  return(mu + lambda * sigma)
-}
-
-acq.func.pi <- function(gp.model, x) {
-  mu <- gp.model$mean(x)
-  sigma <- sqrt(gp.model$cov(x)[1,1])
-  best.y <- gp.model$best.y
-  
-  return(pnorm((mu-best.y)/sigma))
 }
 
 acq.func.ei <- function(gp.model, x) {

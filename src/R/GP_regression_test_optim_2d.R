@@ -1,4 +1,6 @@
 library(MASS)
+library(plyr)
+library(dplyr)
 library(ggplot2)
 library(cowplot)
 library(hydroPSO)
@@ -10,7 +12,7 @@ library(RColorBrewer)
 
 ### Kernel
 k <- function(x,x2) {
-  5*exp(-.1*norm(x-x2,'2'))
+  4*exp(-.3*norm(x-x2,'2'))
 }
 
 # Objective function noise
@@ -26,9 +28,11 @@ x.limits <- c(0, 10)
 y.limits <- c(-3, 3)
 
 # Optimization values
-n.iterations <- 50
+n.iterations <- 200
 batch.size <- 1
-
+n.cores <- 7
+n.pso.particles <- 10
+use.optimization <- FALSE
 
 # Function definitions
 
@@ -57,12 +61,12 @@ calculate.regression.model <- function(X, y) {
     }))
     return(prior.mu(Xs) + Ks %*% Ki %*% (y - prior.mu(Xs)))
   }
-
-    
+  
+  
   sigma <- function(Xs) {
     Kss <- outer(1:nrow(Xs), 1:nrow(Xs), Vectorize(function(i,j) {
       k(Xs[i,], Xs[j,])
-      }))
+    }))
     # Kss <- apply(Xs, 1, function(r) k(r,r))
     
     if (nrow(X) == 0)
@@ -90,37 +94,40 @@ calculate.regression.model <- function(X, y) {
   return(list(mean=fs, cov=sigma, best.x=best.x, best.y=best.y))
 }
 
-# choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
-#   optim.func <- function(x) -acq.func(gp.model, x)
-#   # sink('/dev/null')
-#   best <- tryCatch(suppressMessages(
-#     hydroPSO(fn=optim.func,
-#              lower=c(0,0), 
-#              upper=c(10,10), 
-#              control=list(
-#                npart=100
-#                )))
-#     # ,finally=sink()
-#     )
-#   names(best$par) <- c('x1', 'x2')
-#   return(best$par)
-# }
-
-choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
-  y2 <- y.acq[!(x$x1 %in% observed.x$x1 & x$x2 %in% observed.x$x2)]
-  x2 <- x[!(x$x1 %in% observed.x$x1 & x$x2 %in% observed.x$x2),]
-  order.index <- order(y2, decreasing = T)
-  y2 <- y2[order.index]
-  x2 <- x2[order.index,]
-  n.best <- sum(y2==y2[1])
-  if (n.best == 1) {
-    best.x <- 1
-  } else {best.x <- sample(1:n.best, 1)}
-  permutation <- c(best.x,sample(2:nrow(x2)))
-  x2 <- x2[permutation,]
-  y2 <- y2[permutation]
-  next.evaluation.points <- unlist(x2[1:batch.size,])
-  return(next.evaluation.points)
+if (use.optimization) {
+  choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
+    optim.func <- function(x) -acq.func(gp.model, x)
+    # sink('/dev/null')
+    best <- tryCatch(suppressMessages(
+      hydroPSO(fn=optim.func,
+               lower=c(0,0),
+               upper=c(10,10),
+               control=list(
+                 npart=n.pso.particles
+               )))
+      # ,finally=sink()
+    )
+    names(best$par) <- c('x1', 'x2')
+    return(best$par)
+  }
+} else {
+  choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
+    selected.rows <- !rownames(xx) %in% rownames(match_df(x, observed.x))
+    y2 <- y.acq[selected.rows]
+    x2 <- x[selected.rows,]
+    order.index <- order(y2, decreasing = T)
+    y2 <- y2[order.index]
+    x2 <- x2[order.index,]
+    n.best <- sum(y2==y2[1])
+    if (n.best == 1) {
+      best.x <- 1
+    } else {best.x <- sample(1:n.best, 1)}
+    permutation <- c(best.x,sample(2:nrow(x2)))
+    x2 <- x2[permutation,]
+    y2 <- y2[permutation]
+    next.evaluation.points <- unlist(x2[1:batch.size,])
+    return(next.evaluation.points)
+  }
 }
 
 acq.func <- function(gp.model, x) {
@@ -132,8 +139,8 @@ acq.func.ei <- function(gp.model, x) {
   mu <- gp.model$mean(x2)
   tryCatch(
     sigma <- sqrt(gp.model$cov(x2)[1,1]),
-  warning=function(e) {
-    browser()})
+    warning=function(e) {
+      browser()})
   best.y <- gp.model$best.y
   if (sigma > 0) {
     return((mu-best.y)*pnorm((mu-best.y)/sigma) + sigma*dnorm((mu-best.y)/sigma))
@@ -158,12 +165,14 @@ color.breaks <- seq(-2,2,.4)
 
 plt.f <- ggplot(df.f, aes(x=x, y=y, z=z)) + 
   geom_contour_filled(
-    # breaks=color.breaks
-    ) +
+    breaks=color.breaks
+  ) +
+  scale_fill_viridis_d(drop=FALSE) +
   theme(legend.position = "bottom") +
   xlab('') +
   ylab('') +
   ggtitle('Target function')
+plt.f
 
 
 # Start optimization
@@ -174,29 +183,27 @@ observed.y <- numeric(0)
 
 set.seed(1)
 
-cl <- makeCluster(7)
+cl <- makeCluster(n.cores)
 clusterExport(cl, c('prior.mu', 'k'))
 registerDoParallel(cl)
 
 for(n in seq(n.iterations)) {
   gp.model <- calculate.regression.model(observed.x, observed.y)
   
-  # xx <- rbind(x.plt, observed.x)
   xx <- x.plt
-  # xx <- xx[!duplicated(xx)]
-  # xx <- xx[order(xx)]
-  # yy.acq0 <- apply(xx, 1, function(x) acq.func(gp.model, x))
   yy.acq <- foreach(x=iter(xx, by='row'), .combine = 'c') %dopar% {
     acq.func(gp.model, x)
   }
   
   next.evaluation.points <- choose.next.evaluation.points(xx, yy.acq, observed.x, gp.model)
+  if (n == 1) {
+    next.evaluation.points[1] <- 4
+    next.evaluation.points[2] <- 9
+  }  
   
-  # yy <- apply(xx, 1, function(x) gp.model$mean(data.frame(t(x))))
   yy <- foreach(x=iter(xx, by='row'), .combine='c') %dopar% {
     gp.model$mean(data.frame(x))
   }
-  # ss <- apply(xx, 1, function(x) sqrt(max(gp.model$cov(data.frame(t(x)))[1,1], 0)))
   ss <- foreach(x=iter(xx, by='row'), .combine='c') %dopar% {
     sqrt(max(gp.model$cov(data.frame(x))[1,1], 0))
   }
@@ -212,15 +219,14 @@ for(n in seq(n.iterations)) {
   plt.f2 <- plt.f +
     geom_point(data=points.df, color='black', size=3) +
     geom_point(data=next.points.df, color='red', size=3) +
-    geom_point(data=best.point.df, color='green', size=3)
+    geom_point(data=best.point.df, color='green', size=3) +
+    ggtitle(paste0('Iteration ', n))
   
   plt <- ggplot(df, aes(x=x, y=y, z=z)) +
     geom_contour_filled(
       breaks=color.breaks
-      ) +
-    # geom_line(data=df, linetype='solid', color='blue', size=2) +
-    # geom_ribbon(data=df, aes(ymin=ymin, ymax=ymax), fill='blue', alpha=.2) +
-    # geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
+    ) +
+    scale_fill_viridis_d(drop=FALSE) +
     geom_point(data=points.df, color='black', size=3) +
     geom_point(data=next.points.df, color='red', size=3) +
     geom_point(data=best.point.df, color='green', size=3) +
@@ -240,27 +246,14 @@ for(n in seq(n.iterations)) {
     xlab('') +
     ylab('') +
     ggtitle('Expected improvement')
-    # geom_line() +
-    # geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
-    # ylab('Expected Improvement') +
-    # xlim(x.limits)
-  
-  # log.acq.plt <- ggplot(df.acq, aes(x=x, y=log(y))) +
-  #   geom_line() +
-  #   geom_vline(xintercept = next.evaluation.points, linetype='dashed') +
-  #   ylab('Log Expected Improvement') +
-  #   xlim(x.limits)
   
   plt2 <- plot_grid(plt.f2, plt, acq.plt, ncol=3, align='h')
   
   # print(plt2)
-  # browser()
   
-  png(paste0('output/gp/bd_', n, '.png'), width=1700, height = 1000)
+  png(paste0(getwd(), '/output/gp/optim2d_', n, '.png'), width=1700, height = 1000)
   print(plt2)
   dev.off()
-  cat(paste('Iteration',n,'\n'))
-  
   
   # 3D plotly visualization
   
@@ -280,13 +273,14 @@ for(n in seq(n.iterations)) {
   p3 <- plot_ly(z=~m3, scene='scene3') %>% add_surface()
   
   pt <- subplot(p1, p2, p2.u, p2.l, p3, nrows=1) %>%
-    layout(scene = list(domain=list(x=c(0,1/3),y=c(0,1)),
-                        aspectmode='cube'),
-           scene2 = list(domain=list(x=c(1/3,2/3),y=c(0,1)),
+     layout(scene = list(domain=list(x=c(0,1/3),y=c(0,1)),
                          aspectmode='cube'),
-           scene3 = list(domain=list(x=c(2/3,1),y=c(0,1)),
-                         aspectmode='cube'))
-  saveWidget(pt, paste0(getwd(), '/output/gp/3d/', n, '.html'), selfcontained = FALSE, libdir=paste0(getwd(), '/output/gp/3d/lib'))
+            scene2 = list(domain=list(x=c(1/3,2/3),y=c(0,1)),
+                          aspectmode='cube'),
+            scene3 = list(domain=list(x=c(2/3,1),y=c(0,1)),
+                          aspectmode='cube'))
+   saveWidget(pt, paste0(getwd(), '/output/gp/3d/', n, '.html'), selfcontained = FALSE, libdir=paste0(getwd(), '/output/gp/3d/lib'))
+  
 }
 
 stopCluster(cl)
