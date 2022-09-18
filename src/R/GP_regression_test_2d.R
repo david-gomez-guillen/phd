@@ -112,7 +112,7 @@ if (use.optimization) {
   }
 } else {
   choose.next.evaluation.points <- function(x, y.acq, observed.x, gp.model) {
-    selected.rows <- !rownames(xx) %in% rownames(match_df(x, observed.x))
+    selected.rows <- !rownames(xx) %in% rownames(match_df(x, observed.x, on=c('x1', 'x2')))
     y2 <- y.acq[selected.rows]
     x2 <- x[selected.rows,]
     order.index <- order(y2, decreasing = T)
