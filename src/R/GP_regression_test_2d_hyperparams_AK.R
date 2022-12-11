@@ -108,14 +108,14 @@ build.k <- function(type, l, sigma2) {
     return(k)
   } else if (type == 'oak.gaussian') {
     k <- function(x,x2) {
+      kerneld <- function(x1,x2) {
+        -(2*crossprod(x1,x2) - crossprod(x1) - crossprod(x2))
+      }      
+      
       m1 <- as.matrix(x[,1])
       m2 <- as.matrix(x2[,1])
       
-      kernel1 <- rbfdot(sigma=1/(2*l[1]^2))        
-      kerneld <- function(x1,x2) {
-        -(2*crossprod(x1,x2) - crossprod(x1) - crossprod(x2))
-      }       
-      
+      kernel1 <- rbfdot(sigma=1/(2*l[1]^2))
       k1 <- kernelMatrix(kernel1, m1, m2)       
       exp.numerator1 <- kernelMatrix(kerneld, m1-input.means[1], m2-input.means[1])
       #exp.numerator1 <- (x[,1]-input.means[1])^2 + (x2[,1]-input.means[1])^2
@@ -123,14 +123,17 @@ build.k <- function(type, l, sigma2) {
         l[1]*sqrt(l[1]^2+2*input.vars[1]^2)/(l[1]^2+input.vars[1]^2) *
         exp(-exp.numerator1/(2*(l[1]^2+input.vars[1]^2)))
       
+      m1 <- as.matrix(x[,2])
+      m2 <- as.matrix(x2[,2])
       
       kernel2 <- rbfdot(sigma=1/(2*l[2]^2))
-      k2 <- kernelMatrix(kernel2, as.matrix(x[,2]), as.matrix(x2[,2]))
+      k2 <- kernelMatrix(kernel2, m1, m2)
       exp.numerator2 <- kernelMatrix(kerneld, m1-input.means[2], m2-input.means[2])
       #exp.numerator2 <- (x[,2]-input.means[2])^2 + (x2[,2]-input.means[2])^2
       k2 <- k2 - 
         l[2]*sqrt(l[2]^2+2*input.vars[2]^2)/(l[2]^2+input.vars[2]^2) *
         exp(-exp.numerator2/(2*(l[2]^2+input.vars[2]^2)))
+      
       return(sigma2[1] + sigma2[2]*(k1 + k2) + sigma2[3]*k1*k2)
     }
     return(k)
