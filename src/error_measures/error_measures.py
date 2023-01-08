@@ -35,7 +35,7 @@ class WeightedError(L2Error):
       'other_mortality': self.target['other_mortality'][:n_outputs]
     }
     return np.sum(
-              .45 * np.abs(y['incidence'] - target['incidence'])/target['incidence'] + \
-              .45 * np.abs(y['lc_mortality'] - target['lc_mortality'])/target['lc_mortality'] + \
-              .1 * np.abs(y['other_mortality'] - target['other_mortality'])/target['other_mortality']
+              .45 * (y['incidence'] - target['incidence'])**2/target['incidence'] + \
+              .45 * (y['lc_mortality'] - target['lc_mortality'])**2/target['lc_mortality'] + \
+              .1 * (y['other_mortality'] - target['other_mortality'])**2/target['other_mortality']
     )

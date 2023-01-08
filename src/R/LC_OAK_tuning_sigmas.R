@@ -25,7 +25,7 @@ f <- function(pars) {
     other.mortality=c(39.8893, 64.0476, 114.6431, 188.9474, 289.2546 ,417.0061, 604.7883, 996.8391, 1871.6366)
   )
   expectation <- lapply(expectation, function(m) m[1:n.matrices])
-  se <- sapply(1:3, function(i) (result[[i]] - expectation[[i]])^2)
+  se <- sapply(1:3, function(i) ((result[[i]] - expectation[[i]])^2)/expectation[[i]])
   return(sum(unlist(se) * c(.45, .45, .1)))
 }
 f.noise <- 1e-1
@@ -75,31 +75,39 @@ initial.guess <- initial.guess[1:(11*n.matrices)]
 lower.limits <- initial.guess * .5
 upper.limits <- initial.guess * 1.5
 
-# OAK parameters
-input.means <- rep(.5, 11*n.matrices)
-input.vars <- rep(.2, 11*n.matrices)
-
 # Plot values
 plot.gps <- FALSE
 x.limits <- c(0, 10)
 y.limits <- c(-3, 3)
 
+# OAK parameters
+input.means <- initial.guess
+input.sds <- sapply(initial.guess, function(x) (min(x,1-x) / 2))
+
 # Other values
-seed <- 935216
-n.cores <- 15
-n.iters.per.paramset <- 15
+seed <- 945987
+n.cores <- 12
+n.iters.per.paramset <- 30
 
 n.points <- 500
 n.points.test <- 500
 fixed.training <- FALSE
 fixed.test <- FALSE
-optimize.only.sigmas <- FALSE
-l.fixed.pars <- c(    2.33134449714195,1e-04,2.33134449714195,2.33134449714195,2.33134449714195,0.667197159326941,2.33134449714195,0.667197159326941,0.667197159326941,2.33134449714195,2.33134449714195)
+optimize.only.sigmas <- TRUE
+l.fixed.pars <- c(1e-7, 1e-5, 1e-3, 1e-2, 1e-3, 1e-7, 1e-3, 1e-3, 1e-7, 1e-3, 1e-7)
+# Increased lengthscales to avoid problems when inverting K (small condition number)
+# l.fixed.pars <- c(1e-6, 1e-4, 1e-1, 1e-2, 1e-1, 1e-6, 1e-1, 1e-1, 1e-5, 1e-1, 1e-7) 
 
 set.seed(234)
-fixed.training.data <- lapply(initial.guess, function(xi) runif(n.points.test, xi*.5, xi*1.5))
+# fixed.training.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.points, input.means[i], input.sds[i]))
+fixed.training.data <- lapply(seq_along(initial.guess), function(i) runif(n.points, 
+                                                                          input.means[i]-input.sds[i]*sqrt(12)/2, 
+                                                                          input.means[i]+input.sds[i]*sqrt(12)/2))
 set.seed(123)
-fixed.mse.test.data <- lapply(initial.guess, function(xi) runif(n.points.test, xi*.5, xi*1.5))
+# fixed.mse.test.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.points.test, input.means[i], input.sds[i]))
+fixed.mse.test.data <- lapply(seq_along(initial.guess), function(i) runif(n.points.test, 
+                                                                          input.means[i]-input.sds[i]*sqrt(12)/2, 
+                                                                          input.means[i]+input.sds[i]*sqrt(12)/2))
 
 # Kernel types: se, ak, ak1, ak2, oak.gaussian
 #kernel.type <- 'oak.gaussian'
@@ -128,9 +136,13 @@ get.init.params <- function(kernel.type) {
     upper.bounds <- c(rep(5, n.matrices*11), rep(50, n.matrices*11))
   } else if (kernel.type == 'oak.gaussian') {
     if (optimize.only.sigmas) {
-      initial.pars <- c(0,5,5,5,0,0,5,0,0,0,5,0)
-      lower.bounds <- rep(0, n.matrices*11)
-      upper.bounds <- rep(10, n.matrices*11)
+      # initial.pars <- c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      # lower.bounds <- rep(0, n.matrices*11)
+      # upper.bounds <- rep(50, n.matrices*11)
+      initial.pars <- c(50, 0.1)  # Optimize only for sigmas 0 and 1
+      # initial.pars <- c(0, 2.29, 0)  # Optimize only for sigmas 0, 1 and 11
+      lower.bounds <- rep(0, 3)
+      upper.bounds <- rep(100, 3)
     } else {
       # initial.pars <- c(2.33134449714195,1e-04,2.33134449714195,2.33134449714195,2.33134449714195,
       #                   0.667197159326941,2.33134449714195,0.667197159326941,0.667197159326941,2.33134449714195,
@@ -204,8 +216,8 @@ build.k <- function(type, l, sigma2) {
         # exp.numerator.i <- kernelMatrix(kerneld, m1-input.means[i], m2-input.means[i])
         exp.numerator.i <- log(kernelMatrix(rbfdot(1), m1-input.means[i], m2-input.means[i]))
         ki <- ki - 
-          l[i]*sqrt(l[i]^2+2*input.vars[i]^2)/(l[i]^2+input.vars[i]^2) *
-          exp(-exp.numerator.i/(2*(l[i]^2+input.vars[i]^2)))
+          l[i]*sqrt(l[i]^2+2*input.sds[i]^2)/(l[i]^2+input.sds[i]^2) *
+          exp(-exp.numerator.i/(2*(l[i]^2+input.sds[i]^2)))
         return(ki)
         # ki <- rbfdot(sigma=1/(2*l[i]^2))
         # ki <- kernelMatrix(ki, as.matrix(x[,i]), as.matrix(x2[,i]))
@@ -240,7 +252,7 @@ build.k <- function(type, l, sigma2) {
                         )
                  )
       }
-      return(Reduce('+', lapply(seq(1,length(sigma2)), function(i) sigma2[i] * additive.kernel[[i+1]])))
+      return(Reduce('+', lapply(seq(1,length(sigma2)), function(i) sigma2[i] * additive.kernel[[i]])))
     #   m1 <- as.matrix(x[,1])
     #   m2 <- as.matrix(x2[,1])
     #   
@@ -345,7 +357,19 @@ calculate.test.mse <- function(gp.model, kernel.type, observed.x, observed.y) {
   if (fixed.test) {
     test.data <- fixed.mse.test.data
   } else {
-    test.data <- lapply(initial.guess, function(xi) runif(n.points.test, xi*.5, xi*1.5))
+    test.data <- lapply(seq_along(initial.guess), function(i) runif(n.points.test,
+                                                                    input.means[i]-input.sds[i]*sqrt(12)/2, 
+                                                                    input.means[i]+input.sds[i]*sqrt(12)/2))
+    # test.data <- lapply(seq_along(initial.guess), function(i) {
+    #   x <- rnorm(n.points.test, input.means[i], input.sds[i])
+    #   oob <- x < 0 | x > 1
+    #   while (sum(oob) > 0) {
+    #     # message(sum(oob), ' points out of bounds, resampling...')
+    #     x <- c(x[!oob], rnorm(sum(oob), input.means[i], input.sds[i]))
+    #     oob <- x < 0 | x > 1
+    #   }
+    #   return(x)
+    #   })
   }
   names(test.data) <- paste0('x', seq_along(test.data))
   x.test <- data.frame(test.data)
@@ -377,7 +401,13 @@ calculate.params.ll <- function(pars, kernel.type) {
   } else if (kernel.type == 'oak.gaussian') {
     if (optimize.only.sigmas) {
       l <- l.fixed.pars
-      sigma2 <- pars
+      if (length(pars) == 2) { # Optimize for sigmas 0 and 1, 0 for the rest
+        sigma2 <- c(pars[1], pars[2], rep(0, 10))
+      } else if (length(pars) == 3) { # Optimize for sigmas 0, 1 and 11, 0 for the rest
+        sigma2 <- c(pars[1], pars[2], rep(0, 9), pars[3])
+      } else {
+        sigma2 <- pars
+      }
     } else {
       l <- pars[1:(n.matrices*11)]
       sigma2 <- pars[(n.matrices*11+1):(length(pars))]
@@ -387,14 +417,27 @@ calculate.params.ll <- function(pars, kernel.type) {
   k <- build.k(kernel.type, l, sigma2)
   
   start_time <- Sys.time()
-  # perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
-  perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
+  perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
+  # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
     gp.model <- NULL
+    attempt <- 1
     while (is.null(gp.model)) {
       if (fixed.training) {
         train.data <- fixed.training.data
       } else {
-        train.data <- lapply(initial.guess, function(xi) runif(n.points, xi*.5, xi*1.5))
+        train.data <- lapply(seq_along(initial.guess), function(i) runif(n.points, 
+                                                                         input.means[i]-input.sds[i]*sqrt(12)/2, 
+                                                                         input.means[i]+input.sds[i]*sqrt(12)/2))
+        # train.data <- lapply(seq_along(initial.guess), function(i) {
+        #   x <- rnorm(n.points, input.means[i], input.sds[i])
+        #   oob <- x < 0 | x > 1
+        #   while (sum(oob) > 0) {
+        #     # message(sum(oob), ' points out of bounds, resampling...')
+        #     x <- c(x[!oob], rnorm(sum(oob), input.means[i], input.sds[i]))
+        #     oob <- x < 0 | x > 1
+        #   }
+        #   return(x)
+        # })
       }
     
       names(train.data) <- paste0('x', seq_along(train.data))
@@ -406,7 +449,8 @@ calculate.params.ll <- function(pars, kernel.type) {
         },
                            error=function(e) {
                              if (grepl('system is computationally singular', e$message) && !fixed.training) {
-                               cat('Matrix is computationally singular, trying new matrices...\n')
+                               cat('Matrix is computationally singular, trying new matrices (', attempt, ')...\n')
+                               attempt <<- attempt + 1
                                return(NULL)
                              }
                              else stop(e)
@@ -456,15 +500,15 @@ cl <- makeForkCluster(n.cores, outfile='')
 # })
 # registerDoParallel(cl)
 optim.result <- optim(par=optim.params$initial.pars,
-                      method='SAN',
-                      # method='L-BFGS-B',
+                      # method='SAN',
+                      method='L-BFGS-B',
                       fn=calculate.params.ll,
                       lower=optim.params$lower.bounds,
                       upper=optim.params$upper.bounds,
                       control=list(
                         pgtol=0,
                         fnscale=fnscale,
-                        parscale=rep(100,length(optim.params$initial.pars)),
+                        parscale=rep(1000,length(optim.params$initial.pars)),
                         temp=100,
                         tmax=100,
                         maxit=100,

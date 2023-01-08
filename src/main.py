@@ -112,13 +112,13 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
         'other_mortality': np.array([39.8893, 64.0476, 114.6431, 188.9474, 289.2546 ,417.0061, 604.7883, 996.8391, 1871.6366])
     }
     params = [('x{}'.format(i), '') for i, _ in enumerate(initial_guess)]
-    bounds = [(.75*p, min(1.25*p, 1)) for p in initial_guess]
+    bounds = [(.5*p, min(1.5*p, 1)) for p in initial_guess]
     model = RModel(script_path='{}/models/lung/calibration_wrapper.R'.format(PROJECT_PATH), 
                     r_function='make.calibration.func', 
                     population='',
                     global_vars={'N_MATRICES': n_matrices,
                                  'STARTING_MATRIX': starting_matrix})
-                    
+                                 
     extractor = LCModelExtractor()
     error = WeightedError(target=target)
 
@@ -172,19 +172,19 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1):
 
 if __name__ == '__main__':
     parameters = [
-        # ('nelder-mead', 5),
+         ('nelder-mead', 5),
         # ('annealing', 9),
-        ('pso', 1),
+        # ('pso', 1),
         # ('bayesian', 1)
         ]
     dfs = []    
     results = []
 
-    for alg, n_workers in parameters:
-        with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-            for n_matrices in range(5,10):
-                results.append(executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices))
-        executor.shutdown(wait=True)
+    # for alg, n_workers in parameters:
+    #     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
+    #         for n_matrices in range(5,10):
+    #             results.append(executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=n_matrices))
+    #     executor.shutdown(wait=True)
 
     # for alg, n_workers in parameters:
     #     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     #             executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
     #         executor.shutdown(wait=True)
 
-    # calibrate_lung_model(algorithm='bayesian', n_matrices=1)
+    calibrate_lung_model(algorithm='nelder-mead', n_matrices=1)
 
 
     # Print possible exceptions
