@@ -13,7 +13,7 @@ library(optimParallel)
 library(pbapply)
 
 # Objective function
-N_MATRICES <- 1
+N_MATRICES <- 2
 STARTING_MATRIX <- 1
 source('../../models/lung/calibration_wrapper.R')
 f <- function(pars) {
@@ -28,13 +28,13 @@ f <- function(pars) {
   se <- sapply(1:3, function(i) ((result[[i]] - expectation[[i]])^2)/expectation[[i]])
   return(sum(unlist(se) * c(.45, .45, .1)))
 }
-f.noise <- 1e-1
+f.noise <- 1e-10
 
 # GP prior mean
 prior.mu <- function(x) 0
 
 # Model parameters
-n.matrices <- 1
+n.matrices <- 2
 n.pars <- n.matrices * 11
 initial.guess <- c(0.0000014899094538366, 0.00005867, 0.0373025655099923, 
                    0.45001903545473, 0.0310692140027966, 2.06599720339873e-06, 
@@ -90,9 +90,9 @@ seed <- 935
 n.cores <- 8
 n.iters.per.paramset <- 15
 
-n.points <- 1000
+n.points <- 200
 n.points.test <- 500
-fixed.training <- FALSE
+fixed.training <- TRUE
 fixed.test <- FALSE
 optimize.only.sigmas <- FALSE
 l.fixed.pars <- c(    2.33134449714195,1e-04,2.33134449714195,2.33134449714195,2.33134449714195,0.667197159326941,2.33134449714195,0.667197159326941,0.667197159326941,2.33134449714195,2.33134449714195)
@@ -107,7 +107,7 @@ fixed.mse.test.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.poin
 color.breaks <- seq(-2,2,.25)
 
 # Performance measures: loglikelihood, test.mse
-performance.measure <- 'test.mse'
+performance.measure <- 'loglikelihood'
 
 # Options
 # options(matprod='internal')
@@ -168,7 +168,14 @@ calculate.regression.model <- function(X, y, k) {
       Ki <- 1/(K + f.noise)
     } else {
       # ginv vs solve
-      Ki <- solve(matrix(unlist(K),nrow=nrow(K)) + f.noise*diag(nrow(K)))
+      Kmat <- matrix(unlist(K),nrow=nrow(K))
+      Ki <- NULL
+      jitter <- f.noise
+      while (is.null(Ki) && jitter < 1) {
+        try(Ki <- solve(Kmat + jitter*diag(nrow(K))), silent=TRUE)
+        jitter <- jitter * 10
+      }
+      if (is.null(Ki)) stop('Singular matrix, numerical instability problems')
     }
   }
   
@@ -217,12 +224,18 @@ calculate.regression.model <- function(X, y, k) {
 }
 
 calculate.loglik <- function(gp.model, kernel.type, observed.x, observed.y) {
-  Lu <- matrix(chol(gp.model$K), nrow=nrow(gp.model$K))
+  Lu <- NULL
+  jitter <- f.noise
+  while (is.null(Lu) && jitter < 1) {
+    try(Lu <- matrix(chol(gp.model$K + jitter*diag(nrow(gp.model$K))), nrow=nrow(gp.model$K)), silent=TRUE)
+    jitter <- jitter * 10
+  }
+  
   Ll <- t(Lu)
   S1 <- forwardsolve(Ll, observed.y)
   S2 <- backsolve(Lu, S1)
   
-  log.lik <- -sum(log(diag(Ll))) - .5 * observed.y %*% S2 - 0.5 * nrow(observed.x) + log(2*pi)
+  log.lik <- -sum(log(diag(Ll))) - .5 * observed.y %*% S2 - 0.5 * nrow(observed.x) * log(2*pi)
   return(log.lik)
 }
 
@@ -259,41 +272,58 @@ calculate.lengthscale.ll <- function(par, i, kernel.type) {
   
   start_time <- Sys.time()
   
-  cl <- makeForkCluster(n.cores, outfile='')
-  # clusterExport(cl, c('i'))
-  perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
-  # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
+  if (fixed.training) {
+    train.data <- fixed.training.data
+    names(train.data) <- paste0('x', seq_along(train.data))
+    observed.x <- data.frame(train.data)
+    
+    observed.y <- apply(observed.x, 1, f)
+    gp.model <- tryCatch({
+      calculate.regression.model(observed.x, observed.y, k)
+    },
+    error=function(e) {
+      if (grepl('system is computationally singular', e$message) && !fixed.training) {
+        cat('Matrix is computationally singular, trying new matrices...\n')
+        return(NULL)
+      }
+      else stop(e)
+    })
+    
+    perfs <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
+  } else {
+    cl <- makeForkCluster(n.cores, outfile='')
+    # clusterExport(cl, c('i'))
+    perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
+    # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
     gp.model <- NULL
     while (is.null(gp.model)) {
-      if (fixed.training) {
-        train.data <- fixed.training.data
-      } else {
-        train.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.points, input.means[i], sqrt(input.vars[i])))
-      }
-    
+      train.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.points, input.means[i], sqrt(input.vars[i])))
+      
       names(train.data) <- paste0('x', seq_along(train.data))
       observed.x <- data.frame(train.data)
       
       observed.y <- apply(observed.x, 1, f)
       gp.model <- tryCatch({
         calculate.regression.model(observed.x, observed.y, k)
-        },
-                           error=function(e) {
-                             if (grepl('system is computationally singular', e$message) && !fixed.training) {
-                               cat('Matrix is computationally singular, trying new matrices...\n')
-                               return(NULL)
-                             }
-                             else stop(e)
-                           })
+      },
+      error=function(e) {
+        if (grepl('system is computationally singular', e$message) && !fixed.training) {
+          cat('Matrix is computationally singular, trying new matrices...\n')
+          return(NULL)
+        }
+        else stop(e)
+      })
     }
+    
+    stopCluster(cl)
     
     perf <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
     if (is.na(perf)) browser()
     return(perf)
   })
-  stopCluster(cl)
-  elapsed_time <- Sys.time() - start_time
+  }
   
+  elapsed_time <- Sys.time() - start_time
   mean.perf <- mean(perfs)
   
   if (performance.measure == 'loglikelihood') perf.name <- 'll'
@@ -309,6 +339,7 @@ calculate.lengthscale.ll <- function(par, i, kernel.type) {
   cat(paste0(par, ': ', mean.perf))
   cat('\n')
   return(list(mean=mean.perf, sd=sd(perfs)))
+  # return(mean.perf)
 }
 
 
@@ -325,72 +356,65 @@ try(stopCluster(cl), silent=TRUE)
 #   library(foreach)
 # })
 # registerDoParallel(cl)
+maxima <- c()
 for(i in seq(1,n.pars)) {
-  # optim.result <- optim(par=optim.params$initial.pars[i],
-  #                       method='SAN',
-  #                       # method='L-BFGS-B',
-  #                       fn=calculate.lengthscale.ll,
-  #                       lower=optim.params$lower.bounds,
-  #                       upper=optim.params$upper.bounds,
-  #                       control=list(
-  #                         pgtol=0,
-  #                         fnscale=fnscale,
-  #                         parscale=100,
-  #                         temp=100,
-  #                         tmax=100,
-  #                         maxit=100,
-  #                         npart=1000
-  #                       ),
-  #                       # parallel=list(
-  #                       #   # cl=cl,
-  #                       #   loginfo=TRUE
-  #                       # ),
-  #                       kernel.type=kernel.type,
-  #                       i=i
-  # )
-  # cat(paste0('l_', i, ' = ', optim.result$par, '\n'))
-  x <- list(
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1),
-    10^seq(-12, 0, 1)
-  )
-  # x <- list(
-  #   10^seq(-8,-7,length.out=20),
-  #   10^seq(-6,-4,length.out=20),
-  #   10^seq(-4,-3,length.out=20),
-  #   10^seq(-3,-2,length.out=20),
-  #   10^seq(-4,-3,length.out=20),
-  #   10^seq(-8,-7,length.out=20),
-  #   10^seq(-4,-2,length.out=20),
-  #   10^seq(-4,-3,length.out=20),
-  #   10^seq(-8,-7,length.out=20),
-  #   10^seq(-4,-3,length.out=20),
-  #   10^seq(-8,-7,length.out=20)
-  # )
+  # x <- lapply(seq(n.pars), function(p) {
+  #   10^seq(-12,0,length.out=200)
+  # })
   
-  cat(paste0('Dimension ', i, '\n'))
-  errors <- lapply(x[[i]], FUN=function(l) {
-    error <- calculate.lengthscale.ll(l, i, 'oak.gaussian')
-    return(error)
+  x <- c(1.431966e-11,
+         1.123066e-08,
+         6.477296e-07,
+         3.763059e-05,
+         4.466573e-07,
+         1.182226e-10,
+         3.057711e-07,
+         3.383540e-07,
+         1.837769e-11,
+         5.512774e-08,
+         4.456879e-12,
+         7.806054e-10,
+         3.342089e-09,
+         3.815132e-07,
+         1.109359e-05,
+         6.086689e-06,
+         3.674198e-12,
+         3.975529e-06,
+         1.223983e-07,
+         2.154723e-10,
+         2.294625e-07,
+         4.896065e-12)
+  x <- lapply(x, function(xx) {
+    xxx <- log(xx, 10)
+    10^seq(xxx-.1,xxx+.1,length.out=50)
   })
-  df <- data.frame(x=x[[i]], error=sapply(errors, function(e)e$mean), sd=sapply(errors, function(e)e$sd))
+  
+  cat(paste0('\n\nDimension ', i, '\n'))
+  errors <- list()
+  for(j in seq_along(x[[i]])) {
+    l <- x[[i]][j]
+    err <- calculate.lengthscale.ll(l, i, 'oak.gaussian')
+    err$x <- l
+    if (err$mean < -34000) break
+    errors[[j]] <- err
+  }
+  
+  max.index <- which.max(sapply(errors, function(e)e$mean))
+  maximum <- errors[[max.index]]$x
+  maxima <- c(maxima, maximum)
+  
+  df <- data.frame(x=sapply(errors, function(e)e$x), error=sapply(errors, function(e)e$mean), sd=sapply(errors, function(e)e$sd))
   df$ymin <- df$error - df$sd
   df$ymax <- df$error + df$sd
-  plt <- ggplot(df, aes(x=x, y=error, ymin=ymin, ymax=ymax)) + 
-    geom_line() + 
+  plt <- ggplot(df, aes(x=x, y=error, ymin=ymin, ymax=ymax)) +
+    geom_line() +
     geom_ribbon(color='blue', alpha=.2, ) +
     scale_x_log10(name='lengthscale') +
     # scale_y_continuous(limits=c(0,13)) +
-    scale_y_continuous(limits=c(0,2.5)) +
+    # scale_y_continuous(limits=c(0,2.5)) +
     ggtitle(paste0('Dimension ', i))
   print(plt)
   ggsave(paste0('../../output/lengthscale', i, '.png'), plt, width=2400, height=1600, units = 'px')
 }
+
+print(maxima)

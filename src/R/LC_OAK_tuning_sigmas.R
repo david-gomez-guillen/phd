@@ -13,7 +13,7 @@ library(optimParallel)
 library(pbapply)
 
 # Objective function
-N_MATRICES <- 1
+N_MATRICES <- 2
 STARTING_MATRIX <- 1
 source('../../models/lung/calibration_wrapper.R')
 f <- function(pars) {
@@ -28,13 +28,13 @@ f <- function(pars) {
   se <- sapply(1:3, function(i) ((result[[i]] - expectation[[i]])^2)/expectation[[i]])
   return(sum(unlist(se) * c(.45, .45, .1)))
 }
-f.noise <- 1e-1
+f.noise <- 1e-10
 
 # GP prior mean
 prior.mu <- function(x) 0
 
 # Model parameters
-n.matrices <- 1
+n.matrices <- 2
 initial.guess <- c(0.0000014899094538366, 0.00005867, 0.0373025655099923, 
                    0.45001903545473, 0.0310692140027966, 2.06599720339873e-06, 
                    0.083259360316924, 0.0310687721751887, 2.50782481130141e-06, 
@@ -89,12 +89,12 @@ seed <- 945987
 n.cores <- 12
 n.iters.per.paramset <- 30
 
-n.points <- 500
+n.points <- 200
 n.points.test <- 500
-fixed.training <- FALSE
+fixed.training <- TRUE
 fixed.test <- FALSE
 optimize.only.sigmas <- TRUE
-l.fixed.pars <- c(1e-7, 1e-5, 1e-3, 1e-2, 1e-3, 1e-7, 1e-3, 1e-3, 1e-7, 1e-3, 1e-7)
+l.fixed.pars <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12,7.842822e-10,3.357831e-09,3.797246e-07,1.114584e-05,6.058154e-06,3.656973e-12,3.994255e-06,1.218245e-07,2.164872e-10,2.283868e-07,4.919127e-12)
 # Increased lengthscales to avoid problems when inverting K (small condition number)
 # l.fixed.pars <- c(1e-6, 1e-4, 1e-1, 1e-2, 1e-1, 1e-6, 1e-1, 1e-1, 1e-5, 1e-1, 1e-7) 
 
@@ -114,7 +114,7 @@ fixed.mse.test.data <- lapply(seq_along(initial.guess), function(i) runif(n.poin
 color.breaks <- seq(-2,2,.25)
 
 # Performance measures: loglikelihood, test.mse
-performance.measure <- 'test.mse'
+performance.measure <- 'loglikelihood'
 
 # Options
 # options(matprod='internal')
@@ -136,13 +136,13 @@ get.init.params <- function(kernel.type) {
     upper.bounds <- c(rep(5, n.matrices*11), rep(50, n.matrices*11))
   } else if (kernel.type == 'oak.gaussian') {
     if (optimize.only.sigmas) {
-      # initial.pars <- c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-      # lower.bounds <- rep(0, n.matrices*11)
-      # upper.bounds <- rep(50, n.matrices*11)
-      initial.pars <- c(50, 0.1)  # Optimize only for sigmas 0 and 1
+      initial.pars <- c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      lower.bounds <- rep(0, n.matrices*11)
+      upper.bounds <- rep(50, n.matrices*11)
+      # initial.pars <- c(50, 0.1)  # Optimize only for sigmas 0 and 1
       # initial.pars <- c(0, 2.29, 0)  # Optimize only for sigmas 0, 1 and 11
-      lower.bounds <- rep(0, 3)
-      upper.bounds <- rep(100, 3)
+      # lower.bounds <- rep(0, 3)
+      # upper.bounds <- rep(100, 3)
     } else {
       # initial.pars <- c(2.33134449714195,1e-04,2.33134449714195,2.33134449714195,2.33134449714195,
       #                   0.667197159326941,2.33134449714195,0.667197159326941,0.667197159326941,2.33134449714195,
@@ -303,7 +303,14 @@ calculate.regression.model <- function(X, y, k) {
       Ki <- 1/(K + f.noise)
     } else {
       # ginv vs solve
-      Ki <- solve(matrix(unlist(K),nrow=nrow(K)) + f.noise*diag(nrow(K)))
+      Kmat <- matrix(unlist(K),nrow=nrow(K))
+      Ki <- NULL
+      jitter <- f.noise
+      while (is.null(Ki) && jitter < 1) {
+        try(Ki <- solve(Kmat + jitter*diag(nrow(K))), silent=TRUE)
+        jitter <- jitter * 10
+      }
+      if (is.null(Ki)) stop('Singular matrix, numerical instability problems')
     }
   }
   
@@ -344,12 +351,18 @@ calculate.regression.model <- function(X, y, k) {
 }
 
 calculate.loglik <- function(gp.model, kernel.type, observed.x, observed.y) {
-  Lu <- matrix(chol(gp.model$K), nrow=nrow(gp.model$K))
+  Lu <- NULL
+  jitter <- f.noise
+  while (is.null(Lu) && jitter < 1) {
+    try(Lu <- matrix(chol(gp.model$K + jitter*diag(nrow(gp.model$K))), nrow=nrow(gp.model$K)), silent=TRUE)
+    jitter <- jitter * 10
+  }
+  
   Ll <- t(Lu)
   S1 <- forwardsolve(Ll, observed.y)
   S2 <- backsolve(Lu, S1)
   
-  log.lik <- -sum(log(diag(Ll))) - .5 * observed.y %*% S2 - 0.5 * nrow(observed.x) + log(2*pi)
+  log.lik <- -sum(log(diag(Ll))) - .5 * observed.y %*% S2 - 0.5 * nrow(observed.x) * log(2*pi)
   return(log.lik)
 }
 
@@ -417,49 +430,47 @@ calculate.params.ll <- function(pars, kernel.type) {
   k <- build.k(kernel.type, l, sigma2)
   
   start_time <- Sys.time()
-  perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
-  # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
-    gp.model <- NULL
-    attempt <- 1
-    while (is.null(gp.model)) {
-      if (fixed.training) {
-        train.data <- fixed.training.data
-      } else {
+  
+  if (fixed.training) {
+    train.data <- fixed.training.data
+    names(train.data) <- paste0('x', seq_along(train.data))
+    observed.x <- data.frame(train.data)
+    
+    observed.y <- apply(observed.x, 1, f)
+    gp.model <- calculate.regression.model(observed.x, observed.y, k)
+  
+    perfs <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
+  } else {
+    perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
+      # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
+      gp.model <- NULL
+      attempt <- 1
+      while (is.null(gp.model)) {
         train.data <- lapply(seq_along(initial.guess), function(i) runif(n.points, 
                                                                          input.means[i]-input.sds[i]*sqrt(12)/2, 
                                                                          input.means[i]+input.sds[i]*sqrt(12)/2))
-        # train.data <- lapply(seq_along(initial.guess), function(i) {
-        #   x <- rnorm(n.points, input.means[i], input.sds[i])
-        #   oob <- x < 0 | x > 1
-        #   while (sum(oob) > 0) {
-        #     # message(sum(oob), ' points out of bounds, resampling...')
-        #     x <- c(x[!oob], rnorm(sum(oob), input.means[i], input.sds[i]))
-        #     oob <- x < 0 | x > 1
-        #   }
-        #   return(x)
-        # })
-      }
-    
-      names(train.data) <- paste0('x', seq_along(train.data))
-      observed.x <- data.frame(train.data)
       
-      observed.y <- apply(observed.x, 1, f)
-      gp.model <- tryCatch({
-        calculate.regression.model(observed.x, observed.y, k)
-        },
-                           error=function(e) {
-                             if (grepl('system is computationally singular', e$message) && !fixed.training) {
-                               cat('Matrix is computationally singular, trying new matrices (', attempt, ')...\n')
-                               attempt <<- attempt + 1
-                               return(NULL)
-                             }
-                             else stop(e)
-                           })
-    }
-    
-    perf <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
-    return(perf)
-  })
+        names(train.data) <- paste0('x', seq_along(train.data))
+        observed.x <- data.frame(train.data)
+        
+        observed.y <- apply(observed.x, 1, f)
+        gp.model <- tryCatch({
+          calculate.regression.model(observed.x, observed.y, k)
+          },
+                             error=function(e) {
+                               if (grepl('system is computationally singular', e$message) && !fixed.training) {
+                                 cat('Matrix is computationally singular, trying new matrices (', attempt, ')...\n')
+                                 attempt <<- attempt + 1
+                                 return(NULL)
+                               }
+                               else stop(e)
+                             })
+      }
+        
+      perf <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
+      return(perf)
+    })
+  }
   elapsed_time <- Sys.time() - start_time
   
   mean.perf <- mean(perfs)
