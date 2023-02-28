@@ -98,7 +98,7 @@ l.fixed.pars <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-
 # Increased lengthscales to avoid problems when inverting K (small condition number)
 # l.fixed.pars <- c(1e-6, 1e-4, 1e-1, 1e-2, 1e-1, 1e-6, 1e-1, 1e-1, 1e-5, 1e-1, 1e-7) 
 
-set.seed(234)
+set.seed(2342)
 # fixed.training.data <- lapply(seq_along(initial.guess), function(i) rnorm(n.points, input.means[i], input.sds[i]))
 fixed.training.data <- lapply(seq_along(initial.guess), function(i) runif(n.points, 
                                                                           input.means[i]-input.sds[i]*sqrt(12)/2, 
@@ -136,9 +136,12 @@ get.init.params <- function(kernel.type) {
     upper.bounds <- c(rep(5, n.matrices*11), rep(50, n.matrices*11))
   } else if (kernel.type == 'oak.gaussian') {
     if (optimize.only.sigmas) {
-      initial.pars <- c(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-      lower.bounds <- rep(0, n.matrices*11)
-      upper.bounds <- rep(50, n.matrices*11)
+      initial.pars <- rep(0, n.matrices*11+1)
+      initial.pars[1] <- 1000
+      initial.pars[2] <- 42.7799728094933
+      # initial.pars[3] <- 0.0890540569394103
+      lower.bounds <- rep(0, n.matrices*11+1)
+      upper.bounds <- c(10000, rep(100, n.matrices*11))
       # initial.pars <- c(50, 0.1)  # Optimize only for sigmas 0 and 1
       # initial.pars <- c(0, 2.29, 0)  # Optimize only for sigmas 0, 1 and 11
       # lower.bounds <- rep(0, 3)
@@ -167,7 +170,7 @@ get.init.params <- function(kernel.type) {
   ))
 }
 
-build.k <- function(type, l, sigma2) {
+build.k <- function(type, l, sigma2, gradient=FALSE) {
   if (type == 'se') {
     k <- function(x,x2) {
       kernel <- rbfdot(sigma=1/(2*l^2))
@@ -201,11 +204,8 @@ build.k <- function(type, l, sigma2) {
     }
     return(k)
   } else if (type == 'oak.gaussian') {
-    k <- function(x,x2) {
+    k <- function(x,x2) { 
       kernel.i <- function(x, x2, i) {
-        # kerneld <- function(x1,x2) {
-        #   -(2*crossprod(x1,x2) - crossprod(x1) - crossprod(x2))
-        # }
         if (i == 0)
           return(matrix(rep(1, nrow(x)*nrow(x2)), nrow=nrow(x)))
         m1 <- as.matrix(x[,i])
@@ -213,19 +213,13 @@ build.k <- function(type, l, sigma2) {
         
         ki <- rbfdot(sigma=1/(2*l[i]^2))
         ki <- kernelMatrix(ki, m1, m2)       
-        # exp.numerator.i <- kernelMatrix(kerneld, m1-input.means[i], m2-input.means[i])
         exp.numerator.i <- log(kernelMatrix(rbfdot(1), m1-input.means[i], m2-input.means[i]))
         ki <- ki - 
           l[i]*sqrt(l[i]^2+2*input.sds[i]^2)/(l[i]^2+input.sds[i]^2) *
           exp(-exp.numerator.i/(2*(l[i]^2+input.sds[i]^2)))
         return(ki)
-        # ki <- rbfdot(sigma=1/(2*l[i]^2))
-        # ki <- kernelMatrix(ki, as.matrix(x[,i]), as.matrix(x2[,i]))
-        # exp.numerator.i <- kernelMatrix(kerneld, m1-input.means[i], m2-input.means[i])
       }
       
-      # m1 <- as.matrix(x[,i])
-      # m2 <- as.matrix(x2[,i])
       m1c <- t(apply(x, 1, function(row) row-input.means))
       m2c <- t(apply(x2, 1, function(row) row-input.means))
       
@@ -233,11 +227,20 @@ build.k <- function(type, l, sigma2) {
       kernel.list <- lapply(seq(1,length(sigma2)), function(i) {
         kernel.i(x,x2,i-1)
       })
-      s <- lapply(seq(1,length(sigma2)), function(k) {
-        Reduce('+', lapply(seq(1,length(sigma2)), function(i) {
-          kernel.list[[i]]^k
-        }))
-      })
+      # if (is.null(diff)) {
+        s <- lapply(seq(1,length(sigma2)), function(k) {
+          Reduce('+', lapply(seq(1,length(sigma2)), function(i) {
+            kernel.list[[i]]^k
+          }))
+        })
+      # } else {
+        # s <- lapply(seq(1,length(sigma2)), function(k) {
+        #   Reduce('+', lapply(seq(1,length(sigma2)), function(i) {
+        #     if (i == diff) 0  # Removing component to calculate derivative
+        #     else kernel.list[[i]]^k
+        #   }))
+        # })
+      # }
       
       additive.kernel <- list()
       additive.kernel[[1]] <- matrix(rep(1,length(s[[1]])), nrow=nrow(s[[1]]))
@@ -252,33 +255,11 @@ build.k <- function(type, l, sigma2) {
                         )
                  )
       }
-      return(Reduce('+', lapply(seq(1,length(sigma2)), function(i) sigma2[i] * additive.kernel[[i]])))
-    #   m1 <- as.matrix(x[,1])
-    #   m2 <- as.matrix(x2[,1])
-    #   
-    #   kernel1 <- rbfdot(sigma=1/(2*l[1]^2))        
-    #   kerneld <- function(x1,x2) {
-    #     -(2*crossprod(x1,x2) - crossprod(x1) - crossprod(x2))
-    #   }       
-    #   
-    #   k1 <- kernelMatrix(kernel1, m1, m2)       
-    #   exp.numerator1 <- kernelMatrix(kerneld, m1-input.means[1], m2-input.means[1])
-    #   #exp.numerator1 <- (x[,1]-input.means[1])^2 + (x2[,1]-input.means[1])^2
-    #   k1 <- k1 - 
-    #     l[1]*sqrt(l[1]^2+2*input.vars[1]^2)/(l[1]^2+input.vars[1]^2) *
-    #     exp(-exp.numerator1/(2*(l[1]^2+input.vars[1]^2)))
-    #   
-    #   
-    #   kernel2 <- rbfdot(sigma=1/(2*l[2]^2))
-    #   k2 <- kernelMatrix(kernel2, as.matrix(x[,2]), as.matrix(x2[,2]))
-    #   exp.numerator2 <- kernelMatrix(kerneld, m1-input.means[2], m2-input.means[2])
-    #   #exp.numerator2 <- (x[,2]-input.means[2])^2 + (x2[,2]-input.means[2])^2
-    #   k2 <- k2 - 
-    #     l[2]*sqrt(l[2]^2+2*input.vars[2]^2)/(l[2]^2+input.vars[2]^2) *
-    #     exp(-exp.numerator2/(2*(l[2]^2+input.vars[2]^2)))
-    #   return(sigma2[1] + sigma2[2]*(k1 + k2) + sigma2[3]*k1*k2)
-    # }
-    # return(k)
+      if (gradient) {
+        return(additive.kernel[2:(length(sigma2)+1)])
+      } else {
+        return(Reduce('+', lapply(seq(1,length(sigma2)), function(i) sigma2[i] * additive.kernel[[i]])))
+      }
     }
     return(k)
   }
@@ -290,15 +271,6 @@ calculate.regression.model <- function(X, y, k) {
     Ki <- K
   } else {
     K <- k(X,X)
-    # TODO: Decide if worth it to include
-    # if (any(eigen(K)$values < 0)) {
-    #   # Fix negative eigenvalues
-    #   browser()
-    #   eig <- eigen(K)
-    #   print(eig$values)
-    #   eig$values[eig$values < 1e-7] <- 1e-7
-    #   K <- t(eig$vectors) %*% diag(eig$values) %*% eig$vectors
-    # }
     if (nrow(X) == 1) {
       Ki <- 1/(K + f.noise)
     } else {
@@ -348,6 +320,17 @@ calculate.regression.model <- function(X, y, k) {
   }
   
   return(list(mean=fs, cov=sigma, best.x=best.x, best.y=best.y, K=K))
+}
+
+calculate.regression.model.gradients <- function(X, k) {
+  if (nrow(X) == 0) {
+    K <- numeric(0)
+    Ki <- K
+  } else {
+    K <- k(X,X)
+  }
+  
+  return(lapply(K, function(KK) {list(K=KK)}))
 }
 
 calculate.loglik <- function(gp.model, kernel.type, observed.x, observed.y) {
@@ -404,7 +387,7 @@ if (performance.measure == 'loglikelihood') {
 
 # Define hyperparameter optimization
 
-calculate.params.ll <- function(pars, kernel.type) {
+calculate.params.ll <- function(pars, kernel.type, gradient=FALSE) {
   if (kernel.type == 'se') {
     l <- pars[1]
     sigma2 <- pars[2]
@@ -414,85 +397,64 @@ calculate.params.ll <- function(pars, kernel.type) {
   } else if (kernel.type == 'oak.gaussian') {
     if (optimize.only.sigmas) {
       l <- l.fixed.pars
-      if (length(pars) == 2) { # Optimize for sigmas 0 and 1, 0 for the rest
-        sigma2 <- c(pars[1], pars[2], rep(0, 10))
-      } else if (length(pars) == 3) { # Optimize for sigmas 0, 1 and 11, 0 for the rest
-        sigma2 <- c(pars[1], pars[2], rep(0, 9), pars[3])
-      } else {
-        sigma2 <- pars
-      }
+      sigma2 <- c(pars, rep(0, 11*n.matrices+1-length(pars)))
+      # if (length(pars) == 2) { # Optimize for sigmas 0 and 1, 0 for the rest
+      #   sigma2 <- c(pars[1], pars[2], rep(0, 10))
+      # } else if (length(pars) == 3) { # Optimize for sigmas 0, 1 and 11, 0 for the rest
+      #   sigma2 <- c(pars[1], pars[2], rep(0, 9), pars[3])
+      # } else {
+      #   sigma2 <- pars
+      # }
     } else {
       l <- pars[1:(n.matrices*11)]
       sigma2 <- pars[(n.matrices*11+1):(length(pars))]
     }
   }
   
-  k <- build.k(kernel.type, l, sigma2)
+  k <- build.k(kernel.type, l, sigma2, gradient=gradient)
   
   start_time <- Sys.time()
   
-  if (fixed.training) {
-    train.data <- fixed.training.data
-    names(train.data) <- paste0('x', seq_along(train.data))
-    observed.x <- data.frame(train.data)
-    
-    observed.y <- apply(observed.x, 1, f)
+  train.data <- fixed.training.data
+  names(train.data) <- paste0('x', seq_along(train.data))
+  observed.x <- data.frame(train.data)
+  
+  observed.y <- apply(observed.x, 1, f)
+  if (!gradient) {
     gp.model <- calculate.regression.model(observed.x, observed.y, k)
-  
     perfs <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
+    
+    elapsed_time <- Sys.time() - start_time
+    
+    mean.perf <- mean(perfs)
+    
+    if (performance.measure == 'loglikelihood') perf.name <- 'll'
+    else if (performance.measure == 'test.mse') perf.name <- 'mse'
+    if  (length(perfs) > 1) {
+      perf.sd <- 2*sd(perfs)/sqrt(length(perfs))
+    } else {
+      perf.sd <- 'NA'
+    }
+    if (optimize.only.sigmas) {
+      message(paste0('sigma2=', paste0(sigma2, collapse=',')), appendLF=TRUE )
+      message(paste0(' ', perf.name, '=', mean.perf, ' +- ', perf.sd, ', time: ',
+                     elapsed_time), appendLF=TRUE )
+      # message(mean.perf, appendLF=TRUE)
+    } else {
+      message(paste0('l=',paste0(l, collapse=','),
+                     ', sigma2=', paste0(sigma2, collapse=','),
+                     ' (', perf.name, '=', mean.perf, ' +- ', perf.sd, '), time: ',
+                     elapsed_time), appendLF=TRUE )
+    }
+    return(mean.perf)
   } else {
-    perfs <- pbsapply(cl=cl, X=seq(n.iters.per.paramset), FUN=function(i) {
-      # perfs <- sapply(seq(n.iters.per.paramset), FUN=function(i) {
-      gp.model <- NULL
-      attempt <- 1
-      while (is.null(gp.model)) {
-        train.data <- lapply(seq_along(initial.guess), function(i) runif(n.points, 
-                                                                         input.means[i]-input.sds[i]*sqrt(12)/2, 
-                                                                         input.means[i]+input.sds[i]*sqrt(12)/2))
-      
-        names(train.data) <- paste0('x', seq_along(train.data))
-        observed.x <- data.frame(train.data)
-        
-        observed.y <- apply(observed.x, 1, f)
-        gp.model <- tryCatch({
-          calculate.regression.model(observed.x, observed.y, k)
-          },
-                             error=function(e) {
-                               if (grepl('system is computationally singular', e$message) && !fixed.training) {
-                                 cat('Matrix is computationally singular, trying new matrices (', attempt, ')...\n')
-                                 attempt <<- attempt + 1
-                                 return(NULL)
-                               }
-                               else stop(e)
-                             })
-      }
-        
-      perf <- calculate.performance(gp.model, kernel.type, observed.x, observed.y)
-      return(perf)
+    gp.models <- calculate.regression.model.gradients(observed.x, k)
+    perfs <- sapply(gp.models, function(m) {
+      calculate.performance(m, kernel.type, observed.x, observed.y)
     })
+    
+    return(perfs)
   }
-  elapsed_time <- Sys.time() - start_time
-  
-  mean.perf <- mean(perfs)
-  
-  if (performance.measure == 'loglikelihood') perf.name <- 'll'
-  else if (performance.measure == 'test.mse') perf.name <- 'mse'
-  if  (length(perfs) > 1) {
-    perf.sd <- 2*sd(perfs)/sqrt(length(perfs))
-  } else {
-    perf.sd <- 'NA'
-  }
-  if (optimize.only.sigmas) {
-    message(paste0('sigma2=', paste0(sigma2, collapse=','),
-                   ' (', perf.name, '=', mean.perf, ' +- ', perf.sd, '), time: ',
-                   elapsed_time), appendLF=TRUE )
-  } else {
-    message(paste0('l=',paste0(l, collapse=','),
-                   ', sigma2=', paste0(sigma2, collapse=','),
-                   ' (', perf.name, '=', mean.perf, ' +- ', perf.sd, '), time: ',
-                   elapsed_time), appendLF=TRUE )
-  }
-  return(mean.perf)
 }
 
 
@@ -502,7 +464,7 @@ optim.params <- get.init.params(kernel.type)
 
 try(stopCluster(cl), silent=TRUE)
 
-cl <- makeForkCluster(n.cores, outfile='')
+# cl <- makeForkCluster(n.cores, outfile='')
 # clusterExport(cl, ls(-1))
 # clusterEvalQ(cl, {
 #   library(kernlab)
@@ -510,28 +472,30 @@ cl <- makeForkCluster(n.cores, outfile='')
 #   library(foreach)
 # })
 # registerDoParallel(cl)
-optim.result <- optim(par=optim.params$initial.pars,
-                      # method='SAN',
-                      method='L-BFGS-B',
-                      fn=calculate.params.ll,
+
+gradient <- function(sigmas, kernel.type) {
+  gr <- calculate.params.ll(sigmas, kernel.type, gradient=TRUE)
+  print(gr)
+  return(gr)
+}
+
+# Only optimize sigma_0, sigma_1 and sigma_2
+optim.params <- lapply(optim.params, function(l) l[1:2])
+
+optim.result <- GenSA::GenSA(par=optim.params$initial.pars,
+                      fn=function(p, kernel.type) -calculate.params.ll(p,kernel.type),
                       lower=optim.params$lower.bounds,
                       upper=optim.params$upper.bounds,
                       control=list(
-                        pgtol=0,
-                        fnscale=fnscale,
-                        parscale=rep(1000,length(optim.params$initial.pars)),
-                        temp=100,
-                        tmax=100,
-                        maxit=100,
-                        npart=1000
+                        maxit=1000
                       ),
                       # parallel=list(
                       #   # cl=cl,
                       #   loginfo=TRUE
                       # ),
                       kernel.type=kernel.type
-)
-stopCluster(cl)
+                )
+# stopCluster(cl)
 cat('\nOptimization results:', sep='\n')
 cat(paste0(' Params=', paste0(optim.result$par, collapse=',')), sep='\n')
 cat(paste0(' Performance=', optim.result$value), sep='\n')

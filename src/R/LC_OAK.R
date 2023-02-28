@@ -14,7 +14,7 @@ library(optimParallel)
 library(ppso)
 
 # Objective function
-N_MATRICES <- 1
+N_MATRICES <- 2
 STARTING_MATRIX <- 1
 source('../../models/lung/calibration_wrapper.R')
 f <- function(pars) {
@@ -36,7 +36,6 @@ f.noise <- 1e-12
 prior.mu <- function(x) 0
 
 # Model parameters
-N_MATRICES <- 1
 initial.guess <- c(0.0000014899094538366, 0.00005867, 0.0373025655099923, 
                    0.45001903545473, 0.0310692140027966, 2.06599720339873e-06, 
                    0.083259360316924, 0.0310687721751887, 2.50782481130141e-06, 
@@ -409,8 +408,8 @@ acq.func.ei <- function(gp.model, x) {
 # clusterExport(cl, c('prior.mu', 'k'))
 # registerDoParallel(cl)
 
-l.oak <- c(1e-7, 1e-5, 1e-3, 1e-2, 1e-3, 1e-7, 1e-3, 1e-3, 1e-7, 1e-3, 1e-7)
-sigma2.oak <- c(50,0.1,0,0,0,0,0,0,0,0,0,0)
+l.oak <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12,7.842822e-10,3.357831e-09,3.797246e-07,1.114584e-05,6.058154e-06,3.656973e-12,3.994255e-06,1.218245e-07,2.164872e-10,2.283868e-07,4.919127e-12)
+sigma2.oak <- c(1585.39465361646,42.7746208718925,rep(0, N_MATRICES*11-2))
 
 # summary.df <- read.csv('../../output/lc_1m_oak.csv')
 summary.df <- data.frame()
@@ -478,7 +477,7 @@ for(kernel.type in c(
   summary.df <- rbind(summary.df, current.df)
 }
 
-write.csv(summary.df, '../../output/oak_results.csv')
+write.csv(summary.df, '../../output/oak_results_mat', N_MATRICES, '.csv')
 
 
 # df <- read.csv('../../output/oak_results.csv', sep=';')
