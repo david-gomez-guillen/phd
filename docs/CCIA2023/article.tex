@@ -74,12 +74,12 @@
 	\subsection{Bayesian optimization}
 	Bayesian optimization is a widely used technique for optimizing black-box, expensive-to-evaluate functions\cite{bayesian-opt} in a wide range of applications, including machine learning, computer vision, robotics and drug discovery, among others. It is a sequential model-based approach that uses a probabilistic model to iteratively encapsulate our knowledge about the target function and using it to guide the optimization process. This surrogate model starts with a prior distribution, which reflects our initial assumptions about the function, and is updated as new data is gathered. The acquisition function, which measures the promise of a new observation and directs how the search space should be explored, is maximized to identify the next point to evaluate. This process is repeated until a satisfactory solution is found, or a termination criterion is met.
 	
-	One popular choice for surrogate models are Gaussian Processes\cite{gaussian-processes}. These non-parametric regression models represent each observation as a random variable drawn from a Gaussian distribution $f(x) \sim \mathcal{N}(\mu(x), k(x,x))$. The mean function $\mu(x)$ and the covariance function $k(x,x')$ define the expected value of the Gaussian Process and the degree of dissimilarity between different inputs, respectively. For an assumed noise level in the data $\sigma^2$, a given observation set $X=\{\vec{x_1}, ..., \vec{x_D}\}$ with labels $\vec{y}$ and a Gram matrix $K$ built from $X$ and a set of unknown observations $X_*$, a Gaussian Process $f_*$ has an analytic form for the predictive posterior distribution (equation \ref{eq:predictive_posterior}) and the marginal loglikelihood function (equation \ref{eq:loglikelihood}).
+	One popular choice for surrogate models are Gaussian Processes\cite{gaussian-processes}. These non-parametric regression models represent each observation as a random variable drawn from a Gaussian distribution $f(x) \sim \mathcal{N}(\mu(x), k(x,x))$. The mean function $\mu(x)$ and the covariance function $k(x,x')$ define the expected value of the Gaussian Process and the degree of dissimilarity between different inputs, respectively. For an assumed noise level in the data $\sigma^2$, an initial prior $\mu_0(X)$ (often $\mu_0(X)=0$), a given observation set $X=\{\vec{x_1}, ..., \vec{x_D}\}$ with labels $\vec{y}$ and a Gram matrix $K$ built from $X$ and a set of unknown observations $X_*$, a Gaussian Process $f_*$ has an analytic form for the predictive posterior distribution (equation \ref{eq:predictive_posterior}) and the marginal loglikelihood function (equation \ref{eq:loglikelihood}).
 	
 	\begin{equation} \label{eq:predictive_posterior}
 		\begin{aligned}
 			f_*|X,\vec{y},X_* & \sim \mathcal{N}(\mu(X_*), \Sigma(X_*)) \\
-			\mu(X_*) & = K(X_*,X)(K(X,X) + \sigma^2 I)^{-1}\vec{y} \\
+			\mu(X_*) & = \mu_0(X_*) + K(X_*,X)(K(X,X) + \sigma^2 I)^{-1}(\vec{y} - \mu_0(X_*)) \\
 			\Sigma(X_*) & = K(X_*,X_*) + \sigma^2 I - K(X_*,X)(K(X,X) + \sigma^2 I)^{-1} K(X,X_*)
 		\end{aligned}
 	\end{equation}
@@ -92,7 +92,7 @@
 	
 	\begin{equation}
 		\begin{aligned}
-			K(X,X') &= K\left(\begin{bmatrix} \mathbf{x_1} \\ \vdots \\ \mathbf{x_m} \end{bmatrix}, \begin{bmatrix} \mathbf{x'_1} \\ \vdots \\ \mathbf{x'_n} \end{bmatrix}\right) = \begin{bmatrix} 
+			K(X,X') &= K\left(\begin{bmatrix} \vec{x_1} \\ \vdots \\ \vec{x_m} \end{bmatrix}, \begin{bmatrix} \vec{x'_1} \\ \vdots \\ \vec{x'_n} \end{bmatrix}\right) = \begin{bmatrix} 
 				k(x_1,x'_1) & \dots  & k(x_1,x'_n)\\
 				\vdots & \ddots & \vdots\\
 				k(x_m,x'_1) & \dots  & k(x_m,x'_n)
@@ -122,13 +122,14 @@
 		\end{aligned}
 	\end{equation}
 	
-	Additive kernels suffer from the non-identifiability problem for summed functions. To ensure a unique decomposition, Lu et al\cite{gp-additive-orthogonal} proposed an extension of additive kernels by including an extra constant kernel with an additional variance hyperparameter $sigma_0^2$ and an orthogonality constraint to generate Orthogonal Additive Kernels (OAK)\cite{gp-additive-orthogonal}. Assuming a normal input distribution $x_i \sim \mathcal{N}(\mu_i, \delta_i^2)$, the following constrained base kernel is derived:
+	Additive kernels suffer from the non-identifiability problem for summed functions. To ensure a unique decomposition, Lu et al\cite{gp-additive-orthogonal} proposed an extension of additive kernels by including an extra constant kernel with an additional variance hyperparameter $\sigma_0^2$ and an orthogonality constraint to generate Orthogonal Additive Kernels (OAK)\cite{gp-additive-orthogonal}. Assuming a normal input distribution $x_i \sim \mathcal{N}(\mu_i, \delta_i^2)$, the following constrained base kernel is derived:
 	
 	\begin{equation} \label{eq:additive-orthogonal}
 		\begin{aligned}
 			k_{add_{OAK}}(x,x') &= \sum_{i=0}^D{\sigma_i^2  \tilde{k}_{add_i}(x_i,x_i')} \\
-			k_{add_j}(x,x') &= \sum_{1\leq i_1 < i_2 < \ldots < i_j\leq D} \left[\prod_{d=1}^{j} \tilde{k}_{i_d}(x_{i_d},x_{i_d}') \right]\\		
-			\tilde{k}_i(x,x') &= e^{\frac{(x_i-x_i')^2}{2l_i^2}} - \frac{l\sqrt{l^2 + 2\delta^2}}{l^2 + \delta^2} e^{-\frac{((x-\mu)^2 + (x'-\mu)^2)}{2(l^2 + \delta^2)}}
+			\tilde{k}_{add_0}(x,x') &= 1\\
+			\tilde{k}_{add_j}(x,x') &= \sum_{1\leq i_1 < i_2 < \ldots < i_j\leq D} \left[\prod_{d=1}^{j} \tilde{k}_{i_d}(x_{i_d},x_{i_d}') \right]\\		
+			\tilde{k}_i(x,x') &= e^{\frac{(x_i-x_i')^2}{2l_i^2}} - \frac{l_i\sqrt{l_i^2 + 2\delta_i^2}}{l_i^2 + \delta_i^2} e^{-\frac{(x_i-\mu_i)^2 + (x_i'-\mu_i)^2}{2(l_i^2 + \delta_i^2)}}
 		\end{aligned}
 	\end{equation}
 	
@@ -145,7 +146,7 @@
 		\label{fig:lung_model}	
 	\end{figure}
 	
-	To simplify the calibration tests, certain details were ignored in the original model, such as gender differentiation, smoking prevalence, and quitting probabilities for smokers. Additionally, the survival state was removed, resulting in only six states being considered and 6x6 transition matrices being used. Certain inherent constraints, such as ensuring that the sum of the probabilities in each row equals one or that certain probabilities are zero, were imposed on the matrices. This allowed the number of parameters to be optimized per matrix to be reduced from 36 to 11. The parameters were calibrated for each age group, resulting in a total of $11\cdot 9=99$ parameters for the full simulation. Partial calibrations were also conducted, in which only $11\cdot k$ parameters for the first $k$ age groups were used.
+	To simplify the calibration tests, certain details were ignored in the original model, such as gender differentiation, smoking prevalence, and quitting probabilities for smokers. Additionally, the survival state was removed, resulting in only six states being considered and 6x6 transition matrices being used. Certain inherent constraints, such as ensuring that the sum of the probabilities in each row equals one or that certain probabilities are zero, were imposed on the matrices. This allowed the number of parameters to be optimized per matrix to be reduced from 36 to 11. It is worth noting that despite there being 9 age groups, each with its own set of parameters, only the first age group was calibrated in this study. As a result, the problem was simplified to only 11 parameters, rather than the original $11\cdot 9=99$ parameters associated with the full simulation.
 	
 	The calibration target for the model was defined as the weighted sum of the euclidean distances between the observed and expected outputs of interest, namely lung cancer incidence (45\%), lung cancer mortality (45\%) and mortality from other causes (10\%), computed for each age group.
 	
