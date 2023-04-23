@@ -480,14 +480,14 @@ gradient <- function(sigmas, kernel.type) {
 }
 
 # Only optimize sigma_0, sigma_1 and sigma_2
-optim.params <- lapply(optim.params, function(l) l[1:2])
+optim.params <- lapply(optim.params, function(l) l[1:3])
 
 optim.result <- GenSA::GenSA(par=optim.params$initial.pars,
                       fn=function(p, kernel.type) -calculate.params.ll(p,kernel.type),
                       lower=optim.params$lower.bounds,
                       upper=optim.params$upper.bounds,
                       control=list(
-                        maxit=1000
+                        maxit=500
                       ),
                       # parallel=list(
                       #   # cl=cl,

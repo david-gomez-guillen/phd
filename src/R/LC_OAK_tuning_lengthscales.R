@@ -387,6 +387,7 @@ for(i in seq(1,n.pars)) {
   x <- lapply(x, function(xx) {
     xxx <- log(xx, 10)
     10^seq(xxx-.1,xxx+.1,length.out=50)
+    # 10^seq(xxx-2,xxx+2,length.out=50)
   })
   
   cat(paste0('\n\nDimension ', i, '\n'))
@@ -410,11 +411,12 @@ for(i in seq(1,n.pars)) {
     geom_line() +
     geom_ribbon(color='blue', alpha=.2, ) +
     scale_x_log10(name='lengthscale') +
-    # scale_y_continuous(limits=c(0,13)) +
+    # scale_y_continuous(limits=c(-36000,-29000)) +
     # scale_y_continuous(limits=c(0,2.5)) +
+    ylab('Loglikelihood') +
     ggtitle(paste0('Dimension ', i))
   print(plt)
-  ggsave(paste0('../../output/lengthscale', i, '.png'), plt, width=2400, height=1600, units = 'px')
+  ggsave(paste0('../../output/zoom_lengthscale', i, '.png'), plt, width=2400, height=1600, units = 'px')
 }
 
 print(maxima)

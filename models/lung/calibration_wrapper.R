@@ -1,11 +1,11 @@
 library(jsonlite)
 
-# N_MATRICES, STARTING_MATRIX set as global variables (constants)
+# N_MATRICES, STARTING_MATRIX, DELAY set as global variables (constants)
 
 make.calibration.func <- function(population, param.names, param.strata) {
 
 calibration.func<-function(par,verbose=TRUE){
-  
+  Sys.sleep(DELAY)
   a=vector()
   b=vector()
   c=vector()
@@ -17,7 +17,7 @@ calibration.func<-function(par,verbose=TRUE){
   l=vector()
   m=vector()
   n=vector()
-  
+  par <- unlist(par)
   # Assemble vectors for matrices
   count=0
   for(q in STARTING_MATRIX:N_MATRICES){
