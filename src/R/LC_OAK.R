@@ -14,8 +14,9 @@ library(optimParallel)
 library(ppso)
 
 # Objective function
-N_MATRICES <- 2
+N_MATRICES <- 1
 STARTING_MATRIX <- 1
+DELAY <- 0
 source('../../models/lung/calibration_wrapper.R')
 f <- function(pars) {
   calib.f <- make.calibration.func('','','')
@@ -408,14 +409,16 @@ acq.func.ei <- function(gp.model, x) {
 # clusterExport(cl, c('prior.mu', 'k'))
 # registerDoParallel(cl)
 
-l.oak <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12,7.842822e-10,3.357831e-09,3.797246e-07,1.114584e-05,6.058154e-06,3.656973e-12,3.994255e-06,1.218245e-07,2.164872e-10,2.283868e-07,4.919127e-12)
+l.oak <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12
+           # 7.842822e-10,3.357831e-09,3.797246e-07,1.114584e-05,6.058154e-06,3.656973e-12,3.994255e-06,1.218245e-07,2.164872e-10,2.283868e-07,4.919127e-12
+           )
 sigma2.oak <- c(1585.39465361646,42.7746208718925,rep(0, N_MATRICES*11-2))
 
 # summary.df <- read.csv('../../output/lc_1m_oak.csv')
 summary.df <- data.frame()
 for(kernel.type in c(
   # 'se', 
-  'se.2', 
+  # 'se.2', 
   'oak.gaussian'
   )) {
   k <- build.k(kernel.type, l.oak, sigma2.oak)
@@ -425,6 +428,7 @@ for(kernel.type in c(
   for(seed in seq(from=1, length.out=30)) {
     # Start optimization
     
+    print(Sys.time())
     set.seed(seed)
     observed.x <- data.frame(matrix(ncol=length(initial.guess),nrow=0))
     colnames(observed.x) <- seq(paste0('x', seq_along(initial.guess)))
@@ -463,9 +467,11 @@ for(kernel.type in c(
     # cat('Minimum error:')
     # cat(min(observed.y), '\n')
     
-    write.csv(observed.y, paste0('../../output/lc_1m_', kernel.type, '_', seed, '.csv'))
+    # write.csv(observed.y, paste0('../../output/lc_1m_', kernel.type, '_', seed, '.csv'))
     results.df <- rbind(results.df, observed.y)
     # stopCluster(cl)
+    print(Sys.time())
+    browser()
   }
   
   current.df <- data.frame(y=apply(results.df, 2, mean), sd=apply(results.df, 2, sd))
@@ -477,11 +483,15 @@ for(kernel.type in c(
   summary.df <- rbind(summary.df, current.df)
 }
 
-write.csv(summary.df, '../../output/oak_results_mat', N_MATRICES, '.csv')
+# write.csv(summary.df, '../../output/oak_results_mat', N_MATRICES, '.csv')
 
 
-# df <- read.csv('../../output/oak_results.csv', sep=';')
-# 
+df <- read.csv('output/oak_results.csv', sep=';')
+
+q1 <- function(x) return(quantile(x, .25))
+q2 <- function(x) return(quantile(x, .5))
+q3 <- function(x) return(quantile(x, .75))
+
 # df.ma5 <- data.frame()
 # for(kernel in unique(df$kernel)) {
 #   for(seed in unique(df$seed)) {
@@ -494,7 +504,7 @@ write.csv(summary.df, '../../output/oak_results_mat', N_MATRICES, '.csv')
 # df.ma5$ymin <- df.ma5$y - 2*df.ma5$sd
 # df.ma5$ymax <- df.ma5$y + 2*df.ma5$sd
 # 
-# ggplot(df.ma5, aes(x=x, y=y, ymin=ymin, ymax=ymax, color=kernel, fill=kernel)) + 
+# ggplot(df.ma5, aes(x=x, y=y, ymin=ymin, ymax=ymax, color=kernel, fill=kernel)) +
 #   geom_line() +
 #   geom_ribbon(alpha=.2, linetype=3) +
 #   xlab('Iteration') +
@@ -524,14 +534,59 @@ write.csv(summary.df, '../../output/oak_results_mat', N_MATRICES, '.csv')
 # 
 # 
 # 
-# df <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(mean, sd))
-# names(df) <- c('kernel', 'x', 'y', 'sd')
-# df$ymin <- df$y - 2*df$sd
-# df$ymax <- df$y + 2*df$sd
-# 
-# ggplot(df, aes(x=x, y=y, ymin=ymin, ymax=ymax, color=kernel, fill=kernel)) + 
-#   geom_line() +
-#   geom_ribbon(alpha=.2, linetype=3) +
-#   xlab('Iteration') +
-#   ylab('Error') +
-#   coord_cartesian(xlim=c(1,100), ylim=c(-10,35))
+df2 <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(mean, sd))
+names(df2) <- c('kernel', 'x', 'y', 'sd')
+df2$ymin <- df2$y - 2*df2$sd
+df2$ymax <- df2$y + 2*df2$sd
+
+plt <- ggplot(df, aes(x=x, y=y, ymin=max(0,ymin), ymax=ymax, color=kernel, fill=kernel)) +
+  geom_line() +
+  geom_ribbon(alpha=.2, linetype=3) +
+  scale_color_discrete(name='Kernel',
+                     breaks=c('se',
+                              'se2',
+                              'oak.gaussian'),
+                     labels=c('SE',
+                              'Univariate SE\n(most significant variable)',
+                              'OAK')) +
+  scale_fill_discrete(name='Kernel',
+                       breaks=c('se',
+                                'se2',
+                                'oak.gaussian'),
+                       labels=c('SE',
+                                'Univariate SE\n(most significant variable)',
+                                'OAK')) +
+  theme_minimal() +
+  theme(legend.position='bottom') +
+  xlab('Iteration') +
+  ylab('Error') +
+  coord_cartesian(xlim=c(1,100), ylim=c(0,35))
+plt
+
+
+df3 <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(q1, q2, q3))
+names(df3) <- c('kernel', 'x', 'q1', 'q2', 'q3')
+
+plt <- ggplot(df3, aes(x=x, y=q2, ymin=q1, ymax=q3, color=kernel, fill=kernel)) +
+  geom_line() +
+  geom_ribbon(alpha=.2, linetype=3) +
+  scale_color_discrete(name='Kernel',
+                       breaks=c('se',
+                                'se2',
+                                'oak.gaussian'),
+                       labels=c('SE',
+                                'Univariate SE\n(most significant variable)',
+                                'OAK')) +
+  scale_fill_discrete(name='Kernel',
+                      breaks=c('se',
+                               'se2',
+                               'oak.gaussian'),
+                      labels=c('SE',
+                               'Univariate SE\n(most significant variable)',
+                               'OAK')) +
+  theme_minimal() +
+  theme(legend.position='bottom') +
+  xlab('Iteration') +
+  ylab('Error') +
+  coord_cartesian(xlim=c(1,100), ylim=c(0,25))
+plt

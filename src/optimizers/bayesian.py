@@ -66,7 +66,7 @@ class BayesianOptimizer(Optimizer):
 
     optimizer = trieste.models.optimizer.Optimizer(
       optimizer=gpflow.optimizers.Scipy(),
-      #minimize_args=dict(method='Nelder-Mead')
+      minimize_args=dict(method='Nelder-Mead')
     )
 
     gpflow_model = build_gpr(initial_data, search_space, likelihood_variance=1e-7)

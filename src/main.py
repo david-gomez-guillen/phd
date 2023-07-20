@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import concurrent.futures
 import numpy as np
@@ -26,6 +27,7 @@ def calibrate(model, optimizer, params, bounds, extractor, error, label, **kwarg
     print(' Error: {}'.format(result['error']))
     print(' Model evaluations: {}'.format(result['evaluations']))
     print(' Time: {}'.format(result['time']))
+    print(' Label: {}'.format(label))
     trace = result['trace']
     result['trace'] = None
     result['x'] = result['x'].tolist()
@@ -105,7 +107,7 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
                     0.000058942, 0.00330943, 0.009683304, 0.414010634, 0.022973067, 0.030664353, 
                     0.60868601, 0.006745365, 0.046892055, 0.067318463, 0.004318957
                     ]
-    initial_guess = initial_guess[((starting_matrix-1)*11):(starting_matrix+n_matrices)*11]
+    initial_guess = initial_guess[((starting_matrix-1)*11):(starting_matrix-1+n_matrices)*11]
     target = {
         'incidence': np.array([1.9, 9.0, 20.9, 39.7, 57.9, 68.8, 71.4, 70.4, 69.9]),
         'lc_mortality': np.array([0.29, 5.0, 13.4, 26.6, 42.5, 51.1, 52.0, 52.3, 53.9]),
@@ -132,7 +134,7 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
                   extractor,
                   error,
                   initial_guess=initial_guess,
-                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices),
+                  label='{}_{}_{}_{}'.format(algorithm, starting_matrix, n_matrices, simulation_delay),
                   options={'maxiter':n_matrices*11*10000,
                            'xatol': 1e-12,
                            'fatol': 1e-12})
@@ -145,7 +147,7 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
                   extractor,
                   error,
                   initial_guess=initial_guess,
-                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
+                  label='{}_{}_{}_{}'.format(algorithm, starting_matrix, n_matrices, simulation_delay))
     elif algorithm == 'pso':
         pso_optimizer = ParticleSwarmOptimizer()
         calibrate(model,
@@ -156,7 +158,7 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
                   error,
                   swarmsize=n_matrices*50,#1000,
                   maxiter=n_matrices*50,#1000,
-                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices))
+                  label='{}_{}_{}_{}'.format(algorithm, starting_matrix, n_matrices, simulation_delay))
     elif algorithm == 'bayesian':
         bo_optimizer = BayesianOptimizer(initial_points=n_matrices*10, 
                                          n_evaluations=80+n_matrices*15)
@@ -166,18 +168,27 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
                   bounds,
                   extractor,
                   error,
-                  label='{}_{}_{}'.format(algorithm, starting_matrix, n_matrices),
+                  label='{}_{}_{}_{}'.format(algorithm, starting_matrix, n_matrices, simulation_delay),
                   silence_model_output=False)
     else:
         raise ValueError('Algorithm not implemented')
 
 if __name__ == '__main__':
-    parameters = [
-         #('nelder-mead', 3),
-         ('annealing', 3),
-         ('pso', 3),
-         #('bayesian', 1)
-        ]
+    if len(sys.argv) == 1:
+        parameters = [
+            #('nelder-mead', 3),
+            #('annealing', 3),
+            #('pso', 3),
+            ('bayesian', 1)
+            ]
+        start = [1]
+        end = [1]
+        delays = [1]
+    else:
+        parameters = [(sys.argv[1], int(sys.argv[2]))]
+        start = [int(sys.argv[3])]
+        end = [int(sys.argv[4])]
+        delays = [float(a) for a in sys.argv[5:]]
     dfs = []    
     results = []
 
@@ -189,11 +200,11 @@ if __name__ == '__main__':
 
     for alg, n_workers in parameters:
          with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
-             for last_matrix in range(1,2):
-                 for starting_matrix in range(1,last_matrix+1):
-                     for delay in [1, 2, 3]:
-                        executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix, simulation_delay=delay)
-                 executor.shutdown(wait=True)
+             for last_matrix in end:#range(2,3):
+                 for starting_matrix in start:#range(1,last_matrix+1):
+                     for delay in delays:
+                        executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=last_matrix-starting_matrix+1, starting_matrix=starting_matrix, simulation_delay=delay)
+             executor.shutdown(wait=True)
 
     # for alg, n_workers in parameters:
     #     with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:

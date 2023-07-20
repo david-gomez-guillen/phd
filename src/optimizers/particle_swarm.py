@@ -19,6 +19,8 @@ class ParticleSwarmOptimizer(Optimizer):
     bounds = list(zip(*bounds))
     trace_errors = []
     self.model_evaluations = 0
+    maxiter = kwargs.get('maxiter', 100)
+    swarmsize = kwargs.get('swarmsize', 100)
 
     model.setup(params, silence_model_output=silence_model_output)
     # def model_evaluation_error(x):
@@ -45,7 +47,7 @@ class ParticleSwarmOptimizer(Optimizer):
       print('Error: {}'.format(error))
       return error
 
-    xopt, fopt = pso(model_evaluation_error, bounds[0], bounds[1], f_ieqcons=None)
+    xopt, fopt = pso(model_evaluation_error, bounds[0], bounds[1], f_ieqcons=None, maxiter=maxiter, swarmsize=swarmsize)
     
     stop_time = timeit.default_timer()
     return {

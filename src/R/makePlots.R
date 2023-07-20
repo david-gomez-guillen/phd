@@ -93,12 +93,26 @@ for(n in seq(9)) {
   
   png(paste0('output/n_', n, '_smoothed.png'), width=1000, height=600)
   plt <- ggplot(df.p[endsWith(df.p$alg, '_smoothed'),], aes(x=index, y=error, color=alg)) + 
-    geom_line() +
-    scale_x_continuous(labels=function(x) format(x, scientific=F, big.mark=',')) +
-    scale_y_continuous(limits=c(0,max(df.p$error))) +
+    geom_line(size=1) +
+    scale_x_continuous(limits=c(0,2000),labels=function(x) format(x, scientific=F, big.mark=',')) +
+    scale_y_continuous(limits=c(0.5,1.5)) +
+    scale_color_manual(name='Method', 
+                         breaks=c('nelder-mead_smoothed', 
+                                  'annealing_smoothed', 
+                                  'pso_smoothed',
+                                  'bayesian_smoothed'), 
+                         labels=c('Nelder-Mead',
+                                  'Simulated Annealing',
+                                  'Particle Swarm', 
+                                  'Bayesian'),
+                         values=c('#a3a500',
+                                  '#e76bf3',
+                                  '#00bf7d',
+                                  '#f8766d')) +
     xlab('Evaluation') +
-    ylab('Error') +
-    ggtitle(paste0('n_matrices = ', n, ' by method (smoothed)'))
+    ylab('Cumulative minimum error') +
+    theme_minimal() #+
+    # ggtitle(paste0('n_matrices = ', n, ' by method (smoothed)'))
   # ggsave(plot=plt, filename=paste0('output/alg_', alg, '.png'), width = 10, height=10)
   print(plt)
   dev.off()
