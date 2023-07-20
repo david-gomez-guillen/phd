@@ -1,0 +1,23 @@
+% Chapter 1
+
+\chapter{Research proposal} % Main chapter title
+
+\label{sec:proposal} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+Cost-effectiveness models are used to evaluate and compare different medical strategies (e.g. strategies to detect cancer), in terms of both health and cost, and to help decision makers determine the optimal allocation of medical resources. These models have several inputs that describe the environment, the disease and the strategies used (inputs like probabilities, sensitivities and specificities for medical procedures, costs, utility values, ...) and can have several outputs as needed for the analysis (e.g. average life expectancy, average cost, incidence of the disease, mortality, ...). 
+
+The stated goal of the research project is to find efficient ways to calibrate these cost-effectiveness models by changing some input parameters so a particular output (usually incidence or mortality) matches a given value found in the scientific literature. In summary, \textbf{we can frame the problem as the optimization of a black box function computing (for example) the euclidean distance between the simulated output and a theoretical value}.
+
+In some of our models we find that classical optimization methods need many simulations to converge to a good solution, demanding a lot of time and computing resources. Also, in many cases we are able to provide information about the statistical distribution of some of the inputs that could help in the optimization process. For these reasons I believe Bayesian Optimization (BO) might be a good alternative to adapt to our particular modeling needs.
+
+Some preliminary (ongoing) experiments, using both bayesian and classical methods, are available in a jupyter notebook in \url{https://github.com/david-gomez-guillen/phd}, using the hypermapper [\cite{proposal:hypermapper}] python library for BO and scipy for classical optimization methods. This first set of tests focus on the performance of different optimization methods on well-known analytical functions that are easy to compute. Once acquainted with BO usage, the next step would be to repeat the tests on the actual cost-effectiveness models.
+
+The conclusions and challenges found in the tests so far include:
+\begin{enumerate}
+	\item BO using Gaussian Processes might be too slow for some of our more lightweight simulation models, classical methods converge faster even if they need more function evaluations. It should not be a problem for more computationally expensive simulation models.
+	\item BO tests performed converge to worse optima compared to classical optimization methods (e.g. Nelder-Mead, BFGS). It might be due to code issues: either implementation problems or an incorrect usage of the library.
+	\item Gaussian processes regression used in BO becomes more expensive for each iteration due to having to calculate the inverse of a matrix that grows with the number of observations. Regression becomes very slow to compute after a number of evaluations, especially for high-dimensional inputs (depending on the available hardware) [\cite{proposal:fast_gaussian}][\cite{proposal:splitting_gaussian}].
+	\item Regular bayesian methodology (updating iteratively the model after each observation) is more difficult to parallelize than classical methods, though some alternatives exist [\cite{proposal:parallel_bayesian}][\cite{proposal:parallel_bayesian2}].
+	\item BO in these tests performed with priors for the optimum [\cite{souza_bayesian_2021}] (implemented in hypermapper: \url{https://github.com/luinardi/hypermapper/wiki/prior-injection}) do not seem to converge faster. It might be due to library issues too: optimum priors implementation is labeled as experimental in the documentation.
+	\item When optimizing the actual cost-effectiveness models in future tests it would be interesting to add constraints for the inputs [\cite{gardner_bayesian_nodate}][\cite{ungredda_bayesian_2021}]. E.g: one input parameter being greater than another.
+\end{enumerate}
