@@ -80,7 +80,8 @@ for(alg in algs) {
 for(n in seq(9)) {
   png(paste0('output/n_', n, '.png'), width=1000, height=600)
   df.p <- dff[dff$n_matrices==n,]
-  plt <- ggplot(df.p[!endsWith(df.p$alg, '_smoothed'),], aes(x=index, y=error, color=alg)) + 
+  df.p[is.na(df.p$type), 'type'] <- 'cpu'
+  plt <- ggplot(df.p[!endsWith(df.p$alg, '_smoothed') & df.p$type=='cpu',], aes(x=index, y=error, color=alg)) + 
     geom_line() +
     scale_x_continuous(labels=function(x) format(x, scientific=F, big.mark=',')) +
     scale_y_continuous(limits=c(0,max(df.p$error))) +
@@ -92,7 +93,7 @@ for(n in seq(9)) {
   dev.off()
   
   png(paste0('output/n_', n, '_smoothed.png'), width=1000, height=600)
-  plt <- ggplot(df.p[endsWith(df.p$alg, '_smoothed'),], aes(x=index, y=error, color=alg)) + 
+  plt <- ggplot(df.p[endsWith(df.p$alg, '_smoothed') & df.p$type == 'cpu',], aes(x=index, y=error, color=alg)) + 
     geom_line(size=1) +
     scale_x_continuous(limits=c(0,2000),labels=function(x) format(x, scientific=F, big.mark=',')) +
     scale_y_continuous(limits=c(0.5,1.5)) +

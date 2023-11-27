@@ -14,7 +14,7 @@ library(optimParallel)
 library(ppso)
 
 # Objective function
-N_MATRICES <- 1
+N_MATRICES <- 9
 STARTING_MATRIX <- 1
 DELAY <- 0
 source('../../models/lung/calibration_wrapper.R')
@@ -471,7 +471,7 @@ for(kernel.type in c(
     results.df <- rbind(results.df, observed.y)
     # stopCluster(cl)
     print(Sys.time())
-    browser()
+    # browser()
   }
   
   current.df <- data.frame(y=apply(results.df, 2, mean), sd=apply(results.df, 2, sd))
@@ -538,8 +538,14 @@ df2 <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(mean, sd))
 names(df2) <- c('kernel', 'x', 'y', 'sd')
 df2$ymin <- df2$y - 2*df2$sd
 df2$ymax <- df2$y + 2*df2$sd
+df2$ycum <- ave(df2$y, df2$kernel, FUN=cummin)
+df2$ycuml <- ave(df2$ymin, df2$kernel, FUN=cummin)
+df2$ycumu <- ave(df2$ymax, df2$kernel, FUN=cummin)
 
-plt <- ggplot(df, aes(x=x, y=y, ymin=max(0,ymin), ymax=ymax, color=kernel, fill=kernel)) +
+# Remove univariate if necessary
+df2 <- df2[df2$kernel!='se2',]
+
+plt <- ggplot(df2, aes(x=x, y=y, ymin=max(0,ymin), ymax=ymax, color=kernel, fill=kernel)) +
   geom_line() +
   geom_ribbon(alpha=.2, linetype=3) +
   scale_color_discrete(name='Kernel',
@@ -564,12 +570,9 @@ plt <- ggplot(df, aes(x=x, y=y, ymin=max(0,ymin), ymax=ymax, color=kernel, fill=
 plt
 
 
-df3 <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(q1, q2, q3))
-names(df3) <- c('kernel', 'x', 'q1', 'q2', 'q3')
-
-plt <- ggplot(df3, aes(x=x, y=q2, ymin=q1, ymax=q3, color=kernel, fill=kernel)) +
+pltm <- ggplot(df2, aes(x=x, y=ycum, ymin=max(0,ycuml), ymax=ycumu, color=kernel, fill=kernel)) +
   geom_line() +
-  geom_ribbon(alpha=.2, linetype=3) +
+  # geom_ribbon(alpha=.2, linetype=3) +
   scale_color_discrete(name='Kernel',
                        breaks=c('se',
                                 'se2',
@@ -588,5 +591,65 @@ plt <- ggplot(df3, aes(x=x, y=q2, ymin=q1, ymax=q3, color=kernel, fill=kernel)) 
   theme(legend.position='bottom') +
   xlab('Iteration') +
   ylab('Error') +
+  coord_cartesian(xlim=c(1,100), ylim=c(0,15))
+pltm
+
+
+df3 <- df %>% group_by(kernel, iter) %>% summarise_at(vars(y), c(q1, q2, q3))
+names(df3) <- c('kernel', 'x', 'q1', 'q2', 'q3')
+
+# Remove univariate if necessary
+df3 <- df3[df3$kernel!='se2',]
+
+plt <- ggplot(df3, aes(x=x, y=q2, ymin=q1, ymax=q3, color=kernel, fill=kernel)) +
+  geom_line() +
+  # geom_ribbon(alpha=.2, linetype=3) +
+  scale_color_discrete(name='Kernel',
+                       breaks=c('se',
+                                'se2',
+                                'oak.gaussian'),
+                       labels=c('Squared Exponential',
+                                'Univariate SE\n(most significant variable)',
+                                'Orthogonal Additive Kernel')) +
+  scale_fill_discrete(name='Kernel',
+                      breaks=c('se',
+                               'se2',
+                               'oak.gaussian'),
+                      labels=c('Squared Exponential',
+                               'Univariate SE\n(most significant variable)',
+                               'Orthogonal Additive Kernel')) +
+  theme_minimal() +
+  theme(legend.position='bottom') +
+  xlab('Iteration') +
+  ylab('Error') +
   coord_cartesian(xlim=c(1,100), ylim=c(0,25))
 plt
+
+
+df3$q1 <- ave(df3$q1, df3$kernel, FUN=cummin)
+df3$q2 <- ave(df3$q2, df3$kernel, FUN=cummin)
+df3$q3 <- ave(df3$q3, df3$kernel, FUN=cummin)
+
+pltm <- ggplot(df3, aes(x=x, y=q2, ymin=q1, ymax=q3, color=kernel, fill=kernel)) +
+  geom_line() +
+  # geom_ribbon(alpha=.2, linetype=3) +
+  scale_color_discrete(name='Kernel',
+                       breaks=c('se',
+                                'se2',
+                                'oak.gaussian'),
+                       labels=c('Squared Exponential',
+                                'Univariate SE\n(most significant variable)',
+                                'Orthogonal Additive Kernel')) +
+  scale_fill_discrete(name='Kernel',
+                      breaks=c('se',
+                               'se2',
+                               'oak.gaussian'),
+                      labels=c('Squared Exponential',
+                               'Univariate SE\n(most significant variable)',
+                               'Orthogonal Additive Kernel')) +
+  theme_minimal() +
+  theme(legend.position='bottom') +
+  xlab('Iterations') +
+  ylab('Median cumulative minimum error') +
+  coord_cartesian(xlim=c(1,100), ylim=c(0,10))
+pltm

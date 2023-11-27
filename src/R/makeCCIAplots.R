@@ -7,30 +7,30 @@ library(dplyr)
 
 x.vals <- seq(0, 5, .05)
 
-df.p2 <- read.csv('output/plot_n1_figure.csv')
-
-plt <- ggplot(df.p2, aes(x=index, y=error, color=alg)) +
-  geom_line() +
-  scale_x_continuous(limits=c(0,2000), labels=function(x) format(x, scientific=F, big.mark=',')) +
-  scale_y_continuous(limits=c(0.5,1.5)) +
-  scale_color_manual(breaks=c(
-    'nelder-mead_smoothed',
-    'annealing_smoothed',
-    'pso_smoothed',
-    'bayesian_smoothed'
-    ),
-                     labels=c(
-                       'Nelder-Mead',
-                       'Simulated Annealing',
-                       'PSO',
-                       'Bayesian optimization' ),
-                     values=c('black', 'blue', 'green', 'red'),
-                     name='Method') +
-  xlab('Number of model evaluations') +
-  ylab('Error') +
-  theme_bw()
-print(plt)
-# ggsave(file="methods_n1.pdf", plot=plt, width=3500, height=1500, units = 'px')
+# df.p2 <- read.csv('output/plot_n1_figure.csv')
+# 
+# plt <- ggplot(df.p2, aes(x=index, y=error, color=alg)) +
+#   geom_line() +
+#   scale_x_continuous(limits=c(0,2000), labels=function(x) format(x, scientific=F, big.mark=',')) +
+#   scale_y_continuous(limits=c(0.5,1.5)) +
+#   scale_color_manual(breaks=c(
+#     'nelder-mead_smoothed',
+#     'annealing_smoothed',
+#     'pso_smoothed',
+#     'bayesian_smoothed'
+#     ),
+#                      labels=c(
+#                        'Nelder-Mead',
+#                        'Simulated Annealing',
+#                        'PSO',
+#                        'Bayesian optimization' ),
+#                      values=c('black', 'blue', 'green', 'red'),
+#                      name='Method') +
+#   xlab('Number of model evaluations') +
+#   ylab('Error') +
+#   theme_bw()
+# print(plt)
+# # ggsave(file="methods_n1.pdf", plot=plt, width=3500, height=1500, units = 'px')
 
 
 # clm <- function(formula, data, weights) {
@@ -58,23 +58,27 @@ df.pso.p$t <- df.pso.p$t / 8
 df <- bind_rows(
   df.bo, 
   df.nm, 
-  df.sa,
+  #df.sa,
   # df.pso.p,
-  df.pso
+  #df.pso
   )
 
 lm.nm <- lm((t)~tsim, data=df[df$method=='nm',])
-lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
-lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
-lm.pso.p <- lm.pso
-lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
+# lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
+# lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
+# lm.pso.p <- lm.pso
+# lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
 lm.bo <- lm((t)~tsim, data=df[df$method=='bo',])
-lms <- list(nm=lm.nm, sa=lm.sa, pso=lm.pso, pso.p=lm.pso.p, bo=lm.bo)
+lms <- list(nm=lm.nm, 
+            # sa=lm.sa, 
+            # pso=lm.pso, 
+            # pso.p=lm.pso.p, 
+            bo=lm.bo)
 
 df.p <- data.frame()
 for(m in c('nm', 
-           'sa', 
-           'pso', 
+           #'sa', 
+           #'pso', 
            # 'pso.p', 
            'bo')) {
   df.p <- rbind(df.p, data.frame(tsim=x.vals,
@@ -100,7 +104,7 @@ plt1 <- ggplot(df.p, aes(x=tsim, y=log10(t/60), color=method, fill=method)) +
                                 'pso', 
                                 # 'pso.p', 
                                 'bo'), 
-                       labels=c('Nelder-Mead',
+                       labels=c('Best alternative',
                                 'Simulated Annealing',
                                 'Particle Swarm', 
                                 # 'Particle Swarm (8 cores)', 
@@ -111,7 +115,7 @@ plt1 <- ggplot(df.p, aes(x=tsim, y=log10(t/60), color=method, fill=method)) +
                                'pso', 
                                # 'pso.p', 
                                'bo'), 
-                      labels=c('Nelder-Mead',
+                      labels=c('Best alternative',
                                'Simulated Annealing',
                                'Particle Swarm', 
                                # 'Particle Swarm (8 cores)', 
@@ -146,23 +150,29 @@ df.pso.p$t <- df.pso.p$t / 8
 df <- bind_rows(
   df.bo, 
   df.nm, 
-  df.sa,
+  #df.sa,
   # df.pso.p,
-  df.pso
+  #df.pso
 )
 
 lm.nm <- lm((t)~tsim, data=df[df$method=='nm',])
-lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
-lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
-lm.pso.p <- lm.pso
-lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
+# lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
+# lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
+# lm.pso.p <- lm.pso
+# lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
 lm.bo <- lm((t)~tsim, data=df[df$method=='bo',])
-lms <- list(nm=lm.nm, sa=lm.sa, pso=lm.pso, pso.p=lm.pso.p, bo=lm.bo)
+lms <- list(
+  nm=lm.nm, 
+  #sa=lm.sa, 
+  #pso=lm.pso, 
+  #pso.p=lm.pso.p, 
+  bo=lm.bo
+  )
 
 df.p <- data.frame()
 for(m in c('nm', 
-           'sa', 
-           'pso', 
+           #'sa', 
+           #'pso', 
            # 'pso.p', 
            'bo')) {
   df.p <- rbind(df.p, data.frame(tsim=x.vals,
@@ -187,7 +197,7 @@ plt2 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                 'pso', 
                                 # 'pso.p', 
                                 'bo'), 
-                       labels=c('Nelder-Mead',
+                       labels=c('Best alternative',
                                 'Simulated Annealing',
                                 'Particle Swarm', 
                                 # 'Particle Swarm (8 cores)', 
@@ -198,7 +208,7 @@ plt2 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                'pso', 
                                # 'pso.p', 
                                'bo'), 
-                      labels=c('Nelder-Mead',
+                      labels=c('Best alternative',
                                'Simulated Annealing',
                                'Particle Swarm', 
                                # 'Particle Swarm (8 cores)', 
@@ -233,23 +243,29 @@ df.pso.p$t <- df.pso.p$t / 8
 df <- bind_rows(
   df.bo, 
   df.nm, 
-  df.sa,
+  #df.sa,
   # df.pso.p,
-  df.pso
+  #df.pso
 )
 
 lm.nm <- lm((t)~tsim, data=df[df$method=='nm',])
-lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
-lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
-lm.pso.p <- lm.pso
-lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
+# lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
+# lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
+# lm.pso.p <- lm.pso
+# lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
 lm.bo <- lm((t)~tsim, data=df[df$method=='bo',])
-lms <- list(nm=lm.nm, sa=lm.sa, pso=lm.pso, pso.p=lm.pso.p, bo=lm.bo)
+lms <- list(
+  nm=lm.nm, 
+  # sa=lm.sa, 
+  # pso=lm.pso, 
+  # pso.p=lm.pso.p, 
+  bo=lm.bo
+  )
 
 df.p <- data.frame()
 for(m in c('nm', 
-           'sa', 
-           'pso', 
+           #'sa', 
+           #'pso', 
            # 'pso.p', 
            'bo')) {
   df.p <- rbind(df.p, data.frame(tsim=x.vals,
@@ -274,7 +290,7 @@ plt3 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                 'pso', 
                                 # 'pso.p', 
                                 'bo'), 
-                       labels=c('Nelder-Mead',
+                       labels=c('Best alternative',
                                 'Simulated Annealing',
                                 'Particle Swarm', 
                                 # 'Particle Swarm (8 cores)', 
@@ -285,7 +301,7 @@ plt3 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                'pso', 
                                # 'pso.p', 
                                'bo'), 
-                      labels=c('Nelder-Mead',
+                      labels=c('Best alternative',
                                'Simulated Annealing',
                                'Particle Swarm', 
                                # 'Particle Swarm (8 cores)', 
@@ -320,23 +336,28 @@ df.pso.p$t <- df.pso.p$t / 8
 df <- bind_rows(
   df.bo, 
   df.nm, 
-  df.sa,
+  #df.sa,
   # df.pso.p,
-  df.pso
+  #df.pso
 )
 
 lm.nm <- lm((t)~tsim, data=df[df$method=='nm',])
-lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
-lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
-lm.pso.p <- lm.pso
-lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
+# lm.sa <- lm((t)~tsim, data=df[df$method=='sa',])
+# lm.pso <- lm((t)~tsim, data=df[df$method=='pso',])
+# lm.pso.p <- lm.pso
+# lm.pso.p$coefficients[2] <- lm.pso.p$coefficients[2] / 8
 lm.bo <- lm((t)~tsim, data=df[df$method=='bo',])
-lms <- list(nm=lm.nm, sa=lm.sa, pso=lm.pso, pso.p=lm.pso.p, bo=lm.bo)
+lms <- list(
+  nm=lm.nm, 
+  # sa=lm.sa, 
+  # pso=lm.pso, 
+  # pso.p=lm.pso.p, 
+  bo=lm.bo)
 
 df.p <- data.frame()
 for(m in c('nm', 
-           'sa', 
-           'pso', 
+           #'sa', 
+           #'pso', 
            # 'pso.p', 
            'bo')) {
   df.p <- rbind(df.p, data.frame(tsim=x.vals,
@@ -366,7 +387,7 @@ plt4 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                 'pso', 
                                 # 'pso.p', 
                                 'bo'), 
-                       labels=c('Nelder-Mead',
+                       labels=c('Best alternative',
                                 'Simulated Annealing',
                                 'Particle Swarm', 
                                 # 'Particle Swarm (8 cores)', 
@@ -377,7 +398,7 @@ plt4 <- ggplot(df.p, aes(x=tsim,y=log10(t/60), color=method)) +
                                'pso', 
                                # 'pso.p', 
                                'bo'), 
-                      labels=c('Nelder-Mead',
+                      labels=c('Best alternative',
                                'Simulated Annealing',
                                'Particle Swarm', 
                                # 'Particle Swarm (8 cores)', 

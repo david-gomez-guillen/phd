@@ -176,14 +176,14 @@ def calibrate_lung_model(algorithm, n_matrices, starting_matrix=1, simulation_de
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         parameters = [
-            #('nelder-mead', 3),
-            #('annealing', 3),
-            #('pso', 3),
-            ('bayesian', 1)
+            #('nelder-mead', 1),
+            ('annealing', 1),
+            #('pso', 1),
+            #('bayesian', 1)
             ]
         start = [1]
         end = [1]
-        delays = [1]
+        delays = [0]
     else:
         parameters = [(sys.argv[1], int(sys.argv[2]))]
         start = [int(sys.argv[3])]

@@ -2,7 +2,12 @@ library(jsonlite)
 
 # N_MATRICES, STARTING_MATRIX, DELAY set as global variables (constants)
 
-make.calibration.func <- function(population, param.names, param.strata) {
+make.calibration.func <- function(population, 
+                                  param.names, 
+                                  param.strata,
+                                  N_MATRICES=NULL,
+                                  STARTING_MATRIX=1,
+                                  DELAY=0) {
 
 calibration.func<-function(par,verbose=TRUE){
   Sys.sleep(DELAY)
