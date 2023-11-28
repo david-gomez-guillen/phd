@@ -1,9 +1,9 @@
 library(MASS)
 library(GenSA)
-library(DEoptim)
-library(ppso)
-library(pso)
-library(optimParallel)
+# library(DEoptim)
+# library(ppso)
+# library(pso)
+# library(optimParallel)
 library(ggplot2)
 library(cowplot)
 library(mvtnorm)
@@ -14,8 +14,8 @@ source('../../models/lung/calibration_wrapper.R')
 
 SEED <- 3
 INITIAL.OBSERVATIONS <- 40 # 10
-N.ITERATIONS <- 30 # 10
-CALIBRATION.RANGE <- 2
+N.ITERATIONS <- 40 # 10
+CALIBRATION.RANGE <- .5
 N.CONSTRAINTS <- 1
 STARTING_MATRIX <- 1
 MAX.SIMULATION.MATRICES <- 9
@@ -129,11 +129,6 @@ input.means <- initial.guess
 input.sds <- sapply(initial.guess, function(x) (min(x,1-x) / 2))
 max.oak.sigma <- 1  # Truncate OAK, reject higher orders of interaction
 
-# kernel.type <- 'se'
-# l <- .065172
-# sigma2 <- 0.0002154
-# l.c <- 336.364
-# sigma2.c <- 8016.67
 
 ### Kernel hyperparameters
 kernel.type <- 'se'
@@ -141,6 +136,7 @@ l <- .065172
 sigma2 <- 0.0002154
 # kernel.type <- 'oak.gaussian'
 # l <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
+# l <- c(1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12)
 # sigma2 <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
 
 ### Kernel hyperparameters (constraints)
@@ -792,8 +788,8 @@ fixed.params <- numeric()
 #                   # 1.94249387293994e-05,0.000495412131017611,0.018838465341535,0.298750825808566,0.0695614416213038,0.00180026175783047,0.344309111770422,0.0430956073371232,0.00220641284602288,0.0541605942206627,0.00150477038785641
 #                   )
 plt <- plot.constrained.params(c())
-# ggsave(paste0('../../output/bad_stepwise_calibration_completed0.png'), plt, 
-#        width = 1750, height=750, units = 'px')
+ggsave(paste0('../../output/stepwise_calibration_completed0.png'), plt,
+       width = 4000, height=750, units = 'px')
 print(plt)
 
 start <- length(fixed.params)/11 + 1
@@ -806,8 +802,8 @@ for(i in seq(start, MAX.SIMULATION.MATRICES)) {
   fixed.params <- c(fixed.params, unname(unlist(best.x.i)))
   param.plot <- plot.constrained.params(fixed.params[seq(5,length(fixed.params),11)])
   plt <- ggarrange(calib.plot, param.plot, nrow=2)
-  # ggsave(paste0('../../output/bad_stepwise_calibration_completed', i, '.png'), plt,
-  #        width = 1750, height=1500, units = 'px')
+  ggsave(paste0('../../output/stepwise_calibration_completed', i, '.png'), plt,
+         width = 4000, height=1500, units = 'px')
   print(plt)
 }
 best.x <- fixed.params
