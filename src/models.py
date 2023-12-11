@@ -7,7 +7,7 @@ class Model:
     def __init__(self, path):
         self.path = path
 
-    def evaluate(self, x, silence_model_output) -> list:
+    def evaluate(self, x, silence_model_output, fixed_params) -> list:
       raise NotImplementedError
 
 class RModel(Model):
@@ -21,14 +21,14 @@ class RModel(Model):
       self.population = population
       self.global_vars = global_vars
 
-    def setup(self, params, silence_model_output=False):
+    def setup(self, params, silence_model_output=False, **kwargs):
       def _init_model():
         path = os.path.abspath(self.script_path)
         r = ro.r
         r.setwd(os.path.dirname(path))
         r.source(os.path.basename(path))
-        for key, value in self.global_vars.items():
-          ro.globalenv[key] = value
+        # for key, value in self.global_vars.items():
+        #   ro.globalenv[key] = value
         make_simulation_func = ro.globalenv[self.r_function]
 
         param_names, strata = zip(*params)
@@ -37,7 +37,10 @@ class RModel(Model):
         self.simulate_func = make_simulation_func(
             self.population,
             param_names,
-            strata
+            strata,
+            N_MATRICES=kwargs['calibration_params']['N_MATRICES'],
+            STARTING_MATRIX=kwargs['calibration_params']['STARTING_MATRIX'],
+            DELAY=kwargs['calibration_params']['DELAY']
         )
 
       if silence_model_output:

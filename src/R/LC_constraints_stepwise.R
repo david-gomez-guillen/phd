@@ -13,8 +13,8 @@ library(ggpubr)
 source('../../models/lung/calibration_wrapper.R')
 
 SEED <- 3
-INITIAL.OBSERVATIONS <- 40 # 10
-N.ITERATIONS <- 40 # 10
+INITIAL.OBSERVATIONS <- 10 # 10
+N.ITERATIONS <- 10 # 40
 CALIBRATION.RANGE <- .5
 N.CONSTRAINTS <- 1
 STARTING_MATRIX <- 1
@@ -127,17 +127,32 @@ make.constraint.func <- function(i, fixed.params) {
 # OAK parameters
 input.means <- initial.guess
 input.sds <- sapply(initial.guess, function(x) (min(x,1-x) / 2))
-max.oak.sigma <- 1  # Truncate OAK, reject higher orders of interaction
+max.oak.sigma <- 2  # Truncate OAK, reject higher orders of interaction
 
 
 ### Kernel hyperparameters
-kernel.type <- 'se'
-l <- .065172
-sigma2 <- 0.0002154
-# kernel.type <- 'oak.gaussian'
-# l <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
+# kernel.type <- 'se'
+# l <- .065172
+# sigma2 <- 0.0002154
+kernel.type <- 'oak.gaussian'
+l <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
 # l <- c(1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12)
-# sigma2 <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
+# l <- l * 1e9 # 2: 1e5, 3,4: 1e6, 5,6: 1e8, 
+# l <- c(
+#   1.425253e-11,
+#   1.128356e-08,
+#   6.446930e-07,
+#   3.780784e-05,
+#   4.487612e-07,
+#   1.176684e-10,
+#   3.072113e-07,
+#   3.399477e-07,
+#   1.829153e-11,
+#   5.486929e-08,
+#   4.435985e-12
+# )
+sigma2 <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
+sigma2 <- c(1000, 1000, rep(0, 1*11-2))
 
 ### Kernel hyperparameters (constraints)
 kernel.type.c <- 'se'
@@ -688,6 +703,18 @@ calibration.step <- function(group, initial.group.guess) {
   cat('\n')
   # observed.c <- matrix(nrow=0, ncol=length(c.lambda))
   
+  # l <- l * 1e9 # 2: 1e5, 3,4: 1e6, 5,6: 1e8, 
+  if (group <= 1) {
+    l.group <- l
+  } else if (group <= 2) {
+    l.group <- l * 1e5
+  } else if (group <= 4) {
+    l.group <- l * 1e6
+  } else if (group <= 6) {
+    l.group <- l * 1e8
+  } else {
+    l.group <- l * 1e9
+  }
   k <- build.k(kernel.type, l, sigma2)
   k.c <- build.k(kernel.type.c, l.c, sigma2.c)
   
@@ -780,16 +807,28 @@ print(plot.constrained.params(c(.02,.04)))
 
 trace.df <- data.frame()
 fixed.params <- numeric()
-# fixed.params <- c(1.64932709239525e-06,3.41540977838146e-05,0.00373025655099923,0.855036167363987,0.00310692140027966,3.79572883773294e-06,0.158192784602156,0.0590306671328585,3.61821200980594e-06,0.0031069806,2.29806050455746e-06,
-#                   5.92358573656082e-06,5.90146584763844e-05,0.0014591745,0.0481776189,0.0031069873,1.5462537595417e-06,0.0950506844,0.0590313774,2.31889431793774e-06,0.0590336479,3.47609243349151e-07,
-#                   7.00722674564365e-06,0.00017283026911789,0.00496624227304284,0.13543583042604,0.0197525904865159,2.59832883982864e-06,0.0692403605823531,0.0108193353571578,1.41217735112425e-06,0.0100254281645619,4.44892740310056e-07,
-#                   4.73927072579946e-05,6.17844361625388e-05,0.158811405186424,0.612276163825333,0.0239890566555956,1.33998399571241e-05,0.121001528318167,0.0425562278470603,7.55006015708145e-06,0.0295108512521651,6.92299443190607e-06,
-#                   3.35683127573888e-05,0.000272716074327127,0.981068530865121,0.37775234135175,0.0617940605326196,0.00552313761482471,0.164433736236265,0.0403898008559578,0.0116706693803425,0.051221933611099,0.00260223016196195
-#                   # 1.94249387293994e-05,0.000495412131017611,0.018838465341535,0.298750825808566,0.0695614416213038,0.00180026175783047,0.344309111770422,0.0430956073371232,0.00220641284602288,0.0541605942206627,0.00150477038785641
-#                   )
-plt <- plot.constrained.params(c())
-ggsave(paste0('../../output/stepwise_calibration_completed0.png'), plt,
-       width = 4000, height=750, units = 'px')
+# fixed.params <- c(
+# 8.840853e-07, 3.545943e-05, 4.520861e-02, 6.127348e-01, 1.858932e-02, 2.264502e-06,
+# 9.319615e-02, 3.809928e-02, 2.503169e-06, 2.680819e-02, 1.934802e-06,
+# 
+# 6.223212e-06, 5.819046e-05, 1.768437e-02, 6.559746e-01, 1.858971e-02, 1.541847e-06, 
+# 5.599723e-02, 3.809974e-02, 2.129649e-06, 2.680866e-02, 1.232152e-06,
+# 
+# 1.470602e-05, 1.097271e-04, 9.030459e-03, 4.099647e-01, 2.173056e-02, 1.620032e-06, 
+# 5.990604e-02, 4.781790e-02, 1.670620e-06, 3.128567e-02, 9.296089e-07,
+# 
+# 2.218534e-05, 2.002532e-04, 2.095466e-01, 7.072410e-01, 2.708145e-02, 9.629290e-06,
+# 1.879819e-01, 3.433871e-02, 8.938744e-06, 3.468073e-02, 6.465584e-06,
+# 
+# 3.317819e-05, 3.599524e-04, 6.850582e-01, 2.222679e-01, 4.876965e-02, 1.003073e-02, 
+# 5.095883e-01, 3.342319e-02, 1.179041e-02, 4.324167e-02, 4.830913e-03,
+# 
+# 6.531139e-05, 4.271873e-04, 1.879480e-02, 8.326982e-01, 5.496720e-02, 7.825139e-03,
+# 6.552199e-01, 2.984751e-02, 1.289616e-03, 1.577145e-02, 2.609000e-03
+# )
+plt <- plot.constrained.params(fixed.params)
+# ggsave(paste0('../../output/stepwise_calibration_completed0.png'), plt,
+#        width = 4000, height=750, units = 'px')
 print(plt)
 
 start <- length(fixed.params)/11 + 1
@@ -802,8 +841,8 @@ for(i in seq(start, MAX.SIMULATION.MATRICES)) {
   fixed.params <- c(fixed.params, unname(unlist(best.x.i)))
   param.plot <- plot.constrained.params(fixed.params[seq(5,length(fixed.params),11)])
   plt <- ggarrange(calib.plot, param.plot, nrow=2)
-  ggsave(paste0('../../output/stepwise_calibration_completed', i, '.png'), plt,
-         width = 4000, height=1500, units = 'px')
+  # ggsave(paste0('../../output/stepwise_calibration_completed', i, '.png'), plt,
+  #        width = 4000, height=1500, units = 'px')
   print(plt)
 }
 best.x <- fixed.params

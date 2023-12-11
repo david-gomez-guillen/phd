@@ -1,0 +1,592 @@
+{'N_MATRICES': 1, 'STARTING_MATRIX': 1, 'DELAY': 0}
+/home/david/miniconda3/envs/phd/lib/python3.10/site-packages/gpflow/experimental/utils.py:42: UserWarning: You're calling gpflow.experimental.check_shapes.decorator.check_shapes which is considered *experimental*. Expect: breaking changes, poor documentation, and bugs.
+  warn(
+/home/david/miniconda3/envs/phd/lib/python3.10/site-packages/gpflow/experimental/utils.py:42: UserWarning: You're calling gpflow.experimental.check_shapes.inheritance.inherit_check_shapes which is considered *experimental*. Expect: breaking changes, poor documentation, and bugs.
+  warn(
+2023-12-08 18:20:56.245649: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Iteration 0:
+ Errors: [[6.06879838]
+ [0.18825446]
+ [5.15130649]
+ [2.2446158 ]
+ [7.42294041]
+ [1.41926664]
+ [8.37081804]
+ [0.70072641]
+ [4.14511617]
+ [0.98089162]]
+ Time: 0.020771510899066925
+
+/home/david/miniconda3/envs/phd/lib/python3.10/site-packages/gpflow/experimental/utils.py:42: UserWarning: You're calling gpflow.experimental.check_shapes.checker.ShapeChecker.__init__ which is considered *experimental*. Expect: breaking changes, poor documentation, and bugs.
+  warn(
+2023-12-08 18:20:56.535125: W tensorflow/python/util/util.cc:368] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+/home/david/miniconda3/envs/phd/lib/python3.10/site-packages/scipy/optimize/_minimize.py:550: RuntimeWarning: Method Nelder-Mead does not use gradient information (jac).
+  warn('Method %s does not use gradient information (jac).' % method,
+Iteration 1:
+ Errors: [[0.19460891]]
+ Time: 8.731925327097997
+
+Iteration 2:
+ Errors: [[0.24154875]]
+ Time: 4.745168933877721
+
+Iteration 3:
+ Errors: [[0.20225134]]
+ Time: 5.096476470120251
+
+Iteration 4:
+ Errors: [[0.22633576]]
+ Time: 4.699309743009508
+
+Iteration 5:
+ Errors: [[0.46771311]]
+ Time: 5.268896575085819
+
+Iteration 6:
+ Errors: [[0.32283011]]
+ Time: 4.881887596799061
+
+Iteration 7:
+ Errors: [[0.16070794]]
+ Time: 4.971840046113357
+
+Iteration 8:
+ Errors: [[0.18596918]]
+ Time: 5.475014190888032
+
+Iteration 9:
+ Errors: [[0.24464721]]
+ Time: 5.657621724065393
+
+Iteration 10:
+ Errors: [[0.28961499]]
+ Time: 5.596041623968631
+
+2023-12-08 18:21:56.502111: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [1.16913784e-06 3.58813177e-05 3.70271008e-02 6.41569573e-01
+ 2.66222297e-02 2.54747580e-06 9.73230229e-02 3.70579367e-02
+ 1.58146434e-06 1.62166089e-02 1.63868002e-06]
+ Error: 0.16070793850326492
+ Model evaluations: 20
+ Time: 60.19951812108047
+ Label: bayesian_1_9_0
+{'N_MATRICES': 2, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[  9.37768413]
+ [  9.52854789]
+ [159.20188122]
+ [  9.00886034]
+ [  2.98022844]
+ [948.48249959]
+ [  4.56432382]
+ [ 20.62367174]
+ [  5.759945  ]
+ [484.48642512]]
+ Time: 0.020186913898214698
+
+Iteration 1:
+ Errors: [[6.34061234]]
+ Time: 13.685182119021192
+
+Iteration 2:
+ Errors: [[7.83576297]]
+ Time: 11.76152653596364
+
+Iteration 3:
+ Errors: [[5.97156926]]
+ Time: 6.030875768978149
+
+Iteration 4:
+ Errors: [[4.28460546]]
+ Time: 6.963792710099369
+
+Iteration 5:
+ Errors: [[7.34317581]]
+ Time: 6.556747572962195
+
+Iteration 6:
+ Errors: [[5.33882322]]
+ Time: 6.606307549867779
+
+Iteration 7:
+ Errors: [[11.90744119]]
+ Time: 6.850338931195438
+
+Iteration 8:
+ Errors: [[3.30987584]]
+ Time: 5.591204550815746
+
+Iteration 9:
+ Errors: [[4.45118686]]
+ Time: 6.161418648203835
+
+Iteration 10:
+ Errors: [[11.46098889]]
+ Time: 7.147367158904672
+
+2023-12-08 18:23:19.605851: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [1.07955970e-05 8.02196216e-05 1.08930440e-02 5.59964842e-01
+ 3.28012447e-02 1.00358883e-06 2.81430586e-02 3.30811311e-02
+ 2.13217752e-06 2.52958544e-02 1.20423446e-06]
+ Error: 2.980228439908129
+ Model evaluations: 20
+ Time: 83.10362861398607
+ Label: bayesian_1_9_0
+{'N_MATRICES': 3, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[1358.30079072]
+ [ 939.24684113]
+ [  21.7557412 ]
+ [   8.5288397 ]
+ [ 169.195629  ]
+ [  46.65568168]
+ [1666.82848505]
+ [ 842.72783932]
+ [  18.17047121]
+ [   5.05385909]]
+ Time: 0.01419697911478579
+
+Iteration 1:
+ Errors: [[6.33704188]]
+ Time: 10.69915851787664
+
+Iteration 2:
+ Errors: [[7.56811029]]
+ Time: 9.89627838996239
+
+Iteration 3:
+ Errors: [[14.36635263]]
+ Time: 8.388475192012265
+
+Iteration 4:
+ Errors: [[9.56061394]]
+ Time: 8.994498320156708
+
+Iteration 5:
+ Errors: [[13.3229769]]
+ Time: 8.768851135857403
+
+Iteration 6:
+ Errors: [[13.4865334]]
+ Time: 8.33976764511317
+
+Iteration 7:
+ Errors: [[9.30770102]]
+ Time: 7.5401333218906075
+
+Iteration 8:
+ Errors: [[15.25156451]]
+ Time: 6.930227412143722
+
+Iteration 9:
+ Errors: [[5.96677978]]
+ Time: 6.597851531812921
+
+Iteration 10:
+ Errors: [[5.71338302]]
+ Time: 7.011812104145065
+
+2023-12-08 18:24:49.021462: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [1.79451697e-05 1.35762965e-04 8.64583473e-03 3.55503974e-01
+ 4.44027931e-02 1.28869679e-06 5.16512828e-02 2.74882291e-02
+ 9.41621249e-07 2.16456490e-02 1.16679045e-06]
+ Error: 5.053859088062685
+ Model evaluations: 20
+ Time: 89.41242166399024
+ Label: bayesian_1_9_0
+{'N_MATRICES': 4, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[1306.43739854]
+ [ 292.10869393]
+ [1946.50953552]
+ [2690.6384838 ]
+ [1111.80893639]
+ [ 677.44853512]
+ [2300.39195151]
+ [1482.99171677]
+ [  57.48031319]
+ [2585.51878686]]
+ Time: 0.02419574582017958
+
+Iteration 1:
+ Errors: [[46.41315906]]
+ Time: 38.21713968995027
+
+Iteration 2:
+ Errors: [[48.32666157]]
+ Time: 32.00139787606895
+
+Iteration 3:
+ Errors: [[52.69733467]]
+ Time: 27.98266163887456
+
+Iteration 4:
+ Errors: [[73.54300922]]
+ Time: 25.179655849933624
+
+Iteration 5:
+ Errors: [[57.77195614]]
+ Time: 16.471617088187486
+
+Iteration 6:
+ Errors: [[188.97143031]]
+ Time: 13.375721064861864
+
+Iteration 7:
+ Errors: [[31.54818596]]
+ Time: 10.504945014137775
+
+Iteration 8:
+ Errors: [[45.74045722]]
+ Time: 9.97476558899507
+
+Iteration 9:
+ Errors: [[33.7909838]]
+ Time: 11.45836521498859
+
+Iteration 10:
+ Errors: [[34.70350483]]
+ Time: 17.964323594002053
+
+2023-12-08 18:28:19.203254: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [2.42107923e-05 3.41996223e-04 2.04547927e-01 6.77124430e-01
+ 4.45843712e-02 7.55553921e-06 2.88790292e-01 3.15010533e-02
+ 3.37044000e-06 4.56587826e-02 9.74449261e-06]
+ Error: 31.548185959280723
+ Model evaluations: 20
+ Time: 210.1758591060061
+ Label: bayesian_1_9_0
+{'N_MATRICES': 5, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[  66.74005496]
+ [1666.15674255]
+ [2420.54161547]
+ [ 743.82269835]
+ [ 243.89275048]
+ [2027.40755453]
+ [1125.53081021]
+ [ 126.6691091 ]
+ [1774.99195801]
+ [ 111.53522598]]
+ Time: 0.02159820799715817
+
+Iteration 1:
+ Errors: [[71.40857344]]
+ Time: 21.005119760986418
+
+Iteration 2:
+ Errors: [[66.14672908]]
+ Time: 17.66068812017329
+
+Iteration 3:
+ Errors: [[59.23043244]]
+ Time: 19.08619771990925
+
+Iteration 4:
+ Errors: [[59.68328829]]
+ Time: 17.67168752895668
+
+Iteration 5:
+ Errors: [[126.05711817]]
+ Time: 24.078465898055583
+
+Iteration 6:
+ Errors: [[100.37210031]]
+ Time: 32.95865277806297
+
+Iteration 7:
+ Errors: [[56.04934768]]
+ Time: 26.63524322398007
+
+Iteration 8:
+ Errors: [[93.32701346]]
+ Time: 29.140253904042765
+
+Iteration 9:
+ Errors: [[48.58118222]]
+ Time: 17.609766808804125
+
+Iteration 10:
+ Errors: [[39.04185749]]
+ Time: 22.18291122210212
+
+2023-12-08 18:32:14.080946: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [4.06809180e-05 3.36791991e-04 7.98053826e-01 3.54691049e-01
+ 4.58894132e-02 1.30390168e-02 7.85328779e-01 3.29620581e-02
+ 9.02827460e-03 2.07801786e-02 2.94582304e-03]
+ Error: 39.04185748906328
+ Model evaluations: 20
+ Time: 234.87040789797902
+ Label: bayesian_1_9_0
+{'N_MATRICES': 6, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[ 667.85706539]
+ [ 135.29561727]
+ [2109.78919296]
+ [1106.9813497 ]
+ [ 250.72932825]
+ [2635.95620362]
+ [ 921.17832641]
+ [  57.55515625]
+ [1764.92958043]
+ [1176.25794632]]
+ Time: 0.02209477499127388
+
+Iteration 1:
+ Errors: [[55.78168229]]
+ Time: 26.03456889418885
+
+Iteration 2:
+ Errors: [[66.91744983]]
+ Time: 18.826434349874035
+
+Iteration 3:
+ Errors: [[62.20984011]]
+ Time: 19.72759738797322
+
+Iteration 4:
+ Errors: [[67.26932952]]
+ Time: 22.08137458609417
+
+Iteration 5:
+ Errors: [[61.3489367]]
+ Time: 21.49962768284604
+
+Iteration 6:
+ Errors: [[116.03802686]]
+ Time: 17.721731283003464
+
+Iteration 7:
+ Errors: [[43.7367017]]
+ Time: 18.959549096180126
+
+Iteration 8:
+ Errors: [[46.03739031]]
+ Time: 18.248086117906496
+
+Iteration 9:
+ Errors: [[46.75514538]]
+ Time: 19.63047553692013
+
+Iteration 10:
+ Errors: [[68.55684229]]
+ Time: 20.37073758803308
+
+2023-12-08 18:35:43.400930: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [5.24959130e-05 4.57616976e-04 1.65192048e-02 8.15818447e-01
+ 4.86363803e-02 8.45656424e-03 7.85483488e-01 3.47377892e-02
+ 1.15512474e-03 2.08745379e-02 3.56571935e-03]
+ Error: 43.73670170249919
+ Model evaluations: 20
+ Time: 209.31789017794654
+ Label: bayesian_1_9_0
+{'N_MATRICES': 7, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[3389.51013674]
+ [3050.55848256]
+ [1946.55379239]
+ [1130.37716342]
+ [2022.78238605]
+ [ 273.59275081]
+ [2743.83236888]
+ [4139.7685173 ]
+ [1340.72266086]
+ [ 621.87767236]]
+ Time: 0.028321466874331236
+
+Iteration 1:
+ Errors: [[279.94140327]]
+ Time: 17.241356439888477
+
+Iteration 2:
+ Errors: [[312.7604042]]
+ Time: 14.08272484014742
+
+Iteration 3:
+ Errors: [[251.12238221]]
+ Time: 14.6270622019656
+
+Iteration 4:
+ Errors: [[368.67233675]]
+ Time: 18.008229116909206
+
+Iteration 5:
+ Errors: [[397.39352562]]
+ Time: 19.00608148914762
+
+Iteration 6:
+ Errors: [[179.19529077]]
+ Time: 18.339325819863006
+
+Iteration 7:
+ Errors: [[134.27098529]]
+ Time: 18.04767283797264
+
+Iteration 8:
+ Errors: [[149.74160702]]
+ Time: 24.30267930100672
+
+Iteration 9:
+ Errors: [[152.28902799]]
+ Time: 32.22614963608794
+
+Iteration 10:
+ Errors: [[153.95244322]]
+ Time: 15.661001702072099
+
+2023-12-08 18:39:02.245777: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [1.46015000e-04 6.32773047e-04 5.48515989e-01 8.12052288e-02
+ 5.28773913e-02 7.62919185e-04 5.96168778e-01 5.64615206e-03
+ 3.16753641e-02 2.58328037e-02 9.21927089e-03]
+ Error: 134.27098529110714
+ Model evaluations: 20
+ Time: 198.8411216600798
+ Label: bayesian_1_9_0
+{'N_MATRICES': 8, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[ 547.22434502]
+ [ 183.66885533]
+ [1707.64844947]
+ [ 722.87529432]
+ [2929.89350975]
+ [1814.16242571]
+ [ 457.60536432]
+ [ 320.17720635]
+ [2659.61878191]
+ [3302.00162089]]
+ Time: 0.02553771692328155
+
+Iteration 1:
+ Errors: [[194.02770884]]
+ Time: 25.92417972907424
+
+Iteration 2:
+ Errors: [[180.86183475]]
+ Time: 24.424215604085475
+
+Iteration 3:
+ Errors: [[194.28942844]]
+ Time: 25.262949044816196
+
+Iteration 4:
+ Errors: [[184.9260344]]
+ Time: 28.055205448996276
+
+Iteration 5:
+ Errors: [[208.27908669]]
+ Time: 32.138980939053
+
+Iteration 6:
+ Errors: [[246.96600742]]
+ Time: 35.02254281216301
+
+Iteration 7:
+ Errors: [[227.02499001]]
+ Time: 27.579161304980516
+
+Iteration 8:
+ Errors: [[145.26661568]]
+ Time: 37.36661797994748
+
+Iteration 9:
+ Errors: [[147.78753725]]
+ Time: 26.513043351005763
+
+Iteration 10:
+ Errors: [[154.81778939]]
+ Time: 30.486166452988982
+
+2023-12-08 18:44:00.432063: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [5.19297116e-05 1.03370767e-03 1.46469329e-01 3.48754260e-01
+ 5.79980325e-02 6.38693081e-05 8.03738504e-02 1.56898181e-03
+ 4.10608169e-02 2.24371822e-02 2.33352447e-03]
+ Error: 145.26661567639437
+ Model evaluations: 20
+ Time: 298.17624922911637
+ Label: bayesian_1_9_0
+{'N_MATRICES': 9, 'STARTING_MATRIX': 1, 'DELAY': 0}
+Iteration 0:
+ Errors: [[ 501.88701781]
+ [2945.17789301]
+ [ 161.81308168]
+ [2426.71831998]
+ [3323.23455231]
+ [1588.85839604]
+ [1821.85865614]
+ [4320.81583599]
+ [2755.13331195]
+ [ 960.09481418]]
+ Time: 0.023162784054875374
+
+Iteration 1:
+ Errors: [[156.94403016]]
+ Time: 19.344114490086213
+
+Iteration 2:
+ Errors: [[156.75889529]]
+ Time: 16.70832219393924
+
+Iteration 3:
+ Errors: [[161.21147538]]
+ Time: 13.224544662050903
+
+Iteration 4:
+ Errors: [[155.27088551]]
+ Time: 15.65726444683969
+
+Iteration 5:
+ Errors: [[155.0360649]]
+ Time: 13.72400755318813
+
+Iteration 6:
+ Errors: [[155.00882214]]
+ Time: 16.95886362087913
+
+Iteration 7:
+ Errors: [[161.2399708]]
+ Time: 16.99911197903566
+
+Iteration 8:
+ Errors: [[153.70108022]]
+ Time: 21.723060223972425
+
+Iteration 9:
+ Errors: [[195.97670727]]
+ Time: 20.00103532196954
+
+Iteration 10:
+ Errors: [[156.93941084]]
+ Time: 17.351573465159163
+
+2023-12-08 18:46:59.136339: I tensorflow/core/kernels/logging_ops.cc:171] Optimization completed without errors
+
+BayesianOptimizer
+Best solution: [4.30293397e-05 1.76036229e-03 1.32827468e-02 5.31592633e-01
+ 6.02635492e-02 2.99137934e-02 6.77095054e-01 8.35284755e-03
+ 3.46747591e-02 7.21353363e-02 6.39819179e-03]
+ Error: 153.70108021729433
+ Model evaluations: 20
+ Time: 178.7213807180524
+ Label: bayesian_1_9_0
+FULL CALIBRATED PARAMETERS
+[1.1691378437032744e-06, 3.58813177380866e-05, 0.03702710077488957, 0.6415695726213495, 0.026622229734679863, 2.547475796692263e-06, 0.0973230228835329, 0.0370579366581033, 1.5814643350377232e-06, 0.016216608856487638, 1.6386800167763877e-06, 1.0795596954345704e-05, 8.021962158203126e-05, 0.010893044012145995, 0.5599648417435913, 0.03280124470709229, 1.0035888311767578e-06, 0.028143058635986328, 0.03308113110168457, 2.1321775225830078e-06, 0.025295854406677247, 1.204234458190918e-06, 1.7945169667816162e-05, 0.0001357629653930664, 0.008645834727111817, 0.3555039743810272, 0.04440279312185669, 1.2886967930603028e-06, 0.0516512827925415, 0.027488229107147214, 9.416212493896485e-07, 0.021645648981903073, 1.166790454864502e-06, 2.4210792339513716e-05, 0.00034199622317170693, 0.20454792736820024, 0.6771244302500931, 0.04458437119292064, 7.555539206490826e-06, 0.2887902919692675, 0.03150105328520687, 3.37044e-06, 0.04565878260562941, 9.744492613527678e-06, 4.068091801645638e-05, 0.0003367919911119873, 0.7980538262702227, 0.35469104942614244, 0.045889413230649004, 0.013039016831556581, 0.785328779356084, 0.032962058121573545, 0.00902827459952569, 0.02078017858692264, 0.002945823036132932, 5.249591300905839e-05, 0.00045761697611657954, 0.016519204789268792, 0.8158184469561623, 0.04863638026775446, 0.008456564235985503, 0.7854834883156541, 0.03473778920625586, 0.001155124735413018, 0.020874537936060443, 0.0035657193462016318, 0.000146015, 0.0006327730469268012, 0.5485159890796665, 0.08120522881696528, 0.05287739129047885, 0.0007629191852357624, 0.5961687780251737, 0.005646152064822366, 0.031675364146748486, 0.025832803721139226, 0.009219270892428584, 5.192971156119048e-05, 0.001033707666160939, 0.14646932854829453, 0.3487542598790125, 0.0579980324523252, 6.386930810007255e-05, 0.08037385043897462, 0.0015689818105005552, 0.04106081686532392, 0.02243718222633616, 0.0023335244721484996, 4.3029339651422836e-05, 0.0017603622888655787, 0.013282746793746842, 0.5315926330123684, 0.06026354923334658, 0.02991379337893261, 0.6770950539597342, 0.00835284754658674, 0.034674759139651665, 0.07213533633799431, 0.006398191790825142]
+[0.02662223 0.03280124 0.04440279 0.04458437 0.04588941 0.04863638
+ 0.05287739 0.05799803 0.06026355]
+[0.16070793850326492, 2.980228439908129, 5.053859088062685, 31.548185959280723, 39.04185748906328, 43.73670170249919, 134.27098529110714, 145.26661567639437, 153.70108021729433]
