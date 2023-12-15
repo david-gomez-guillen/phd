@@ -14,13 +14,16 @@ source('../../models/lung/calibration_wrapper.R')
 
 SEED <- 3
 INITIAL.OBSERVATIONS <- 10 # 10
-N.ITERATIONS <- 10 # 40
+N.ITERATIONS <- 15 # 40
 CALIBRATION.RANGE <- .5
 N.CONSTRAINTS <- 1
 STARTING_MATRIX <- 1
 MAX.SIMULATION.MATRICES <- 9
 DELAY <- 0
 PLOT.ITERATION.PLOTS <- F
+
+KERNEL.TYPE <- 'oak.gaussian'
+KERNEL.TYPE.CONSTRAINTS <- 'se'
 
 TARGET <- list(
   incidence=c(1.9, 9.0, 20.9, 39.7, 57.9, 68.8, 71.4, 70.4, 69.9),
@@ -128,40 +131,6 @@ make.constraint.func <- function(i, fixed.params) {
 input.means <- initial.guess
 input.sds <- sapply(initial.guess, function(x) (min(x,1-x) / 2))
 max.oak.sigma <- 2  # Truncate OAK, reject higher orders of interaction
-
-
-### Kernel hyperparameters
-# kernel.type <- 'se'
-# l <- .065172
-# sigma2 <- 0.0002154
-kernel.type <- 'oak.gaussian'
-l <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
-# l <- c(1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12)
-# l <- l * 1e9 # 2: 1e5, 3,4: 1e6, 5,6: 1e8, 
-# l <- c(
-#   1.425253e-11,
-#   1.128356e-08,
-#   6.446930e-07,
-#   3.780784e-05,
-#   4.487612e-07,
-#   1.176684e-10,
-#   3.072113e-07,
-#   3.399477e-07,
-#   1.829153e-11,
-#   5.486929e-08,
-#   4.435985e-12
-# )
-sigma2 <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
-sigma2 <- c(1000, 1000, rep(0, 1*11-2))
-
-### Kernel hyperparameters (constraints)
-kernel.type.c <- 'se'
-l.c <- .65172
-sigma2.c <- 0.0002154
-# kernel.type.c <- 'oak.gaussian'
-# l.c <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
-# l.c <- rep(1e-1, 11)
-# sigma2.c <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
 
 build.k <- function(type, l, sigma2) {
   if (type == 'se') {
@@ -603,7 +572,7 @@ acq.func.ei <- function(gp.model, x) {
     warning=function(e) {
       browser()})
   best.y <- gp.model$best.y
-  if (is.na(sigma)) browser()
+  # if (is.na(sigma)) browser()
   if (sigma > 0) {
     ei <- (mu-best.y)*pnorm((mu-best.y)/sigma) + sigma*dnorm((mu-best.y)/sigma)
   } else { # Initial value, no uncertainty
@@ -674,6 +643,7 @@ plot.calibration <- function(gp.model=NULL, outcome=NULL, group=NULL, iteration=
 set.seed(SEED)
 
 calibration.step <- function(group, initial.group.guess) {
+  trace.df <<- data.frame()
   cat('Initializing BO observations...\n')
   if (group > 1) {
     fixed.params <- initial.group.guess[1:((group-1)*11)]
@@ -698,25 +668,75 @@ calibration.step <- function(group, initial.group.guess) {
   } else {
     observed.c <- t(apply(observed.x, 1, constraint))
   }
+  
+  for(i in seq(nrow(observed.x))) {
+    is.valid <- all(t(apply(t(observed.x[i,]), 1, constraint)) < 0)
+    evaluated.value <- f(observed.x[i,], fixed.params)
+    trace.df <<- rbind(trace.df, 
+                       data.frame(iter=0,
+                                  group=group,
+                                  error=evaluated.value, 
+                                  valid=is.valid,
+                                  time=0))
+  }
+  
+  
+  ### Kernel hyperparameters
+  if (KERNEL.TYPE == 'se') {
+    l <- 0.2 * (min(1, min(initial.guess.group)*(1+CALIBRATION.RANGE)) - max(0,min(initial.guess.group)*(1-CALIBRATION.RANGE))) * sqrt(ncol(observed.x)) # Heuristic used by trieste
+    sigma2 <- var(observed.y)
+  } else if (KERNEL.TYPE == 'oak.gaussian') {
+    l <- 0.2 * (pmin(1, initial.guess.group*(1+CALIBRATION.RANGE)) - pmax(0,initial.guess.group*(1-CALIBRATION.RANGE))) * sqrt(ncol(observed.x)) # Heuristic used by trieste
+    sigma2 <- c(1, var(observed.y), rep(0, 8))
+  } else {
+    stop('Wrong kernel type')
+  }
+  
+  if (KERNEL.TYPE.CONSTRAINTS == 'se') {
+    l.c <- 0.2 * (min(1, min(initial.guess.group)*(1+CALIBRATION.RANGE)) - max(0,min(initial.guess.group)*(1-CALIBRATION.RANGE))) * sqrt(ncol(observed.x)) # Heuristic used by trieste
+    sigma2.c <- var(observed.c)
+    if (sigma2.c == 0) sigma2.c <- 1e-5 # If variance 0 constraint values are equal
+  } else if (KERNEL.TYPE.CONSTRAINTS == 'oak.gaussian') {
+    l.c <- 0.2 * (pmin(1, initial.guess.group*(1+CALIBRATION.RANGE)) - pmax(0,initial.guess.group*(1-CALIBRATION.RANGE))) * sqrt(ncol(observed.x)) # Heuristic used by trieste
+    sigma2.c <- c(1, var(observed.c), rep(0, 8))
+  } else {
+    stop('Wrong kernel type')
+  }
+  
+  ### Kernel hyperparameters (constraints)
+  # kernel.type.c <- 'se'
+  # l.c <- 0.2 * (min(1, min(initial.guess)*(1+CALIBRATION.RANGE)) - max(0,min(initial.guess)*(1-CALIBRATION.RANGE))) * sqrt(ncol(observed.x)) # Heuristic used by trieste
+  # sigma2.c <- var(observed.c)
+  # kernel.type.c <- 'oak.gaussian'
+  # l.c <- c(1.425253e-11,1.128356e-08,6.446930e-07,3.780784e-05,4.487612e-07,1.176684e-10,3.072113e-07,3.399477e-07,1.829153e-11,5.486929e-08,4.435985e-12)
+  # l.c <- rep(1e-1, 11)
+  # sigma2.c <- c(1585.39465361646,42.7746208718925,rep(0, 1*11-2))
+  
+  print(paste0('l: ', paste0(l, collapse=',')))
+  print(paste0('sigma2: ', paste0(sigma2, collapse=',')))
+  print(paste0('lc: ', paste0(l.c, collapse=',')))
+  print(paste0('sigma2c: ', paste0(sigma2.c, collapse=',')))
+  
+  
   cat('Initial errors:\n')
   cat(paste0(observed.y, ' ', ifelse(apply(observed.c, 1, function(x) all(x < 0)), '', 'NOT VALID'), collapse='\n'))
   cat('\n')
   # observed.c <- matrix(nrow=0, ncol=length(c.lambda))
   
   # l <- l * 1e9 # 2: 1e5, 3,4: 1e6, 5,6: 1e8, 
-  if (group <= 1) {
-    l.group <- l
-  } else if (group <= 2) {
-    l.group <- l * 1e5
-  } else if (group <= 4) {
-    l.group <- l * 1e6
-  } else if (group <= 6) {
-    l.group <- l * 1e8
-  } else {
-    l.group <- l * 1e9
-  }
-  k <- build.k(kernel.type, l, sigma2)
-  k.c <- build.k(kernel.type.c, l.c, sigma2.c)
+  # if (group <= 1) {
+  #   l.group <- l
+  # } else if (group <= 2) {
+  #   l.group <- l * 1e5
+  # } else if (group <= 4) {
+  #   l.group <- l * 1e6
+  # } else if (group <= 6) {
+  #   l.group <- l * 1e8
+  # } else {
+  #   l.group <- l * 1e9
+  # }
+  k <- build.k(KERNEL.TYPE, l, sigma2)
+  k.c <- build.k(KERNEL.TYPE.CONSTRAINTS, l.c, sigma2.c)
   
   cat(paste0('Starting optimization (group ', group, ')\n'))
   print(Sys.time())
@@ -739,6 +759,7 @@ calibration.step <- function(group, initial.group.guess) {
                       data.frame(iter=n,
                                  group=group,
                                  error=evaluated.value, 
+                                 valid=all(is.valid < 0),
                                  time=difftime(end.time, start.time, units='secs')[[1]]))
     if (!all(is.valid < 0)) cat(' [NOT VALID]')
     cat('\n')
@@ -749,7 +770,7 @@ calibration.step <- function(group, initial.group.guess) {
   }
   
   cat('Optimization done:\n')
-  cat(paste0(' Best error (', min(trace.df$error), ') in ', sum(trace.df$time), 's\n'))
+  cat(paste0(' Best error (', min(trace.df[trace.df$valid,]$error), ') in ', sum(trace.df$time), 's\n'))
   
   # best.x.group <- gp.model$best.x[((group-1)*11+1):(group*11)]
   print(unlist(unname(gp.model$best.x)))
@@ -802,11 +823,11 @@ plot.constrained.params <- function(x) {
     ylab('')
   return(plt)
 }
-print(plot.constrained.params(c(.02,.04)))
 # Start stepwise calibration
 
 trace.df <- data.frame()
 fixed.params <- numeric()
+print(plot.constrained.params(fixed.params))
 # fixed.params <- c(
 # 8.840853e-07, 3.545943e-05, 4.520861e-02, 6.127348e-01, 1.858932e-02, 2.264502e-06,
 # 9.319615e-02, 3.809928e-02, 2.503169e-06, 2.680819e-02, 1.934802e-06,
@@ -846,4 +867,6 @@ for(i in seq(start, MAX.SIMULATION.MATRICES)) {
   print(plt)
 }
 best.x <- fixed.params
+print(paste0("PARAMS: ", best.x))
+print(paste0("CONSTRAINED PARAMS: ", best.x[seq(5,99,11)]))
 

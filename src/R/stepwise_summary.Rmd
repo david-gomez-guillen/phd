@@ -34,11 +34,10 @@ df.params$constrained <- ifelse(df.params$constrained==1, 'yes', 'no')
 df.params$error <- apply(df.params, 
                          1, 
                          function(r) {
-                           as.numeric(r['value']) - df.params[df.params$method=='initial' & df.params$constrained=='yes' &
-                                                 df.params$param==r['param'], 'value']
+                           as.numeric(r['value']) - as.numeric(df.params[df.params$method=='initial' & df.params$constrained=='yes' &
+                                                 df.params$param==r['param'], 'value'])
                            })
 df.params$distance <- abs(df.params$error)
-df.params
 ```
 
 ## **Overall results**
@@ -78,8 +77,8 @@ In absolute terms, calibration with BO using the stepwise method takes around **
 library(ggplot2)
 library(ggpubr)
 
-breaks <- c('initial', 'bo', 'nelder-mead', 'annealing', 'pso')
-colors <- c('black', '#f8766d', '#619cff', '#00ba38', '#f752df')
+breaks <- c('initial', 'bo', 'bo.oak', 'nelder-mead', 'annealing', 'pso')
+colors <- c('black', '#f8766d', '#c8463d', '#619cff', '#00ba38', '#f752df')
 linetypes <- c('dashed', 'solid')
 
 plt <- ggplot(df[df$constrained=='yes',], aes(x=group, y=error, color=method)) + 
@@ -156,8 +155,7 @@ plt.params.error.u <- ggplot(df.params[df.params$constrained=='no' & df.params$m
   scale_color_manual(breaks=breaks, values=colors) +
   xlab('Age group') +
   ylab('Parameter distance\n from initial parameters')
-
-
+df.params[df.params$constrained=='yes',]
 ggarrange(plt.params.u, plt.params,
           #plt.params.error.u, plt.params.error, 
           ncol = 2, nrow=1, common.legend = TRUE)
@@ -201,7 +199,7 @@ BO was run with a fixed budget of 40 iterations, including 10 random initial obs
 
 ```{r fig4, fig.height=10, fig.width=10, echo=FALSE}
 
-x.vals <- seq(0, 2, .025)
+x.vals <- seq(0, 300, .025)
 
 df.p <- data.frame()
 for(m in df.summary[df.summary$constrained=='no',]$method) {
@@ -228,6 +226,7 @@ for(m in df.summary[df.summary$constrained=='yes',]$method) {
 plt.u <- ggplot(df.p[df.p$constrained=='no',], aes(x=sim.time, y=log10(total.time), color=method)) + 
   geom_line() +
   geom_segment(x=.24, y=0, xend=.24, yend=3.5, linetype='dashed', color='black') +
+  geom_segment(x=260, y=0, xend=260, yend=4.98, linetype='dashed', color='black') +
   scale_color_manual(breaks=breaks, values=colors) +
   xlab('Simulation time (s)') +
   ylab('Total stepwise calibration time (log s)') +
@@ -236,10 +235,20 @@ plt.u <- ggplot(df.p[df.p$constrained=='no',], aes(x=sim.time, y=log10(total.tim
 plt <- ggplot(df.p[df.p$constrained=='yes',], aes(x=sim.time, y=log10(total.time), color=method)) + 
   geom_line() +
   geom_segment(x=.24, y=0, xend=.24, yend=3.5, linetype='dashed', color='black') +
+  geom_segment(x=260, y=0, xend=260, yend=4.98, linetype='dashed', color='black') +
   scale_color_manual(breaks=breaks, values=colors) +
   xlab('Simulation time (s)') +
   ylab('Total stepwise calibration time (log s)') +
-  coord_cartesian(ylim=c(2,6))
+  coord_cartesian(ylim=c(2,6), xlim=c(0, 2))
+
+plt2 <- ggplot(df.p[df.p$constrained=='yes',], aes(x=sim.time, y=log10(total.time), color=method)) + 
+  geom_line() +
+  geom_segment(x=.24, y=0, xend=.24, yend=3.5, linetype='dashed', color='black') +
+  geom_segment(x=260, y=0, xend=260, yend=4.98, linetype='dashed', color='black') +
+  scale_color_manual(breaks=breaks, values=colors) +
+  xlab('Simulation time (s)') +
+  ylab('Total stepwise calibration time (log s)') +
+  coord_cartesian(ylim=c(2,6), xlim=c(0, 300))
 
 plt.both <- ggplot(df.p, aes(x=sim.time, y=log10(total.time), color=method, linetype=constrained)) + 
   geom_line() +
@@ -250,9 +259,11 @@ plt.both <- ggplot(df.p, aes(x=sim.time, y=log10(total.time), color=method, line
   ylab('Total stepwise calibration time (log s)') +
   coord_cartesian(ylim=c(2,6))
 
-ggarrange(plt, plt.both, nrow=2, ncol=1, common.legend = TRUE)
+ggarrange(plt, plt2, nrow=2, ncol=1, common.legend = TRUE)
 ```
 
 The critical simulation time for the whole model with all 9 age groups (that **we projected at 300 seconds using conventional calibration**) is reduced to **\~0.24 seconds using constrained stepwise calibration**. This proves that this method dramatically improves the efficiency of Bayesian Optimization by exploiting a major flaw of BO (high dimensionality), reducing the effective dimension of the problem from one 99-parameter problem to nine 11-parameter problems.
 
 The critical simulation time doesn't change significantly when considering an unconstrained calibration.
+
+\~260s
