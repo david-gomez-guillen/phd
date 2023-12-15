@@ -21,6 +21,7 @@ STARTING_MATRIX <- 1
 MAX.SIMULATION.MATRICES <- 9
 DELAY <- 0
 PLOT.ITERATION.PLOTS <- F
+USE.CONSTRAINTS <- T
 
 KERNEL.TYPE <- 'oak.gaussian'
 KERNEL.TYPE.CONSTRAINTS <- 'se'
@@ -114,7 +115,7 @@ initial.guess <- initial.guess[1:(11*MAX.SIMULATION.MATRICES)]
 
 # Constraint (constraint(x) < lambda)
 make.constraint.func <- function(i, fixed.params) {
-  if (i == 1) {
+  if (i == 1 || !USE.CONSTRAINTS) {
     cnst <- function(x) return(-1)
   } else {
     cnst <- function(x) {
@@ -379,28 +380,32 @@ calculate.regression.model <- function(k, k.c, X, y, cx, constraint.func, fixed.
   
   # Constraint model
   
-  
-  if (nrow(X) == 0) {
-    K.c <- numeric(0)
-    Ki.c <- K.c
-  } else {
-    K.c <- k.c(X,X)
-    if (nrow(X) == 1) {
-      Ki.c <- 1/(K.c + f.noise)
+  if (USE.CONSTRAINTS) {
+    if (nrow(X) == 0) {
+      K.c <- numeric(0)
+      Ki.c <- K.c
     } else {
-      # ginv vs solve
-      Kmat.c <- matrix(unlist(K.c),nrow=nrow(K.c))
-      Ki.c <- NULL
-      jitter <- f.noise
-      while (is.null(Ki.c) && jitter < 1) {
-        try(Ki.c <- solve(Kmat.c + jitter*diag(nrow(K.c))), silent=TRUE)
-        jitter <- jitter * 10
-      }
-      if (is.null(Ki.c)) {
-        browser()
-        stop('Singular matrix, numerical instability problems')
+      K.c <- k.c(X,X)
+      if (nrow(X) == 1) {
+        Ki.c <- 1/(K.c + f.noise)
+      } else {
+        # ginv vs solve
+        Kmat.c <- matrix(unlist(K.c),nrow=nrow(K.c))
+        Ki.c <- NULL
+        jitter <- f.noise
+        while (is.null(Ki.c) && jitter < 1) {
+          try(Ki.c <- solve(Kmat.c + jitter*diag(nrow(K.c))), silent=TRUE)
+          jitter <- jitter * 10
+        }
+        if (is.null(Ki.c)) {
+          browser()
+          stop('Singular matrix, numerical instability problems')
+        }
       }
     }
+  } else {
+    K.c <- NULL
+    Ki.c <- NULL
   }
   }
   
@@ -557,10 +562,11 @@ choose.next.evaluation.points <- function(gp.model, initial.group.guess) {
 }
 
 acq.func <- function(gp.model, x) {
-  # print(x)
-  cei <- acq.func.cei(gp.model, x)
-  # print(cei)
-  return(cei)
+  if (USE.CONSTRAINTS) 
+    acq <- acq.func.cei(gp.model, x)
+  else
+    acq <- acq.func.ei(gp.model, x)
+  return(acq)
 }
 acq.func.ei <- function(gp.model, x) {
   x2 <- data.frame(t(x))
@@ -670,7 +676,7 @@ calibration.step <- function(group, initial.group.guess) {
   }
   
   for(i in seq(nrow(observed.x))) {
-    is.valid <- all(t(apply(t(observed.x[i,]), 1, constraint)) < 0)
+    is.valid <- all(t(apply(t(observed.x[i,]), 2, constraint)) < 0)
     evaluated.value <- f(observed.x[i,], fixed.params)
     trace.df <<- rbind(trace.df, 
                        data.frame(iter=0,
