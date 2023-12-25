@@ -219,7 +219,7 @@ BO was run with a fixed budget of 40 iterations, including 10 random initial obs
 
 ## Critical simulation time for constrained stepwise calibration
 
-```{r fig4, fig.height=10, fig.width=10, echo=FALSE}
+```{r fig4, fig.height=5, fig.width=10, echo=FALSE}
 
 x.vals <- seq(0, 200, .025)
 
@@ -275,7 +275,7 @@ plt <- ggplot(df.p[df.p$constrained=='yes',], aes(x=sim.time, y=log10(total.time
   xlab('Simulation time (s)') +
   ylab('Total stepwise calibration time (log s)') +
   coord_cartesian(ylim=c(2,6), xlim=c(0, 2)) +
-  ggtitle('Constrained stepwise calibration') +
+  #ggtitle('Constrained stepwise calibration') +
   theme(plot.title=element_text(hjust=.5))
 
 plt2 <- ggplot(df.p[df.p$constrained=='yes',], aes(x=sim.time, y=log10(total.time), color=method)) + 
@@ -296,12 +296,15 @@ plt.both <- ggplot(df.p, aes(x=sim.time, y=log10(total.time), color=method, line
   ylab('Total stepwise calibration time (log s)') +
   coord_cartesian(ylim=c(2,6))
 
-ggarrange(plt.u, plt, plt2.u, plt2, nrow=2, ncol=2, common.legend = TRUE)
+#ggarrange(plt.u, plt, plt2.u, plt2, nrow=2, ncol=2, common.legend = TRUE)
+pdf('crit_times_constrained.pdf', width = 9, height=4)
+ggarrange(plt, plt2, nrow=1, ncol=2, common.legend = TRUE, legend = 'bottom')
+dev.off()
 ```
 
 The critical simulation time for the whole model with all 9 age groups (that **we projected at 300 seconds using conventional calibration**) is reduced to **\~0.24 seconds using constrained stepwise calibration with BO and a SE kernel (BO-SE)**.
 
-Also, using a (non-optimized) implementation of **BO with orthogonal additive kernel (BO-OAK) we can improve BO-SE once the simulation time exceeds \~120 seconds**. The BO-OAK code has a lot of room for improvement, with a more efficient implementation this second critical time can be potentially improved. These results give us a criterion to choose the fastest optimization method while using stepwise calibration:
+Also, using a (non-optimized) implementation of **BO with orthogonal additive kernel (BO-OAK) we can improve BO-SE once the simulation time exceeds \~140 seconds**. The BO-OAK code has a lot of room for improvement, with a more efficient implementation this second critical time can be potentially improved. These results give us a criterion to choose the fastest optimization method while using stepwise calibration:
 
 -   $t_{sim}$ \< 0.24s: **Nelder-Mead**
 
