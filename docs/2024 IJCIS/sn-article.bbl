@@ -1,0 +1,380 @@
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{21}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{Gómez-Guillén et~al.}{}]{original}
+\begin{botherref}
+\oauthor{\bsnm{Gómez-Guillén}, \binits{D.}},
+\oauthor{\bsnm{Díaz}, \binits{M.}},
+\oauthor{\bsnm{Arcos}, \binits{J.L.}},
+\oauthor{\bsnm{Cerquides}, \binits{J.}}:
+Bayesian optimization with additive kernels for the calibration of simulation
+  models to perform cost-effectiveness analysis.
+In: Artificial Intelligence Research and Development,
+pp. 143--152.
+{IOS} Press.
+\doiurl{10.3233/FAIA230677}
+\end{botherref}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{Drummond et~al.}{2015}]{drummond}
+\begin{bbook}
+\bauthor{\bsnm{Drummond}, \binits{M.F.}},
+\bauthor{\bsnm{Sculpher}, \binits{M.J.}},
+\bauthor{\bsnm{Claxton}, \binits{K.}},
+\bauthor{\bsnm{Stoddart}, \binits{G.L.}},
+\bauthor{\bsnm{Torrance}, \binits{G.W.}}:
+\bbtitle{Methods for the Economic Evaluation of Health Care Programmes},
+\bedition{Fourth edition, fourth edition} edn.
+\bpublisher{Oxford University Press},
+\blocation{Oxford, New York}
+(\byear{2015})
+\end{bbook}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Levin}{2000}]{levin}
+\begin{bbook}
+\bauthor{\bsnm{Levin}, \binits{H.M.}}:
+\bbtitle{Cost-Effectiveness Analysis: Methods and Applications},
+\bedition{2nd edition} edn.
+\bpublisher{{SAGE} Publications, Inc},
+\blocation{Thousand Oaks, Calif}
+(\byear{2000})
+\end{bbook}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{Gray et~al.}{2010}]{applied_he}
+\begin{bbook}
+\bauthor{\bsnm{Gray}, \binits{A.M.}},
+\bauthor{\bsnm{Clarke}, \binits{P.M.}},
+\bauthor{\bsnm{Wolstenholme}, \binits{J.L.}},
+\bauthor{\bsnm{Wordsworth}, \binits{S.}}:
+\bbtitle{Applied Methods of Cost-effectiveness Analysis in Healthcare}.
+\bsertitle{Handbooks in Health Economic Evaluation}.
+\bpublisher{Oxford University Press},
+\blocation{Oxford, New York}
+(\byear{2010})
+\end{bbook}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{Weinstein et~al.}{2009}]{qalys}
+\begin{barticle}
+\bauthor{\bsnm{Weinstein}, \binits{M.C.}},
+\bauthor{\bsnm{Torrance}, \binits{G.}},
+\bauthor{\bsnm{{McGuire}}, \binits{A.}}:
+\batitle{{QALYs}: the basics}.
+\bjtitle{Value in Health: The Journal of the International Society for
+  Pharmacoeconomics and Outcomes Research}
+\bvolume{12 Suppl 1},
+\bfpage{5}--\blpage{9}
+(\byear{2009})
+\doiurl{10.1111/j.1524-4733.2009.00515.x}
+\end{barticle}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{Rasmussen and
+  Williams}{2006}]{gaussian-processes}
+\begin{bbook}
+\bauthor{\bsnm{Rasmussen}, \binits{C.E.}},
+\bauthor{\bsnm{Williams}, \binits{C.K.I.}}:
+\bbtitle{Gaussian Processes for Machine Learning}.
+\bsertitle{Adaptive computation and machine learning}.
+\bpublisher{{MIT} Press},
+\blocation{Cambridge, Mass}
+(\byear{2006})
+\end{bbook}
+\endbibitem
+
+%%% 7
+\bibitem[\protect\citeauthoryear{Duvenaud et~al.}{2013}]{kernel-composition}
+\begin{bchapter}
+\bauthor{\bsnm{Duvenaud}, \binits{D.}},
+\bauthor{\bsnm{Lloyd}, \binits{J.}},
+\bauthor{\bsnm{Grosse}, \binits{R.}},
+\bauthor{\bsnm{Tenenbaum}, \binits{J.}},
+\bauthor{\bsnm{Zoubin}, \binits{G.}}:
+\bctitle{Structure discovery in nonparametric regression through compositional
+  kernel search}.
+In: \bbtitle{Proceedings of the 30th International Conference on Machine
+  Learning},
+pp. \bfpage{1166}--\blpage{1174}
+(\byear{2013}).
+\bcomment{{ISSN}: 1938-7228}
+\end{bchapter}
+\endbibitem
+
+%%% 8
+\bibitem[\protect\citeauthoryear{Bengio}{2007}]{curse-dimensionality}
+\begin{barticle}
+\bauthor{\bsnm{Bengio}, \binits{Y.}}:
+\batitle{On the challenge of learning complex functions}.
+\bjtitle{Progress in Brain Research}
+\bvolume{165},
+\bfpage{521}--\blpage{534}
+(\byear{2007})
+\doiurl{10.1016/S0079-6123(06)65033-4}
+\end{barticle}
+\endbibitem
+
+%%% 9
+\bibitem[\protect\citeauthoryear{Durrande et~al.}{2012}]{gp-high-dim}
+\begin{barticle}
+\bauthor{\bsnm{Durrande}, \binits{N.}},
+\bauthor{\bsnm{Ginsbourger}, \binits{D.}},
+\bauthor{\bsnm{Roustant}, \binits{O.}}:
+\batitle{Additive covariance kernels for high-dimensional gaussian process
+  modeling}.
+\bjtitle{Annales de la Faculté de Sciences de Toulouse}
+\bvolume{Tome 21},
+\bfpage{481}
+(\byear{2012})
+\end{barticle}
+\endbibitem
+
+%%% 10
+\bibitem[\protect\citeauthoryear{Binois and Wycoff}{2022}]{gp-high-dim2}
+\begin{barticle}
+\bauthor{\bsnm{Binois}, \binits{M.}},
+\bauthor{\bsnm{Wycoff}, \binits{N.}}:
+\batitle{A survey on high-dimensional gaussian process modeling with
+  application to bayesian optimization}.
+\bjtitle{{ACM} Transactions on Evolutionary Learning and Optimization}
+\bvolume{2}(\bissue{2}),
+\bfpage{8}--\blpage{1826}
+(\byear{2022})
+\doiurl{10.1145/3545611}
+\end{barticle}
+\endbibitem
+
+%%% 11
+\bibitem[\protect\citeauthoryear{Duvenaud et~al.}{2011}]{gp-additive}
+\begin{bchapter}
+\bauthor{\bsnm{Duvenaud}, \binits{D.K.}},
+\bauthor{\bsnm{Nickisch}, \binits{H.}},
+\bauthor{\bsnm{Rasmussen}, \binits{C.}}:
+\bctitle{Additive gaussian processes}.
+In: \bbtitle{Advances in Neural Information Processing Systems},
+vol. \bseriesno{24},
+pp. \bfpage{226}--\blpage{234}
+(\byear{2011})
+\end{bchapter}
+\endbibitem
+
+%%% 12
+\bibitem[\protect\citeauthoryear{Lu et~al.}{2022}]{gp-additive-orthogonal}
+\begin{bchapter}
+\bauthor{\bsnm{Lu}, \binits{X.}},
+\bauthor{\bsnm{Boukouvalas}, \binits{A.}},
+\bauthor{\bsnm{Hensman}, \binits{J.}}:
+\bctitle{Additive gaussian processes revisited}.
+In: \bbtitle{Proceedings of the 39th International Conference on Machine
+  Learning},
+pp. \bfpage{14358}--\blpage{14383}
+(\byear{2022}).
+\bcomment{{ISSN}: 2640-3498}
+\end{bchapter}
+\endbibitem
+
+%%% 13
+\bibitem[\protect\citeauthoryear{Diaz et~al.}{2021}]{lung-model}
+\begin{barticle}
+\bauthor{\bsnm{Diaz}, \binits{M.}},
+\bauthor{\bsnm{Garcia}, \binits{M.}},
+\bauthor{\bsnm{Vidal}, \binits{C.}},
+\bauthor{\bsnm{Santiago}, \binits{A.}},
+\bauthor{\bsnm{Gnutti}, \binits{G.}},
+\bauthor{\bsnm{Gómez}, \binits{D.}},
+\bauthor{\bsnm{Trapero-Bertran}, \binits{M.}},
+\bauthor{\bsnm{Fu}, \binits{M.}},
+\bauthor{\bsnm{{Lung Cancer Prevention LUCAPREV research group}}}:
+\batitle{Health and economic impact at a population level of both primary and
+  secondary preventive lung cancer interventions: A model-based
+  cost-effectiveness analysis}.
+\bjtitle{Lung Cancer}
+\bvolume{159},
+\bfpage{153}--\blpage{161}
+(\byear{2021})
+\doiurl{10.1016/j.lungcan.2021.06.027}
+\end{barticle}
+\endbibitem
+
+%%% 14
+\bibitem[\protect\citeauthoryear{Nelder and Mead}{1965}]{nelder-mead}
+\begin{barticle}
+\bauthor{\bsnm{Nelder}, \binits{J.A.}},
+\bauthor{\bsnm{Mead}, \binits{R.}}:
+\batitle{A simplex method for function minimization}.
+\bjtitle{The Computer Journal}
+\bvolume{7}(\bissue{4}),
+\bfpage{308}--\blpage{313}
+(\byear{1965})
+\doiurl{10.1093/comjnl/7.4.308}
+\end{barticle}
+\endbibitem
+
+%%% 15
+\bibitem[\protect\citeauthoryear{Kirkpatrick
+  et~al.}{1983}]{simulated-annealing}
+\begin{barticle}
+\bauthor{\bsnm{Kirkpatrick}, \binits{S.}},
+\bauthor{\bsnm{Gelatt}, \binits{C.D.}},
+\bauthor{\bsnm{Vecchi}, \binits{M.P.}}:
+\batitle{Optimization by simulated annealing}.
+\bjtitle{Science}
+\bvolume{220}(\bissue{4598}),
+\bfpage{671}--\blpage{680}
+(\byear{1983})
+\doiurl{10.1126/science.220.4598.671} .
+\bcomment{Publisher: American Association for the Advancement of Science}
+\end{barticle}
+\endbibitem
+
+%%% 16
+\bibitem[\protect\citeauthoryear{Bonyadi and Michalewicz}{2017}]{pso}
+\begin{barticle}
+\bauthor{\bsnm{Bonyadi}, \binits{M.R.}},
+\bauthor{\bsnm{Michalewicz}, \binits{Z.}}:
+\batitle{Particle swarm optimization for single objective continuous space
+  problems: A review}.
+\bjtitle{Evolutionary Computation}
+\bvolume{25}(\bissue{1}),
+\bfpage{1}--\blpage{54}
+(\byear{2017})
+\doiurl{10.1162/EVCO_r_00180} .
+\bcomment{Conference Name: Evolutionary Computation}
+\end{barticle}
+\endbibitem
+
+%%% 17
+\bibitem[\protect\citeauthoryear{Gardner et~al.}{2014}]{gp-constraints}
+\begin{bchapter}
+\bauthor{\bsnm{Gardner}, \binits{J.R.}},
+\bauthor{\bsnm{Kusner}, \binits{M.J.}},
+\bauthor{\bsnm{Xu}, \binits{Z.}},
+\bauthor{\bsnm{Weinberger}, \binits{K.Q.}},
+\bauthor{\bsnm{Cunningham}, \binits{J.P.}}:
+\bctitle{Bayesian optimization with inequality constraints}.
+In: \bbtitle{Proceedings of the 31st International Conference on Machine
+  Learning - Volume 32}.
+\bsertitle{ICML'14},
+pp. \bfpage{937}--\blpage{945}.
+\bpublisher{JMLR.org},
+\blocation{Beijing, China}
+(\byear{2014})
+\end{bchapter}
+\endbibitem
+
+%%% 18
+\bibitem[\protect\citeauthoryear{Zhang et~al.}{2023}]{bo-constraint-dependence}
+\begin{botherref}
+\oauthor{\bsnm{Zhang}, \binits{S.}},
+\oauthor{\bsnm{Lee}, \binits{R.}},
+\oauthor{\bsnm{Shafei}, \binits{B.}},
+\oauthor{\bsnm{Walz}, \binits{D.}},
+\oauthor{\bsnm{Misener}, \binits{R.}}:
+Dependence in constrained bayesian optimization.
+Optimization Letters,
+1--17
+(2023)
+\doiurl{10.1007/s11590-023-02047-z}
+\end{botherref}
+\endbibitem
+
+%%% 19
+\bibitem[\protect\citeauthoryear{González et~al.}{2016}]{gp-batch}
+\begin{bchapter}
+\bauthor{\bsnm{González}, \binits{J.}},
+\bauthor{\bsnm{Dai}, \binits{Z.}},
+\bauthor{\bsnm{Hennig}, \binits{P.}},
+\bauthor{\bsnm{Lawrence}, \binits{N.}}:
+\bctitle{Batch bayesian optimization via local penalization}.
+In: \bbtitle{Proceedings of the 19th International Conference on Artificial
+  Intelligence and Statistics ({AISTATS})}.
+\bsertitle{{JMLR} Workshop and Conference Proceedings},
+vol. \bseriesno{51},
+pp. \bfpage{648}--\blpage{657}
+(\byear{2016})
+\end{bchapter}
+\endbibitem
+
+%%% 20
+\bibitem[\protect\citeauthoryear{Wang et~al.}{2020}]{gp-parallel-acq-func}
+\begin{barticle}
+\bauthor{\bsnm{Wang}, \binits{J.}},
+\bauthor{\bsnm{Clark}, \binits{S.C.}},
+\bauthor{\bsnm{Liu}, \binits{E.}},
+\bauthor{\bsnm{Frazier}, \binits{P.I.}}:
+\batitle{{Parallel Bayesian Global Optimization of Expensive Functions}}.
+\bjtitle{Operations Research}
+\bvolume{68}(\bissue{6}),
+\bfpage{1850}--\blpage{1865}
+(\byear{2020})
+\doiurl{10.1287/opre.2019.1966}
+\end{barticle}
+\endbibitem
+
+%%% 21
+\bibitem[\protect\citeauthoryear{Wang et~al.}{2019}]{gp-gpu}
+\begin{bchapter}
+\bauthor{\bsnm{Wang}, \binits{K.}},
+\bauthor{\bsnm{Pleiss}, \binits{G.}},
+\bauthor{\bsnm{Gardner}, \binits{J.}},
+\bauthor{\bsnm{Tyree}, \binits{S.}},
+\bauthor{\bsnm{Weinberger}, \binits{K.Q.}},
+\bauthor{\bsnm{Wilson}, \binits{A.G.}}:
+\bctitle{Exact gaussian processes on a million data points}.
+In: \bbtitle{Advances in Neural Information Processing Systems},
+vol. \bseriesno{32},
+pp. \bfpage{14648}--\blpage{14659}
+(\byear{2019})
+\end{bchapter}
+\endbibitem
+
+\end{thebibliography}

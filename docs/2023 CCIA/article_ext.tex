@@ -49,15 +49,15 @@
 		
 		\begin{abstract}
 			The use of mathematical simulation models of diseases in economic evaluation is an essential and common tool in medicine aimed at guiding decision-making in health. Cost-effectiveness analyses are a type of economic evaluation that assess the balance between health benefits and the economic sustainability of different health interventions. One critical aspect of these models is the accurate representation of the disease's natural history, which requires a set of parameters such as probabilities and disease burden rates. While these parameters can be obtained from scientific literature, they often need calibration to fit the model's expected outcomes. However, the calibration process can be computationally expensive and traditional optimization methods can be time-consuming due to relatively simple heuristics that may not even guarantee feasible solutions.
-			In this work, we investigate the use of Bayesian optimization to enhance the calibration process by leveraging domain-specific knowledge and exploiting inherent structural properties in the solution space. Specifically, we examine the effect of additive kernel decomposition and constraint handling for efficient search. We also investigate the use of stepwise calibration that exploits the sequential block structure in our simulation models to break down a large optimization problem into several smaller problems without sacrificing the quality of our solutions. In some cases the optimal parameters obtained might even have less error over those found by conventional calibration.
-			Our preliminary results show that a Bayesian optimization procedure asymptotically improves the calibration process, leading to faster convergence and better solutions for larger simulation models, especially when paired with a stepwise calibration methodology.
+			In this work, we investigate the use of Bayesian optimization to enhance the calibration process by leveraging domain-specific knowledge and exploiting inherent structural properties in the solution space. Specifically, we examine the effect of additive kernel decomposition and the use of a greedy calibration approach that exploits the sequential block structure in our simulation models to break down a large optimization problem into several smaller problems without sacrificing the quality of our solutions. In some cases the optimal parameters obtained might even have less error over those found by conventional calibration.
+			Our preliminary results show that a Bayesian optimization procedure asymptotically improves the calibration process, leading to faster convergence and better solutions for larger simulation models, especially when paired with a greedy calibration methodology.
 		\end{abstract}
 		
 		\begin{keyword}
-			bayesian optimization\sep gaussian processes\sep additive kernels\sep constrained optimization\sep stepwise calibration\sep simulation models\sep cost-effectiveness models\sep  cancer research
+			bayesian optimization\sep gaussian processes\sep additive kernels\sep stepwise calibration\sep simulation models\sep cost-effectiveness models\sep  cancer research
 		\end{keyword}
 	\end{frontmatter}
-	\markboth{April 2023\hb}{April 2023\hb}
+	\markboth{December 2023\hb}{December 2023\hb}
 	%\thispagestyle{empty}
 	%\pagestyle{empty}
 	

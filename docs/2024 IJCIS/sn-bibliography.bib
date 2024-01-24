@@ -1,0 +1,289 @@
+
+@inproceedings{original,
+	title = {Bayesian Optimization with Additive Kernels for the Calibration of Simulation Models to Perform Cost-Effectiveness Analysis},
+	eventtitle = {International Conference of the Catalan Association for Artificial Intelligence 2023},
+	pages = {143--152},
+	booktitle = {Artificial Intelligence Research and Development},
+	publisher = {{IOS} Press},
+	author = {Gómez-Guillén, David and Díaz, Mireia and Arcos, Josep Lluís and Cerquides, Jesus},
+	date = {2023},
+	doi = {10.3233/FAIA230677},
+}
+
+@article{gp-parallel-acq-func,
+	  	author={Wang, Jialei and Clark, Scott C. and Liu, Eric and Frazier, Peter I.},
+		title={{Parallel Bayesian Global Optimization of Expensive Functions}},
+		journal={Operations Research},
+		year={2020},
+		volume={68},
+		number={6},
+		pages={1850-1865},
+		month={November},
+		keywords={Bayesian optimization; parallel optimization; parallel expected improvement; infinitesimal perturbat},
+		doi={10.1287/opre.2019.1966},
+		abstract={We consider parallel global optimization of derivative-free expensive-to-evaluate functions, and propose an efficient method based on stochastic approximation for implementing a conceptual Bayesian optimization algorithm proposed by Ginsbourger in 2008. At the heart of this algorithm is maximizing the information criterion called the “multipoints expected improvement,” or the q - EI . To accomplish this, we use infinitesimal perturbation analysis (IPA) to construct a stochastic gradient estimator and show that this estimator is unbiased. We also show that the stochastic gradient ascent algorithm using the constructed gradient estimator converges to a stationary point of the q - EI surface, and therefore, as the number of multiple starts of the gradient ascent algorithm and the number of steps for each start grow large, the one-step Bayes-optimal set of points is recovered. We show in numerical experiments using up to 128 parallel evaluations that our method for maximizing the q - EI is faster than methods based on closed-form evaluation using high-dimensional integration, when considering many parallel function evaluations, and is comparable in speed when considering few. We also show that the resulting one-step Bayes-optimal algorithm for parallel global optimization finds high-quality solutions with fewer evaluations than a heuristic based on approximately maximizing the q - EI . A high-quality open source implementation of this algorithm is available in the open source Metrics Optimization Engine (MOE).}
+		}
+
+@book{gaussian-processes,
+	location = {Cambridge, Mass},
+	title = {Gaussian processes for machine learning},
+	isbn = {978-0-262-18253-9},
+	series = {Adaptive computation and machine learning},
+	pagetotal = {248},
+	publisher = {{MIT} Press},
+	address = {Cambridge, Mass},
+	author = {Rasmussen, Carl Edward and Williams, Christopher K. I.},
+	year = {2006},
+	langid = {english},
+}
+
+@article{acquisition-functions,
+	title = {Maximizing acquisition functions for Bayesian optimization},
+	abstract = {Bayesian optimization is a sample-efﬁcient approach to global optimization that relies on theoretically motivated value heuristics (acquisition functions) to guide its search process. Fully maximizing acquisition functions produces the Bayes’ decision rule, but this ideal is difﬁcult to achieve since these functions are frequently non-trivial to optimize. This statement is especially true when evaluating queries in parallel, where acquisition functions are routinely non-convex, highdimensional, and intractable. We ﬁrst show that acquisition functions estimated via Monte Carlo integration are consistently amenable to gradient-based optimization. Subsequently, we identify a common family of acquisition functions, including {EI} and {UCB}, whose properties not only facilitate but justify use of greedy approaches for their maximization.},
+	pages = {12},
+	year = {2018},
+	author = {Wilson, James and Hutter, Frank and Deisenroth, Marc},
+	langid = {english},
+}
+
+@inproceedings{gp-constraints,
+	author = {Gardner, Jacob R. and Kusner, Matt J. and Xu, Zhixiang and Weinberger, Kilian Q. and Cunningham, John P.},
+	title = {Bayesian Optimization with Inequality Constraints},
+	year = {2014},
+	publisher = {JMLR.org},
+	address = {Beijing, China},
+	abstract = {Bayesian optimization is a powerful framework for minimizing expensive objective functions while using very few function evaluations. It has been successfully applied to a variety of problems, including hyperparameter tuning and experimental design. However, this framework has not been extended to the inequality-constrained optimization setting, particularly the setting in which evaluating feasibility is just as expensive as evaluating the objective. Here we present constrained Bayesian optimization, which places a prior distribution on both the objective and the constraint functions. We evaluate our method on simulated and real data, demonstrating that constrained Bayesian optimization can quickly find optimal and feasible points, even when small feasible regions cause standard methods to fail.},
+	booktitle = {Proceedings of the 31st International Conference on Machine Learning - Volume 32},
+	pages = {II–937–II–945},
+	location = {Beijing, China},
+	series = {ICML'14}
+}
+
+@inproceedings{gp-additive-orthogonal,
+	title = {Additive Gaussian Processes Revisited},
+	abstract = {Gaussian Process ({GP}) models are a class of flexible non-parametric models that have rich representational power. By using a Gaussian process with additive structure, complex responses can be modelled whilst retaining interpretability. Previous work showed that additive Gaussian process models require high-dimensional interaction terms. We propose the orthogonal additive kernel ({OAK}), which imposes an orthogonality constraint on the additive functions, enabling an identifiable, low-dimensional representation of the functional relationship. We connect the {OAK} kernel to functional {ANOVA} decomposition, and show improved convergence rates for sparse computation methods. With only a small number of additive low-dimensional terms, we demonstrate the {OAK} model achieves similar or better predictive performance compared to black-box models, while retaining interpretability.},
+	eventtitle = {International Conference on Machine Learning},
+	pages = {14358--14383},
+	booktitle = {Proceedings of the 39th International Conference on Machine Learning},
+	author = {Lu, Xiaoyu and Boukouvalas, Alexis and Hensman, James},
+	year = {2022},
+	langid = {english},
+	note = {{ISSN}: 2640-3498}
+}
+
+@inproceedings{gp-additive,
+	title = {Additive Gaussian Processes},
+	volume = {24},
+	abstract = {We introduce a Gaussian process model of functions which are additive.  An additive function is one which decomposes into a sum of low-dimensional functions, each depending on only a subset of the input variables. Additive {GPs} generalize both Generalized Additive Models, and the standard {GP} models which use squared-exponential kernels.  Hyperparameter learning in this model can be seen as Bayesian Hierarchical Kernel Learning ({HKL}).  We introduce an expressive but tractable parameterization of the kernel function, which allows efficient evaluation of all input interaction terms, whose number is exponential in the input dimension.  The additional structure discoverable by this model results in increased interpretability, as well as state-of-the-art predictive power in regression tasks.},
+	booktitle = {Advances in Neural Information Processing Systems},
+	pages = {226--234},
+	author = {Duvenaud, David K and Nickisch, Hannes and Rasmussen, Carl},
+	year = {2011}
+}
+
+@article{gp-high-dim2,
+	title = {A Survey on High-dimensional Gaussian Process Modeling with Application to Bayesian Optimization},
+	volume = {2},
+	issn = {2688-299X},
+	url = {https://doi.org/10.1145/3545611},
+	doi = {10.1145/3545611},
+	abstract = {Bayesian Optimization ({BO}), the application of Bayesian function approximation to finding optima of expensive functions, has exploded in popularity in recent years. In particular, much attention has been paid to improving its efficiency on problems with many parameters to optimize. This attention has trickled down to the workhorse of high-dimensional {BO}, high-dimensional Gaussian process regression, which is also of independent interest. The great flexibility that the Gaussian process prior implies is a boon when modeling complicated, low-dimensional surfaces but simply says too little when dimension grows too large. A variety of structural model assumptions have been tested to tame high dimensions, from variable selection and additive decomposition to low-dimensional embeddings and beyond. Most of these approaches in turn require modifications of the acquisition function optimization strategy as well. Here, we review the defining structural model assumptions and discuss the benefits and drawbacks of these approaches in practice.},
+	pages = {8:1--8:26},
+	number = {2},
+	journal = {{ACM} Transactions on Evolutionary Learning and Optimization},
+	author = {Binois, Mickaël and Wycoff, Nathan},
+	year = {2022}
+}
+
+@inproceedings{gp-gpu,
+	title = {Exact Gaussian Processes on a Million Data Points},
+	volume = {32},
+	booktitle = {Advances in Neural Information Processing Systems},
+	pages = {14648--14659},
+	author = {Wang, Ke and Pleiss, Geoff and Gardner, Jacob and Tyree, Stephen and Weinberger, Kilian Q and Wilson, Andrew Gordon},
+	year = {2019}
+}
+
+@inproceedings{kernel-composition,
+	title = {Structure Discovery in Nonparametric Regression through Compositional Kernel Search},
+	abstract = {Despite its importance, choosing the structural form of the kernel in nonparametric regression remains a black art. We define a space of kernel structures which are built compositionally by adding and multiplying a small number of base kernels. We present a method for searching over this space of structures which mirrors the scientific discovery process. The learned structures can often decompose functions into interpretable components and enable long-range extrapolation on time-series datasets. Our structure search method outperforms many widely used kernels and kernel combination methods on a variety of prediction tasks.},
+	eventtitle = {International Conference on Machine Learning},
+	pages = {1166--1174},
+	booktitle = {Proceedings of the 30th International Conference on Machine Learning},
+	author = {Duvenaud, David and Lloyd, James and Grosse, Roger and Tenenbaum, Joshua and Zoubin, Ghahramani},
+	year = {2013},
+	langid = {english},
+	note = {{ISSN}: 1938-7228}
+}
+
+@article{curse-dimensionality,
+	title = {On the challenge of learning complex functions},
+	volume = {165},
+	issn = {0079-6123},
+	doi = {10.1016/S0079-6123(06)65033-4},
+	abstract = {A common goal of computational neuroscience and of artificial intelligence research based on statistical learning algorithms is the discovery and understanding of computational principles that could explain what we consider adaptive intelligence, in animals as well as in machines. This chapter focuses on what is required for the learning of complex behaviors. We believe it involves the learning of highly varying functions, in a mathematical sense. We bring forward two types of arguments which convey the message that many currently popular machine learning approaches to learning flexible functions have fundamental limitations that render them inappropriate for learning highly varying functions. The first issue concerns the representation of such functions with what we call shallow model architectures. We discuss limitations of shallow architectures, such as so-called kernel machines, boosting algorithms, and one-hidden-layer artificial neural networks. The second issue is more focused and concerns kernel machines with a local kernel (the type used most often in practice) that act like a collection of template-matching units. We present mathematical results on such computational architectures showing that they have a limitation similar to those already proved for older non-parametric methods, and connected to the so-called curse of dimensionality. Though it has long been believed that efficient learning in deep architectures is difficult, recently proposed computational principles for learning in deep architectures may offer a breakthrough.},
+	pages = {521--534},
+	journal = {Progress in Brain Research},
+	author = {Bengio, Yoshua},
+	year = {2007},
+	pmid = {17925268}
+}
+
+@article{gp-high-dim,
+	title = {Additive covariance kernels for high-dimensional Gaussian process modeling},
+	volume = {Tome 21},
+	url = {https://hal.science/hal-00644934},
+	abstract = {Gaussian process models -also called Kriging models- are often used as mathematical approximations of expensive experiments. However, the number of observation required for building an emulator becomes unrealistic when using classical covariance kernels when the dimension of input increases. In oder to get round the curse of dimensionality, a popular approach is to consider simplified models such as additive models. The ambition of the present work is to give an insight into covariance kernels that are well suited for building additive Kriging models and to describe some properties of the resulting models.},
+	pages = {p. 481},
+	issue = {numéro 3},
+	journal = {Annales de la Faculté de Sciences de Toulouse},
+	author = {Durrande, Nicolas and Ginsbourger, David and Roustant, Olivier},
+	year = {2012},
+	langid = {english}
+}
+
+@article{nelder-mead,
+	title = {A Simplex Method for Function Minimization},
+	volume = {7},
+	issn = {0010-4620},
+	url = {https://doi.org/10.1093/comjnl/7.4.308},
+	doi = {10.1093/comjnl/7.4.308},
+	abstract = {A method is described for the minimization of a function of n variables, which depends on the comparison of function values at the (n + 1) vertices of a general simplex, followed by the replacement of the vertex with the highest value by another point. The simplex adapts itself to the local landscape, and contracts on to the final minimum. The method is shown to be effective and computationally compact. A procedure is given for the estimation of the Hessian matrix in the neighbourhood of the minimum, needed in statistical estimation problems.},
+	pages = {308--313},
+	number = {4},
+	journal = {The Computer Journal},
+	author = {Nelder, J. A. and Mead, R.},
+	year = {1965}
+}
+
+@article{simulated-annealing,
+	title = {Optimization by Simulated Annealing},
+	volume = {220},
+	url = {https://www.science.org/doi/10.1126/science.220.4598.671},
+	doi = {10.1126/science.220.4598.671},
+	abstract = {There is a deep and useful connection between statistical mechanics (the behavior of systems with many degrees of freedom in thermal equilibrium at a finite temperature) and multivariate or combinatorial optimization (finding the minimum of a given function depending on many parameters). A detailed analogy with annealing in solids provides a framework for optimization of the properties of very large and complex systems. This connection to statistical mechanics exposes new information and provides an unfamiliar perspective on traditional optimization problems and methods.},
+	pages = {671--680},
+	number = {4598},
+	journal = {Science},
+	author = {Kirkpatrick, S. and Gelatt, C. D. and Vecchi, M. P.},
+	year = {1983},
+	note = {Publisher: American Association for the Advancement of Science}
+}
+
+@article{pso,
+	title = {Particle Swarm Optimization for Single Objective Continuous Space Problems: A Review},
+	volume = {25},
+	issn = {1063-6560},
+	doi = {10.1162/EVCO_r_00180},
+	shorttitle = {Particle Swarm Optimization for Single Objective Continuous Space Problems},
+	abstract = {This paper reviews recent studies on the Particle Swarm Optimization ({PSO}) algorithm. The review has been focused on high impact recent articles that have analyzed and/or modified {PSO} algorithms. This paper also presents some potential areas for future study.},
+	pages = {1--54},
+	number = {1},
+	journal = {Evolutionary Computation},
+	author = {Bonyadi, Mohammad Reza and Michalewicz, Zbigniew},
+	year = {2017},
+	note = {Conference Name: Evolutionary Computation}
+}
+
+@inproceedings{gp-batch,
+	title = {Batch Bayesian Optimization via Local Penalization},
+	volume = {51},
+	series = {{JMLR} Workshop and Conference Proceedings},
+	pages = {648--657},
+	booktitle = {Proceedings of the 19th International Conference on Artificial Intelligence and Statistics ({AISTATS})},
+	author = {González, J. and Dai, Z. and Hennig, P. and Lawrence, N.},
+	year = {2016},
+	keywords = {2024 {IJCIS}},
+}
+
+@book{bayesian-opt,
+	location = {Cambridge},
+	title = {Bayesian Optimization},
+	isbn = {978-1-108-42578-0},
+	url = {https://www.cambridge.org/core/books/bayesian-optimization/11AED383B208E7F22A4CE1B5BCBADB44},
+	abstract = {Bayesian optimization is a methodology for optimizing expensive objective functions that has proven success in the sciences, engineering, and beyond. This timely text provides a self-contained and comprehensive introduction to the subject, starting from scratch and carefully developing all the key ideas along the way. This bottom-up approach illuminates unifying themes in the design of Bayesian optimization algorithms and builds a solid theoretical foundation for approaching novel situations. The core of the book is divided into three main parts, covering theoretical and practical aspects of Gaussian process modeling, the Bayesian approach to sequential decision making, and the realization and computation of practical and effective optimization policies. Following this foundational material, the book provides an overview of theoretical convergence results, a survey of notable extensions, a comprehensive history of Bayesian optimization, and an extensive annotated bibliography of applications.},
+	publisher = {Cambridge University Press},
+	author = {Garnett, Roman},
+	year = {2023},
+	doi = {10.1017/9781108348973}
+}
+
+@article{qalys,
+	title = {{QALYs}: the basics},
+	volume = {12 Suppl 1},
+	issn = {1524-4733},
+	doi = {10.1111/j.1524-4733.2009.00515.x},
+	shorttitle = {{QALYs}},
+	pages = {S5--9},
+	journal = {Value in Health: The Journal of the International Society for Pharmacoeconomics and Outcomes Research},
+	author = {Weinstein, Milton C. and Torrance, George and {McGuire}, Alistair},
+	year = {2009},
+	month = {03},
+	pmid = {19250132}
+}
+
+@book{levin,
+	location = {Thousand Oaks, Calif},
+	edition = {2nd edition},
+	title = {Cost-Effectiveness Analysis: Methods and Applications},
+	isbn = {978-0-7619-1934-6},
+	shorttitle = {Cost-Effectiveness Analysis},
+	pagetotal = {328},
+	publisher = {{SAGE} Publications, Inc},
+	address = {Thousand Oaks, Calif},
+	author = {Levin, Henry M.},
+	year = {2000}
+}
+
+@book{applied_he,
+	location = {Oxford, New York},
+	title = {Applied Methods of Cost-effectiveness Analysis in Healthcare},
+	isbn = {978-0-19-922728-0},
+	series = {Handbooks in Health Economic Evaluation},
+	pagetotal = {328},
+	publisher = {Oxford University Press},
+	address = {Oxford, New York},
+	author = {Gray, Alastair M. and Clarke, Philip M. and Wolstenholme, Jane L. and Wordsworth, Sarah},
+	year = {2010},
+	month = {10}
+}
+
+@book{drummond,
+	location = {Oxford, New York},
+	edition = {Fourth Edition, Fourth Edition},
+	title = {Methods for the Economic Evaluation of Health Care Programmes},
+	isbn = {978-0-19-966588-4},
+	pagetotal = {464},
+	publisher = {Oxford University Press},
+	address = {Oxford, New York},
+	author = {Drummond, Michael F. and Sculpher, Mark J. and Claxton, Karl and Stoddart, Greg L. and Torrance, George W.},
+	year = {2015},
+	month = {09}
+}
+
+@article{bo-constraint-dependence,
+	title = {Dependence in constrained Bayesian optimization},
+	doi = {10.1007/s11590-023-02047-z},
+	abstract = {Constrained Bayesian optimization optimizes a black-box objective function subject to black-box constraints. For simplicity, most existing works assume that multiple constraints are independent. To ask, when and how does dependence between constraints help?, we remove this assumption and implement probability of feasibility with dependence (Dep-{PoF}) by applying multiple output Gaussian processes ({MOGPs}) as surrogate models and using expectation propagation to approximate the probabilities. We compare Dep-{PoF} and the independent version {PoF}. We propose two new acquisition functions incorporating Dep-{PoF} and test them on synthetic and practical benchmarks. Our results are largely negative: incorporating dependence between the constraints does not help much. Empirically, incorporating dependence between constraints may be useful if: (i) the solution is on the boundary of the feasible region(s) or (ii) the feasible set is very small. When these conditions are satisfied, the predictive covariance matrix from the {MOGP} may be poorly approximated by a diagonal matrix and the off-diagonal matrix elements may become important. Dep-{PoF} may apply to settings where (i) the constraints and their dependence are totally unknown and (ii) experiments are so expensive that any slightly better Bayesian optimization procedure is preferred. But, in most cases, Dep-{PoF} is indistinguishable from {PoF}.},
+	pages = {1--17},
+	journal = {Optimization Letters},
+	author = {Zhang, Shiqiang and Lee, Robert and Shafei, Behrang and Walz, David and Misener, Ruth},
+	year = {2023}
+}
+
+@article{lung-model,
+	title = {Health and economic impact at a population level of both primary and secondary preventive lung cancer interventions: A model-based cost-effectiveness analysis},
+	volume = {159},
+	issn = {1872-8332},
+	doi = {10.1016/j.lungcan.2021.06.027},
+	shorttitle = {Health and economic impact at a population level of both primary and secondary preventive lung cancer interventions},
+	abstract = {{OBJECTIVES}: Robust economic evaluations are needed to identify efficient strategies for lung cancer prevention that combine brief and intensive smoking cessation intervention programmes with screening using low-dose computed tomography ({LDCT}) at different ages, frequencies, and coverages. We aimed to assess the cost-effectiveness of smoking cessation approaches combined with lung cancer screening in the European context at a population level from a societal perspective.
+{MATERIALS} {AND} {METHODS}: A microsimulation model that describes the natural history of lung cancer and incorporates several prevention strategies was developed. Discounted lifetime {QALYs} and costs at a rate of 3\% were used to calculate incremental cost-effectiveness ratios, defined as additional costs in 2017 Euros per {QALY} gained.
+{RESULTS}: Smoking cessation interventions reduce the incidence of lung cancer by 8\%-46\% and are consistently more effective and cost-effective when starting at younger ages. Screening reduces lung cancer mortality by 1\%-24\% and is generally less effective and more costly than smoking cessation interventions. The most cost-effective strategy would be to implement intensive smoking cessation interventions at ages 35, 40 and 45, combined with screening every three years between the ages of 55 and 65.
+{CONCLUSIONS}: Combining smoking cessation interventions with {LDCT} screening is a very attractive prevention strategy that substantially diminishes the burden of lung cancer. These combined prevention strategies, especially when providing several intensive interventions for smoking cessation at early ages, are more cost-effective than both approaches separately and allow for a more intensified {LDCT} without losing efficiency.},
+	pages = {153--161},
+	journal = {Lung Cancer},
+	author = {Diaz, Mireia and Garcia, Montse and Vidal, Carmen and Santiago, Albert and Gnutti, Gerard and Gómez, David and Trapero-Bertran, Marta and Fu, Marcela and {Lung Cancer Prevention LUCAPREV research group}},
+	year = {2021},
+	pmid = {34352591}
+}
