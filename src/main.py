@@ -8,7 +8,7 @@ from models import RModel
 from measure_extractors.measure_extractors import ECModelExtractor, LCModelExtractor
 from error_measures.error_measures import PMBIncidenceL2Error, PMBMortalityL2Error, WeightedError
 from optimizers.classical import NelderMeadOptimizer
-from optimizers.bayesian import BayesianOptimizer
+from optimizers.bayesian_botorch import BayesianOptimizer
 from optimizers.particle_swarm import ParticleSwarmOptimizer
 from optimizers.annealing import AnnealingOptimizer
 
@@ -177,9 +177,9 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         parameters = [
             #('nelder-mead', 1),
-            ('annealing', 1),
+            #('annealing', 1),
             #('pso', 1),
-            #('bayesian', 1)
+            ('bayesian', 1)
             ]
         start = [1]
         end = [1]
@@ -212,7 +212,7 @@ if __name__ == '__main__':
     #             executor.submit(calibrate_lung_model, algorithm=alg, n_matrices=1, starting_matrix=starting_matrix)
     #         executor.shutdown(wait=True)
 
-    #calibrate_lung_model(algorithm='nelder-mead', n_matrices=1)
+    calibrate_lung_model(algorithm='bayesian', n_matrices=1)
 
 
     # Print possible exceptions
